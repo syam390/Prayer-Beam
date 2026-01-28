@@ -10,20 +10,41 @@
 
     <link rel="icon" type="image/png" href="icon.png" />
     <link rel="apple-touch-icon" href="icon.png" />
-    <meta name="theme-color" content="#d32f2f" />
+    <meta name="theme-color" content="#ffffff" />
 
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Merriweather:wght@300;400;700&display=swap"
       rel="stylesheet"
     />
 
     <style>
-      /* --- CORE VARIABLES --- */
+      /* --- VARIABLES --- */
       :root {
-        --primary: #d32f2f; /* Prayer Beam Red */
-        --bg: #ffffff;
-        --text: #1a1a1a;
-        --surface: #f8f9fa;
+        --primary: #d32f2f;
+        --accent: #ffeb3b;
+        --text-main: #1a1a1a;
+        --text-sec: #666;
+        --bg-body: #ffffff;
+        --bg-ui: rgba(255, 255, 255, 0.9);
+        --border: #e0e0e0;
+        --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        --font-ui: "Inter", sans-serif;
+        --font-read: "Merriweather", serif;
+      }
+
+      /* THEMES (Managed via data-theme attribute) */
+      [data-theme="sepia"] {
+        --bg-body: #f4ecd8;
+        --bg-ui: #eaddcf;
+        --text-main: #433422;
+        --border: #d7c9b1;
+      }
+      [data-theme="dark"] {
+        --bg-body: #121212;
+        --bg-ui: #1e1e1e;
+        --text-main: #e0e0e0;
+        --text-sec: #a0a0a0;
+        --border: #333;
       }
 
       * {
@@ -33,259 +54,327 @@
 
       body {
         margin: 0;
-        font-family: "Inter", sans-serif;
-        background: var(--bg);
-        color: var(--text);
-        /* overflow: hidden; Prevent scrolling on splash */
-      }
-
-      /* === 1. THE VISIONARY OPENING PAGE (Splash Screen) === */
-      #splash-screen {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(135deg, #ffffff 0%, #fdf2f2 100%);
-        z-index: 2000;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 30px;
-        text-align: center;
-        transition: opacity 0.5s ease, visibility 0.5s;
-      }
-
-      .splash-logo {
-        width: 80px;
-        height: 80px;
-        background: white;
-        border-radius: 20px;
-        box-shadow: 0 10px 25px rgba(211, 47, 47, 0.2);
-        margin-bottom: 20px;
-        object-fit: cover;
-      }
-
-      .splash-title {
-        font-size: 28px;
-        font-weight: 900;
-        color: var(--text);
-        margin: 0 0 5px 0;
-        letter-spacing: -1px;
-      }
-
-      .splash-subtitle {
-        font-size: 14px;
-        color: #666;
-        font-weight: 500;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        margin-bottom: 40px;
-      }
-
-      /* Daily Verse Card */
-      .daily-card {
-        background: white;
-        padding: 25px;
-        border-radius: 16px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        border-left: 4px solid var(--primary);
-        margin-bottom: 40px;
-        max-width: 320px;
-      }
-      .daily-text {
-        font-size: 16px;
-        line-height: 1.6;
-        font-style: italic;
-        color: #444;
-      }
-      .daily-ref {
-        font-size: 12px;
-        font-weight: 700;
-        color: var(--primary);
-        margin-top: 10px;
-        display: block;
-      }
-
-      /* Start Button */
-      .btn-start {
-        background: var(--primary);
-        color: white;
-        border: none;
-        padding: 16px 40px;
-        font-size: 16px;
-        font-weight: 700;
-        border-radius: 50px;
-        cursor: pointer;
-        box-shadow: 0 8px 20px rgba(211, 47, 47, 0.3);
-        transition: transform 0.2s;
-      }
-      .btn-start:active {
-        transform: scale(0.95);
-      }
-
-      /* === 2. MAIN APP STYLES (Hidden Initially) === */
-      #app-container {
-        display: none; /* Hidden until splash is closed */
+        font-family: var(--font-ui);
+        background: var(--bg-body);
+        color: var(--text-main);
         padding-top: 60px;
-        padding-bottom: 80px;
-        min-height: 100vh;
+        padding-bottom: 100px; /* Space for floating nav */
+        transition: background 0.3s, color 0.3s;
+        overflow-x: hidden;
       }
 
-      /* Header (Sajeeva Vahini Style) */
+      /* === 1. HEADER (Sajeeva Vahini Advanced) === */
       header {
         position: fixed;
         top: 0;
         left: 0;
         right: 0;
         height: 60px;
-        background: #f1f3f4;
-        border-bottom: 1px solid #ddd;
+        background: var(--bg-ui);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
         display: flex;
         align-items: center;
-        padding: 0 10px;
+        padding: 0 12px;
         gap: 8px;
         z-index: 1000;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
       }
-      .control-box {
-        background: white;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        padding: 0 10px;
-        height: 38px;
+
+      .control-pill {
+        background: var(--bg-body);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        height: 36px;
         display: flex;
         align-items: center;
-        font-size: 14px;
+        justify-content: center;
+        padding: 0 12px;
+        font-size: 13px;
         font-weight: 600;
-        color: #333;
         cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        transition: transform 0.1s;
       }
-      .book-select {
+      .control-pill:active {
+        transform: scale(0.96);
+      }
+
+      .book-pill {
         flex-grow: 1;
         justify-content: space-between;
         max-width: 50%;
       }
-      .chap-select {
-        min-width: 40px;
-        justify-content: center;
+      .icon-small {
+        font-size: 10px;
+        margin-left: 5px;
+        opacity: 0.6;
       }
-      .lang-select {
-        margin-left: auto;
-        font-size: 12px;
-      }
-      .nav-arrow {
-        font-size: 20px;
-        padding: 0 10px;
+
+      .nav-btn {
+        width: 36px;
+        height: 36px;
         border: none;
-        background: none;
-        color: #555;
+        background: transparent;
+        font-size: 18px;
+        color: var(--text-main);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+      }
+      .nav-btn:active {
+        background: rgba(0, 0, 0, 0.05);
+      }
+
+      /* Settings Toggle (Aa) */
+      .settings-toggle {
+        font-family: serif;
+        font-weight: 700;
+        font-size: 16px;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--border);
+        border-radius: 50%;
+        margin-left: auto;
         cursor: pointer;
       }
 
-      /* Reader */
+      /* === 2. READER AREA === */
+      #verses-container {
+        padding: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      /* The Actual Text Styling */
       .verse {
-        padding: 5px 15px;
-        line-height: 1.9;
-        font-size: 18px;
-        color: #222;
+        font-family: var(--font-read);
+        margin-bottom: 15px;
+        line-height: 1.8; /* Good reading height */
+        font-size: 18px; /* Default size */
       }
       .v-num {
         color: var(--primary);
-        font-size: 11px;
-        font-weight: 700;
+        font-family: var(--font-ui);
+        font-size: 0.7em;
+        font-weight: 800;
         vertical-align: super;
         margin-right: 4px;
+        opacity: 0.8;
       }
 
-      /* Modals */
-      .modal {
-        display: none;
+      /* === 3. SETTINGS SHEET (The 'Aa' Menu) === */
+      #settings-sheet {
         position: fixed;
-        top: 60px;
+        bottom: -300px;
         left: 0;
         right: 0;
+        background: var(--bg-ui);
+        border-top: 1px solid var(--border);
+        border-radius: 20px 20px 0 0;
+        padding: 20px;
+        z-index: 2000;
+        box-shadow: 0 -5px 30px rgba(0, 0, 0, 0.1);
+        transition: bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+      }
+      #settings-sheet.active {
         bottom: 0;
-        background: white;
-        z-index: 999;
-        overflow-y: auto;
-        padding: 15px;
-      }
-      .modal.active {
-        display: block;
-        animation: slideUp 0.3s;
-      }
-      @keyframes slideUp {
-        from {
-          transform: translateY(20px);
-          opacity: 0;
-        }
-        to {
-          transform: translateY(0);
-          opacity: 1;
-        }
       }
 
-      .grid-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-        gap: 10px;
+      .setting-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
       }
-      .grid-item {
-        background: #f8f9fa;
-        border: 1px solid #eee;
-        padding: 12px;
-        text-align: center;
-        border-radius: 8px;
-        font-weight: 600;
+      .setting-label {
         font-size: 13px;
+        font-weight: 600;
+        color: var(--text-sec);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .theme-btn {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        border: 2px solid var(--border);
+        cursor: pointer;
+      }
+      .theme-btn.active {
+        border-color: var(--primary);
+        transform: scale(1.1);
+      }
+
+      .size-btn {
+        background: var(--bg-body);
+        border: 1px solid var(--border);
+        padding: 8px 20px;
+        border-radius: 8px;
+        font-weight: bold;
         cursor: pointer;
       }
 
-      /* Bottom Nav */
-      .bottom-nav {
+      /* === 4. FLOATING NAVIGATION === */
+      .floating-nav {
         position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        max-width: 400px;
         height: 65px;
-        background: white;
-        border-top: 1px solid #eee;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 24px;
         display: flex;
         justify-content: space-around;
         align-items: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         z-index: 1000;
       }
+      /* Dark mode adjustment for nav */
+      [data-theme="dark"] .floating-nav {
+        background: rgba(30, 30, 30, 0.85);
+        border-color: #333;
+      }
+
       .nav-item {
         border: none;
         background: none;
-        color: #888;
+        color: #999;
         font-size: 10px;
         font-weight: 600;
         display: flex;
         flex-direction: column;
         align-items: center;
+        transition: color 0.2s, transform 0.2s;
+        cursor: pointer;
       }
       .nav-item.active {
         color: var(--primary);
+        transform: translateY(-2px);
       }
       .nav-icon {
-        font-size: 22px;
-        margin-bottom: 4px;
+        font-size: 24px;
+        margin-bottom: 2px;
       }
 
-      .hidden {
-        display: none !important;
+      /* === 5. OTHER VIEWS (Songs/TV) === */
+      .view-section {
+        display: none;
+        padding-top: 10px;
       }
+      .view-section.active {
+        display: block;
+        animation: fadeIn 0.3s;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      /* Song Card Style */
+      .song-card {
+        background: var(--bg-body);
+        border: 1px solid var(--border);
+        margin: 10px 20px;
+        padding: 16px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        cursor: pointer;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+      }
+      .song-icon {
+        background: var(--primary);
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+      }
+
+      /* Video Card */
+      .video-wrapper {
+        margin: 20px;
+        background: var(--bg-body);
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        text-align: center;
+        border: 1px solid var(--border);
+      }
+
+      /* Modals */
+      .fullscreen-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--bg-body);
+        z-index: 3000;
+        overflow-y: auto;
+        padding: 20px;
+      }
+      .fullscreen-modal.active {
+        display: block;
+      }
+      .grid-chip {
+        display: inline-block;
+        padding: 10px 15px;
+        margin: 5px;
+        background: var(--bg-ui);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      /* Splash */
+      #splash {
+        position: fixed;
+        inset: 0;
+        background: white;
+        z-index: 5000;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.5s;
+      }
+
+      /* Utils */
       .loader {
         border: 3px solid #f3f3f3;
-        border-top: 3px solid #d32f2f;
+        border-top: 3px solid var(--primary);
         border-radius: 50%;
         width: 30px;
         height: 30px;
         animation: spin 1s linear infinite;
         margin: 50px auto;
-        display: none;
       }
       @keyframes spin {
         0% {
@@ -295,179 +384,221 @@
           transform: rotate(360deg);
         }
       }
-
-      /* Songs/TV Styles */
-      .search-bar {
-        width: 90%;
-        margin: 15px 5%;
-        padding: 12px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        font-size: 16px;
-      }
-      .song-item {
-        padding: 15px;
-        margin: 0 15px 10px;
-        background: #f9f9f9;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        cursor: pointer;
-      }
-      .lyrics-box {
-        white-space: pre-wrap;
-        line-height: 2;
-        padding: 20px;
-        font-size: 16px;
-        background: #fff;
-      }
-      .video-box {
-        padding: 15px;
-        text-align: center;
-      }
     </style>
   </head>
-  <body>
-    <div id="splash-screen">
+  <body data-theme="light">
+    <div id="splash">
       <img
         src="icon.png"
-        class="splash-logo"
-        onerror="this.src='https://cdn-icons-png.flaticon.com/512/2996/2996160.png'"
+        style="
+          width: 80px;
+          border-radius: 15px;
+          box-shadow: 0 10px 20px rgba(211, 47, 47, 0.2);
+        "
+        onerror="this.style.display='none'"
       />
-
-      <h1 class="splash-title">Prayer Beam</h1>
-      <p class="splash-subtitle">LIGHT OF THE WORLD</p>
-
-      <div class="daily-card">
-        <span class="daily-text"
-          >"Your word is a lamp for my feet, a light on my path."</span
-        >
-        <span class="daily-ref">Psalm 119:105</span>
-      </div>
-
-      <button class="btn-start" onclick="enterApp()">Start Reading ➔</button>
+      <h1 style="color: #d32f2f; margin-top: 15px; font-weight: 900">
+        Prayer Beam
+      </h1>
+      <p
+        style="
+          color: #888;
+          font-size: 12px;
+          font-weight: 600;
+          letter-spacing: 1px;
+        "
+      >
+        DAILY BREAD
+      </p>
     </div>
 
-    <div id="app-container">
-      <header id="main-header">
-        <div class="control-box book-select" onclick="openBookPicker()">
-          <span id="current-book-label">Genesis</span>
-          <span style="font-size: 10px">▼</span>
-        </div>
-        <div class="control-box chap-select" onclick="openChapterPicker()">
-          <span id="current-chap-label">1</span>
-        </div>
-        <button class="nav-arrow" onclick="changeChapter(-1)">❮</button>
-        <button class="nav-arrow" onclick="changeChapter(1)">❯</button>
-        <div class="control-box lang-select" onclick="toggleLanguage()">
-          <span id="lang-label">TEL</span>
-          <span style="font-size: 10px">▼</span>
-        </div>
-      </header>
-
-      <div id="view-reader" class="view-section">
-        <div id="loading-spinner" class="loader"></div>
-        <div id="verses-container" style="padding-top: 10px"></div>
+    <header id="app-header">
+      <div class="control-pill book-pill" onclick="openBookModal()">
+        <span id="label-book">Genesis</span> <span class="icon-small">▼</span>
+      </div>
+      <div
+        class="control-pill"
+        onclick="openChapModal()"
+        style="min-width: 40px"
+      >
+        <span id="label-chap">1</span>
       </div>
 
-      <div id="view-songs" class="view-section hidden">
-        <input
-          type="text"
-          class="search-bar"
-          placeholder="Search Songs..."
-          onkeyup="filterSongs(this.value)"
-        />
-        <div id="song-list"></div>
-        <div id="lyrics-view" class="hidden">
-          <button
-            onclick="closeLyrics()"
-            style="margin: 15px; padding: 8px 15px"
-          >
-            ⬅ Back
-          </button>
-          <h2
-            id="song-title-display"
-            style="margin: 0 15px; color: #d32f2f"
-          ></h2>
-          <div id="lyrics-content" class="lyrics-box"></div>
-        </div>
+      <button class="nav-btn" onclick="navChap(-1)">‹</button>
+      <button class="nav-btn" onclick="navChap(1)">›</button>
+
+      <div class="settings-toggle" onclick="toggleSettings()">Aa</div>
+    </header>
+
+    <div id="settings-sheet">
+      <div style="text-align: center; margin-bottom: 15px; color: #ccc">
+        ___
       </div>
 
-      <div id="view-video" class="view-section hidden">
-        <div class="video-box">
-          <h2>Prayer Beam TV</h2>
+      <div class="setting-row">
+        <span class="setting-label">Theme</span>
+        <div style="display: flex; gap: 15px">
           <div
-            style="
-              position: relative;
-              padding-bottom: 56.25%;
-              height: 0;
-              overflow: hidden;
-              border-radius: 10px;
-              background: black;
-              margin-top: 10px;
-            "
-          >
-            <iframe
-              style="
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-              "
-              src="https://www.youtube.com/embed/videoseries?list=PLpcEZmijMVLBVJlP4oPCukvrRo-5wB-0i"
-              frameborder="0"
-              allowfullscreen
-            ></iframe>
-          </div>
-          <a
-            href="https://www.youtube.com/@Prayer_Beam"
-            target="_blank"
-            style="
-              display: inline-block;
-              margin-top: 20px;
-              padding: 10px 20px;
-              background: #cc0000;
-              color: white;
-              text-decoration: none;
-              border-radius: 20px;
-              font-weight: bold;
-            "
-            >Open YouTube Channel</a
-          >
+            class="theme-btn active"
+            style="background: #fff"
+            onclick="setTheme('light', this)"
+          ></div>
+          <div
+            class="theme-btn"
+            style="background: #f4ecd8"
+            onclick="setTheme('sepia', this)"
+          ></div>
+          <div
+            class="theme-btn"
+            style="background: #222"
+            onclick="setTheme('dark', this)"
+          ></div>
         </div>
       </div>
 
-      <div id="modal-books" class="modal">
-        <h3 style="margin-top: 0">Select Book</h3>
-        <div id="grid-books" class="grid-container"></div>
+      <div class="setting-row">
+        <span class="setting-label">Text Size</span>
+        <div style="display: flex; gap: 10px">
+          <button class="size-btn" onclick="resizeText(-2)">A-</button>
+          <button class="size-btn" onclick="resizeText(2)">A+</button>
+        </div>
       </div>
-      <div id="modal-chapters" class="modal">
-        <h3 style="margin-top: 0">Select Chapter</h3>
+
+      <div class="setting-row">
+        <span class="setting-label">Language</span>
+        <button class="size-btn" id="lang-btn" onclick="cycleLang()">
+          TELUGU
+        </button>
+      </div>
+    </div>
+
+    <div id="tab-read" class="view-section active">
+      <div id="loader" class="loader" style="display: none"></div>
+      <div id="verses-container"></div>
+      <div style="height: 50px"></div>
+    </div>
+
+    <div id="tab-songs" class="view-section">
+      <input
+        type="text"
+        placeholder="Search Songs..."
+        onkeyup="filterSongs(this.value)"
+        style="
+          width: 90%;
+          margin: 20px 5%;
+          padding: 15px;
+          border-radius: 12px;
+          border: 1px solid var(--border);
+          background: var(--bg-body);
+          font-size: 16px;
+        "
+      />
+      <div id="song-list"></div>
+
+      <div
+        id="lyrics-overlay"
+        style="
+          display: none;
+          position: fixed;
+          inset: 0;
+          background: var(--bg-body);
+          z-index: 3000;
+          overflow-y: auto;
+          padding: 20px;
+        "
+      >
+        <button
+          onclick="document.getElementById('lyrics-overlay').style.display='none'"
+          class="size-btn"
+          style="margin-bottom: 20px"
+        >
+          Close
+        </button>
+        <h2 id="lyrics-title" style="color: var(--primary)"></h2>
         <div
-          id="grid-chapters"
-          class="grid-container"
-          style="grid-template-columns: repeat(5, 1fr)"
+          id="lyrics-text"
+          style="white-space: pre-wrap; line-height: 2; font-size: 18px"
         ></div>
       </div>
-
-      <nav class="bottom-nav">
-        <button class="nav-item active" onclick="switchTab('reader', this)">
-          <span class="nav-icon">📖</span> Bible
-        </button>
-        <button class="nav-item" onclick="switchTab('songs', this)">
-          <span class="nav-icon">🎵</span> Songs
-        </button>
-        <button class="nav-item" onclick="switchTab('video', this)">
-          <span class="nav-icon">▶️</span> TV
-        </button>
-      </nav>
     </div>
 
+    <div id="tab-tv" class="view-section">
+      <div class="video-wrapper">
+        <h2>Prayer Beam TV</h2>
+        <div
+          style="
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 12px;
+            background: #000;
+            margin-top: 15px;
+          "
+        >
+          <iframe
+            style="
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+            "
+            src="https://www.youtube.com/embed/videoseries?list=PLpcEZmijMVLBVJlP4oPCukvrRo-5wB-0i"
+            frameborder="0"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <a
+          href="https://www.youtube.com/@Prayer_Beam"
+          target="_blank"
+          style="
+            display: inline-block;
+            margin-top: 20px;
+            color: var(--primary);
+            font-weight: bold;
+            text-decoration: none;
+          "
+          >Open Channel ↗</a
+        >
+      </div>
+    </div>
+
+    <div id="modal-book" class="fullscreen-modal">
+      <button class="size-btn" onclick="closeModals()">Close</button>
+      <h2>Select Book</h2>
+      <div id="grid-book"></div>
+    </div>
+    <div id="modal-chap" class="fullscreen-modal">
+      <button class="size-btn" onclick="closeModals()">Close</button>
+      <h2>Select Chapter</h2>
+      <div id="grid-chap"></div>
+    </div>
+
+    <nav class="floating-nav">
+      <button class="nav-item active" onclick="switchView('read', this)">
+        <span class="nav-icon">📖</span> Bible
+      </button>
+      <button class="nav-item" onclick="switchView('songs', this)">
+        <span class="nav-icon">🎵</span> Songs
+      </button>
+      <button class="nav-item" onclick="switchView('tv', this)">
+        <span class="nav-icon">▶️</span> TV
+      </button>
+    </nav>
+
     <script>
-      // CONFIG
-      let state = { lang: "te", bookIdx: 0, chapter: 1 };
+      // --- 1. CONFIG & STATE ---
       const langs = ["te", "en", "hi", "ta", "ka", "ml"];
+      // Load state from local storage or default
+      let state = JSON.parse(localStorage.getItem("pb_state")) || {
+        lang: "te",
+        bIdx: 0,
+        cNum: 1,
+        fontSize: 18,
+        theme: "light",
+      };
+
       const sources = {
         te: {
           type: "split",
@@ -567,55 +698,27 @@
           title: "Yesayya Naa Pranama (2025)",
           lyrics: "యేసయ్యా నా ప్రాణమా - ఘనమైన స్తుతిగానమా...",
         },
-        {
-          title: "Neeve Hrudaya Saradhi",
-          lyrics: "నీవే హృదయ సారధి - ప్రగతికి వారధి...",
-        },
-      ]; // Abbreviated for space
+        { title: "Neeve Hrudaya Saradhi", lyrics: "నీవే హృదయ సారధి..." },
+        { title: "Hosanna", lyrics: "హోసన్నా.. హోసన్నా.." },
+      ]; // (Add more here)
       let loadedData = null;
 
-      // --- 1. SPLASH LOGIC ---
-      function enterApp() {
-        document.getElementById("splash-screen").style.opacity = "0";
+      // --- 2. STARTUP ---
+      window.onload = () => {
         setTimeout(() => {
-          document.getElementById("splash-screen").style.display = "none";
-          document.getElementById("app-container").style.display = "block";
-          loadChapter(0, 1);
-          renderSongs();
-        }, 500);
+          document.getElementById("splash").style.opacity = 0;
+          setTimeout(() => document.getElementById("splash").remove(), 500);
+        }, 1500);
+        applySettings();
+        loadContent();
+        renderSongs();
+      };
+
+      function saveState() {
+        localStorage.setItem("pb_state", JSON.stringify(state));
       }
 
-      // --- 2. BIBLE LOGIC ---
-      function loadChapter(bIdx, cNum) {
-        state.bookIdx = bIdx;
-        state.chapter = cNum;
-        let bName =
-          state.lang === "te" ? bookNames[bIdx][1] : bookNames[bIdx][0];
-        document.getElementById("current-book-label").innerText = bName;
-        document.getElementById("current-chap-label").innerText = cNum;
-        document.getElementById("verses-container").innerHTML = "";
-        document.getElementById("loading-spinner").style.display = "block";
-
-        fetchBook(bIdx).then((data) => {
-          document.getElementById("loading-spinner").style.display = "none";
-          let chapters = data.chapters || data.books?.[bIdx]?.chapters || data;
-          if (!Array.isArray(chapters)) chapters = [chapters];
-          let chapter = chapters[cNum - 1];
-          let verses = chapter.verses || chapter.verse;
-          if (!Array.isArray(verses)) verses = [verses];
-          let html = verses
-            .map(
-              (v, i) =>
-                `<div class="verse"><span class="v-num">${
-                  v.verse || i + 1
-                }</span> ${v.text || v.verse || v}</div>`
-            )
-            .join("");
-          document.getElementById("verses-container").innerHTML = html;
-          window.scrollTo(0, 0);
-        });
-      }
-
+      // --- 3. BIBLE ENGINE ---
       async function fetchBook(idx) {
         const src = sources[state.lang];
         const engName = bookNames[idx][0];
@@ -631,102 +734,151 @@
         }
       }
 
-      function toggleLanguage() {
+      function loadContent() {
+        document.getElementById("label-book").innerText =
+          state.lang === "te"
+            ? bookNames[state.bIdx][1]
+            : bookNames[state.bIdx][0];
+        document.getElementById("label-chap").innerText = state.cNum;
+        document.getElementById("lang-btn").innerText =
+          state.lang.toUpperCase();
+
+        document.getElementById("verses-container").innerHTML = "";
+        document.getElementById("loader").style.display = "block";
+
+        fetchBook(state.bIdx).then((data) => {
+          document.getElementById("loader").style.display = "none";
+          let chapters =
+            data.chapters || data.books?.[state.bIdx]?.chapters || data;
+          if (!Array.isArray(chapters)) chapters = [chapters];
+          let chapter = chapters[state.cNum - 1];
+          let verses = chapter.verses || chapter.verse;
+          if (!Array.isArray(verses)) verses = [verses];
+
+          let html = verses
+            .map(
+              (v, i) =>
+                `<div class="verse"><span class="v-num">${
+                  v.verse || i + 1
+                }</span> ${v.text || v.verse || v}</div>`
+            )
+            .join("");
+          document.getElementById("verses-container").innerHTML = html;
+          window.scrollTo(0, 0);
+        });
+        saveState();
+      }
+
+      function navChap(d) {
+        let n = state.cNum + d;
+        if (n < 1) return;
+        state.cNum = n;
+        loadContent();
+      }
+
+      // --- 4. SETTINGS & THEMING ---
+      function toggleSettings() {
+        let sheet = document.getElementById("settings-sheet");
+        sheet.classList.toggle("active");
+      }
+
+      function setTheme(themeName, btn) {
+        state.theme = themeName;
+        document.body.setAttribute("data-theme", themeName);
+        document
+          .querySelectorAll(".theme-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        saveState();
+      }
+
+      function resizeText(delta) {
+        state.fontSize += delta;
+        document.getElementById("verses-container").style.fontSize =
+          state.fontSize + "px";
+        saveState();
+      }
+
+      function cycleLang() {
         let idx = langs.indexOf(state.lang);
         state.lang = langs[(idx + 1) % langs.length];
-        document.getElementById("lang-label").innerText =
-          state.lang.toUpperCase();
-        loadedData = null;
-        loadChapter(state.bookIdx, 1);
+        loadedData = null; // Clear cache
+        loadContent();
       }
 
-      function changeChapter(d) {
-        let n = state.chapter + d;
-        if (n < 1) return;
-        loadChapter(state.bookIdx, n);
+      function applySettings() {
+        document.body.setAttribute("data-theme", state.theme);
+        document.getElementById("verses-container").style.fontSize =
+          state.fontSize + "px";
       }
 
-      // --- PICKERS ---
-      function openBookPicker() {
-        let grid = document.getElementById("grid-books");
+      // --- 5. MODALS ---
+      function openBookModal() {
+        document.getElementById("modal-book").classList.add("active");
+        let grid = document.getElementById("grid-book");
         grid.innerHTML = "";
         bookNames.forEach((b, i) => {
-          let div = document.createElement("div");
-          div.className = "grid-item";
-          div.innerText = state.lang === "te" ? b[1] : b[0];
-          div.onclick = () => {
-            state.bookIdx = i;
-            document.getElementById("modal-books").classList.remove("active");
-            openChapterPicker();
+          let chip = document.createElement("span");
+          chip.className = "grid-chip";
+          chip.innerText = state.lang === "te" ? b[1] : b[0];
+          chip.onclick = () => {
+            state.bIdx = i;
+            closeModals();
+            openChapModal();
           };
-          grid.appendChild(div);
+          grid.appendChild(chip);
         });
-        document.getElementById("modal-books").classList.add("active");
       }
-      function openChapterPicker() {
-        let grid = document.getElementById("grid-chapters");
+      function openChapModal() {
+        document.getElementById("modal-chap").classList.add("active");
+        let grid = document.getElementById("grid-chap");
         grid.innerHTML = "Loading...";
-        document.getElementById("modal-chapters").classList.add("active");
-        fetchBook(state.bookIdx).then((data) => {
+        fetchBook(state.bIdx).then((data) => {
           grid.innerHTML = "";
           let chapters =
-            data.chapters || data.books?.[state.bookIdx]?.chapters || data;
+            data.chapters || data.books?.[state.bIdx]?.chapters || data;
           if (!Array.isArray(chapters)) chapters = [chapters];
           chapters.forEach((c, i) => {
-            let div = document.createElement("div");
-            div.className = "grid-item";
-            div.innerText = i + 1;
-            div.onclick = () => {
-              loadChapter(state.bookIdx, i + 1);
-              document
-                .getElementById("modal-chapters")
-                .classList.remove("active");
+            let chip = document.createElement("span");
+            chip.className = "grid-chip";
+            chip.innerText = i + 1;
+            chip.onclick = () => {
+              state.cNum = i + 1;
+              closeModals();
+              loadContent();
             };
-            grid.appendChild(div);
+            grid.appendChild(chip);
           });
         });
       }
-
-      // --- TABS & SONGS ---
-      function switchTab(view, btn) {
-        document.getElementById("view-reader").classList.add("hidden");
-        document.getElementById("view-songs").classList.add("hidden");
-        document.getElementById("view-video").classList.add("hidden");
-        document.getElementById("view-" + view).classList.remove("hidden");
+      function closeModals() {
         document
-          .querySelectorAll(".nav-item")
-          .forEach((el) => el.classList.remove("active"));
-        btn.classList.add("active");
-        document.getElementById("main-header").style.display =
-          view === "reader" ? "flex" : "none";
+          .querySelectorAll(".fullscreen-modal")
+          .forEach((m) => m.classList.remove("active"));
       }
 
+      // --- 6. SONGS & NAV ---
       function renderSongs() {
         let list = document.getElementById("song-list");
         list.innerHTML = "";
         songsDB.forEach((s) => {
           let div = document.createElement("div");
-          div.className = "song-item";
-          div.innerHTML = `<span style="font-size:20px; margin-right:10px;">🎵</span> <b>${s.title}</b>`;
+          div.className = "song-card";
+          div.innerHTML = `<div class="song-icon">♫</div> <b>${s.title}</b>`;
           div.onclick = () => {
-            document.getElementById("song-list").classList.add("hidden");
-            document.getElementById("lyrics-view").classList.remove("hidden");
-            document.getElementById("song-title-display").innerText = s.title;
-            document.getElementById("lyrics-content").innerText = s.lyrics;
+            document.getElementById("lyrics-overlay").style.display = "block";
+            document.getElementById("lyrics-title").innerText = s.title;
+            document.getElementById("lyrics-text").innerText = s.lyrics;
           };
           list.appendChild(div);
         });
       }
-      function closeLyrics() {
-        document.getElementById("lyrics-view").classList.add("hidden");
-        document.getElementById("song-list").classList.remove("hidden");
-      }
       function filterSongs(q) {
         document
-          .querySelectorAll(".song-item")
+          .querySelectorAll(".song-card")
           .forEach(
-            (el) =>
-              (el.style.display = el.innerText
+            (c) =>
+              (c.style.display = c.innerText
                 .toLowerCase()
                 .includes(q.toLowerCase())
                 ? "flex"
@@ -734,10 +886,29 @@
           );
       }
 
-      window.onclick = function (e) {
-        if (e.target.classList.contains("modal"))
-          e.target.classList.remove("active");
-      };
+      function switchView(view, btn) {
+        document
+          .querySelectorAll(".view-section")
+          .forEach((el) => el.classList.remove("active"));
+        document.getElementById("tab-" + view).classList.add("active");
+        document
+          .querySelectorAll(".nav-item")
+          .forEach((el) => el.classList.remove("active"));
+        btn.classList.add("active");
+        // Hide Bible header if not reading
+        document.getElementById("app-header").style.display =
+          view === "read" ? "flex" : "none";
+      }
+
+      // Close settings on click outside
+      document.addEventListener("click", (e) => {
+        if (
+          !e.target.closest("#settings-sheet") &&
+          !e.target.closest(".settings-toggle")
+        ) {
+          document.getElementById("settings-sheet").classList.remove("active");
+        }
+      });
     </script>
   </body>
 </html>
