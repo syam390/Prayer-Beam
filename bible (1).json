@@ -1,0 +1,25 @@
+{
+  "html": {
+    "body": {
+      "parsererror": {
+        "@attributes": {
+          "style": "display: block; white-space: pre; border: 2px solid #c77; padding: 0 1em 0 1em; margin: 1em; background-color: #fdd; color: black"
+        },
+        "h3": [
+          {
+            "#text": "This page contains the following errors:"
+          },
+          {
+            "#text": "Below is a rendering of the page up to the first error."
+          }
+        ],
+        "div": {
+          "@attributes": {
+            "style": "font-family:monospace;font-size:12px"
+          },
+          "#text": "error on line 1 at column 1: Start tag expected, '<' not found"
+        }
+      }
+    }
+  }
+}
