@@ -10,7 +10,6 @@
 
     <link rel="icon" type="image/png" href="icon.png" />
     <link rel="apple-touch-icon" href="icon.png" />
-
     <meta name="theme-color" content="#d32f2f" />
 
     <link
@@ -19,16 +18,47 @@
     />
 
     <style>
+      /* --- THEME VARIABLES --- */
       :root {
-        --primary: #d32f2f; /* Brand Red */
-        --primary-soft: #ffebee; /* Light Red */
-        --bg: #f8f9fc; /* Light Gray Blue Background */
-        --surface: #ffffff; /* Pure White */
-        --text-main: #1a1a1a;
-        --text-sub: #666666;
+        --primary: #d32f2f;
+        --primary-soft: #ffebee;
+        --bg: #ffffff;
+        --text: #1a1a1a;
+        --surface: #f8f9fa;
         --border: #eef0f2;
-        --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-        --nav-height: 70px;
+        --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        --header-bg: rgba(255, 255, 255, 0.95);
+        --nav-bg: rgba(255, 255, 255, 0.95);
+      }
+
+      /* DARK THEME */
+      [data-theme="dark"] {
+        --primary: #ff6659;
+        --primary-soft: #3e2723;
+        --bg: #121212;
+        --text: #ffffff;
+        --surface: #1e1e1e;
+        --border: #333;
+        --shadow: none;
+        --header-bg: rgba(18, 18, 18, 0.95);
+        --nav-bg: rgba(18, 18, 18, 0.95);
+      }
+
+      /* GRADIENT THEME (ROYAL) */
+      [data-theme="royal"] {
+        --bg: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        --surface: rgba(255, 255, 255, 0.7);
+        --header-bg: rgba(255, 255, 255, 0.6);
+        --nav-bg: rgba(255, 255, 255, 0.8);
+      }
+
+      /* GRADIENT THEME (SUNRISE) */
+      [data-theme="sunrise"] {
+        --primary: #d35400;
+        --bg: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
+        --surface: rgba(255, 255, 255, 0.8);
+        --header-bg: rgba(255, 255, 255, 0.6);
+        --nav-bg: rgba(255, 255, 255, 0.8);
       }
 
       * {
@@ -40,301 +70,180 @@
         margin: 0;
         font-family: "Inter", sans-serif;
         background: var(--bg);
-        color: var(--text-main);
-        padding-bottom: calc(var(--nav-height) + 20px);
-        padding-top: 60px; /* Space for fixed header */
+        color: var(--text);
+        padding-bottom: 90px;
+        padding-top: 60px;
+        min-height: 100vh;
+        transition: background 0.3s, color 0.3s;
       }
 
-      /* --- MODERN HEADER (Glassmorphism) --- */
+      /* --- HEADER --- */
       header {
         position: fixed;
         top: 0;
         left: 0;
         right: 0;
         height: 60px;
-        background: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        background: var(--header-bg);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--border);
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 0 20px;
+        padding: 0 15px;
         z-index: 1000;
       }
 
-      .brand {
+      .header-btn {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        color: var(--text);
+        padding: 8px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: var(--shadow);
         display: flex;
         align-items: center;
+        gap: 5px;
+      }
+
+      /* --- NAVIGATION PILLS --- */
+      .nav-controls {
+        display: flex;
         gap: 10px;
       }
 
-      /* Small Logo in Header */
-      .header-logo {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 1px solid #eee;
-      }
-
-      .brand h1 {
-        margin: 0;
+      /* --- BIBLE READER --- */
+      .verse {
+        margin-bottom: 15px;
+        line-height: 1.8;
         font-size: 18px;
+        padding: 5px 15px;
+      }
+      .v-num {
+        color: var(--primary);
+        font-size: 11px;
         font-weight: 800;
-        color: var(--text-main);
-        letter-spacing: -0.5px;
+        vertical-align: super;
+        margin-right: 5px;
+        opacity: 0.8;
       }
 
-      .lang-select {
-        background: var(--bg);
-        border: 1px solid var(--border);
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 600;
-        color: var(--text-main);
-        outline: none;
-      }
-
-      /* --- VIEWS --- */
-      .view-section {
-        display: none;
-        padding: 20px;
-        animation: fadeIn 0.3s ease;
-      }
-      .view-section.active {
-        display: block;
-      }
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(5px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      /* --- CARDS (Books) --- */
-      .grid-books {
+      /* --- SELECTION GRIDS (YouVersion Style) --- */
+      .grid-container {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-        gap: 12px;
+        gap: 10px;
+        padding: 15px;
       }
 
-      .book-card {
+      .selection-card {
         background: var(--surface);
-        padding: 18px 10px;
-        border-radius: 16px;
+        padding: 15px;
+        border-radius: 12px;
         text-align: center;
         font-weight: 600;
-        font-size: 13px;
-        color: var(--text-main);
+        font-size: 14px;
+        color: var(--text);
         box-shadow: var(--shadow);
-        border: 1px solid transparent;
-        transition: all 0.2s ease;
+        border: 1px solid rgba(0, 0, 0, 0.05);
         cursor: pointer;
+        transition: transform 0.1s;
       }
-
-      .book-card:active {
-        transform: scale(0.96);
-      }
-      .book-card:hover {
-        border-color: var(--primary);
+      .selection-card:active {
+        transform: scale(0.95);
         background: var(--primary-soft);
-        color: var(--primary);
       }
 
-      /* --- READER & CHAPTERS --- */
-      #chapter-grid {
+      /* Chapters are round */
+      .grid-chapters {
         display: grid;
         grid-template-columns: repeat(5, 1fr);
-        gap: 10px;
-        margin-top: 20px;
+        gap: 12px;
+        padding: 15px;
       }
-      .chap-box {
+      .chapter-pill {
         background: var(--surface);
         aspect-ratio: 1;
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 12px;
+        border-radius: 50%;
         font-weight: 700;
-        color: var(--text-main);
         box-shadow: var(--shadow);
-        border: 1px solid var(--border);
         cursor: pointer;
+        border: 1px solid var(--border);
+        color: var(--text);
       }
-      .chap-box.active {
+      .chapter-pill.active {
         background: var(--primary);
         color: white;
-        border-color: var(--primary);
-      }
-
-      .verse {
-        margin-bottom: 18px;
-        line-height: 1.7;
-        font-size: 17px;
-        color: #2c3e50;
-      }
-      .v-num {
-        font-size: 11px;
-        font-weight: 800;
-        color: var(--primary);
-        vertical-align: super;
-        margin-right: 4px;
-        opacity: 0.8;
-      }
-
-      /* --- SONGS LIST --- */
-      .search-bar {
-        width: 100%;
-        padding: 16px;
         border: none;
-        background: var(--surface);
-        box-shadow: var(--shadow);
-        border-radius: 16px;
-        font-size: 16px;
-        font-family: inherit;
-        margin-bottom: 20px;
       }
 
-      .song-item {
-        background: var(--surface);
-        padding: 16px;
-        margin-bottom: 12px;
-        border-radius: 16px;
+      /* --- FOOTER NAV (Next/Prev) --- */
+      .chapter-nav {
         display: flex;
-        align-items: center;
-        box-shadow: var(--shadow);
-        cursor: pointer;
-        transition: transform 0.2s;
+        justify-content: space-between;
+        padding: 20px 15px;
+        margin-top: 20px;
       }
-      .song-item:active {
-        transform: scale(0.98);
-      }
-      .song-icon {
-        width: 40px;
-        height: 40px;
-        border-radius: 12px;
-        background: var(--primary-soft);
-        color: var(--primary);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        margin-right: 15px;
-      }
-      .song-title {
-        font-weight: 600;
-        font-size: 15px;
-      }
-
-      /* --- LYRICS PAGE --- */
-      .lyrics-card {
-        background: var(--surface);
-        padding: 25px;
-        border-radius: 20px;
-        box-shadow: var(--shadow);
-        white-space: pre-wrap;
-        line-height: 2.2;
-        font-size: 16px;
-        color: #333;
-        border-top: 6px solid var(--primary);
-      }
-
-      /* --- VIDEO PLAYER --- */
-      .video-container {
-        background: var(--surface);
-        padding: 20px;
-        border-radius: 24px;
-        box-shadow: var(--shadow);
-        text-align: center;
-      }
-      .video-frame {
-        border-radius: 16px;
-        overflow: hidden;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        background: #000;
-      }
-      .cta-button {
-        display: inline-block;
-        background: #cc0000;
+      .nav-pill {
+        background: var(--primary);
         color: white;
-        text-decoration: none;
-        padding: 14px 28px;
+        padding: 12px 24px;
         border-radius: 30px;
         font-weight: 600;
-        font-size: 14px;
-        margin-top: 20px;
-        box-shadow: 0 4px 15px rgba(204, 0, 0, 0.3);
-        transition: transform 0.2s;
+        border: none;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
       }
-      .cta-button:active {
-        transform: scale(0.95);
+      .nav-pill:disabled {
+        background: #ccc;
+        box-shadow: none;
       }
 
-      /* --- BOTTOM NAV (iOS Style) --- */
+      /* --- BOTTOM TAB BAR --- */
       .bottom-nav {
         position: fixed;
         bottom: 0;
         left: 0;
         right: 0;
-        height: var(--nav-height);
-        background: rgba(255, 255, 255, 0.9);
+        height: 70px;
+        background: var(--nav-bg);
         backdrop-filter: blur(15px);
         -webkit-backdrop-filter: blur(15px);
-        border-top: 1px solid rgba(0, 0, 0, 0.05);
+        border-top: 1px solid var(--border);
         display: flex;
         justify-content: space-around;
         align-items: center;
         z-index: 1000;
-        padding-bottom: 10px; /* Safe area for iPhone home bar */
+        padding-bottom: 10px;
       }
-
       .nav-item {
         border: none;
         background: none;
-        color: #999;
+        color: var(--text);
+        opacity: 0.5;
         font-size: 10px;
         font-weight: 600;
         display: flex;
         flex-direction: column;
         align-items: center;
-        cursor: pointer;
-        width: 60px;
-        transition: color 0.2s;
       }
-      .nav-icon {
-        font-size: 22px;
-        margin-bottom: 4px;
-        filter: grayscale(100%);
-        opacity: 0.5;
-        transition: all 0.2s;
-      }
-
       .nav-item.active {
+        opacity: 1;
         color: var(--primary);
       }
-      .nav-item.active .nav-icon {
-        filter: grayscale(0%);
-        opacity: 1;
-        transform: translateY(-2px);
+      .nav-icon {
+        font-size: 24px;
+        margin-bottom: 4px;
       }
 
-      /* Utils */
-      .back-btn {
-        padding: 8px 16px;
-        border: none;
-        background: var(--bg);
-        color: var(--text-sub);
-        border-radius: 20px;
-        font-weight: 600;
-        font-size: 13px;
-        cursor: pointer;
-      }
+      /* Loader */
       .loader {
         border: 3px solid #f3f3f3;
         border-top: 3px solid var(--primary);
@@ -342,7 +251,7 @@
         width: 30px;
         height: 30px;
         animation: spin 1s linear infinite;
-        margin: 40px auto;
+        margin: 50px auto;
         display: none;
       }
       @keyframes spin {
@@ -353,114 +262,134 @@
           transform: rotate(360deg);
         }
       }
+
+      /* Utils */
+      .view-section {
+        display: none;
+      }
+      .view-section.active {
+        display: block;
+      }
+      .hidden {
+        display: none !important;
+      }
+
+      /* Songs & Video Styles (Inherited) */
+      .search-bar {
+        width: 100%;
+        padding: 15px;
+        border-radius: 12px;
+        border: none;
+        background: var(--surface);
+        box-shadow: var(--shadow);
+        margin: 15px;
+        width: calc(100% - 30px);
+        font-size: 16px;
+      }
+      .song-item {
+        background: var(--surface);
+        margin: 10px 15px;
+        padding: 15px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        box-shadow: var(--shadow);
+      }
+      .video-card {
+        background: var(--surface);
+        margin: 15px;
+        padding: 15px;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: var(--shadow);
+      }
+      .lyrics-box {
+        background: var(--surface);
+        padding: 20px;
+        margin: 15px;
+        border-radius: 15px;
+        white-space: pre-wrap;
+        line-height: 2.2;
+        font-size: 16px;
+        color: var(--text);
+        box-shadow: var(--shadow);
+        border-top: 4px solid var(--primary);
+      }
     </style>
   </head>
-  <body>
+  <body data-theme="light">
     <header>
-      <div class="brand">
-        <img
-          src="icon.png"
-          class="header-logo"
-          onerror="this.style.display='none'"
-        />
-        <h1>Prayer Beam</h1>
+      <button class="header-btn" onclick="openBookPicker()">
+        <span id="current-book-btn">Genesis 1</span> ▾
+      </button>
+
+      <div class="nav-controls">
+        <button class="header-btn" onclick="toggleLanguage()">
+          <span id="lang-display">TE</span>
+        </button>
+        <button class="header-btn" onclick="toggleTheme()">🎨</button>
       </div>
-      <select
-        class="lang-select"
-        id="language-picker"
-        onchange="changeLanguage(this.value)"
-      >
-        <option value="te">తెలుగు</option>
-        <option value="hi">हिन्दी</option>
-        <option value="en">English</option>
-        <option value="ta">తమిళం</option>
-        <option value="ka">కన్నడ</option>
-        <option value="ml">మలయాళం</option>
-      </select>
     </header>
 
-    <div id="view-bible" class="view-section active">
-      <div id="bible-content">
-        <div style="margin-bottom: 15px; padding-left: 5px">
-          <h2 style="margin: 0; font-size: 22px">Bible Books</h2>
-          <p style="margin: 0; color: var(--text-sub); font-size: 13px">
-            Select a book to start reading
-          </p>
-        </div>
-        <div id="book-list" class="grid-books"></div>
+    <div id="view-picker" class="view-section">
+      <div style="padding: 15px">
+        <h2 style="margin: 0 0 10px 0">Select Book</h2>
       </div>
+      <div id="book-grid" class="grid-container"></div>
+    </div>
 
-      <div id="reader-view" style="display: none">
-        <div
-          style="
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-            position: sticky;
-            top: 65px;
-            background: var(--bg);
-            padding: 10px 0;
-            z-index: 90;
-          "
-        >
-          <button onclick="resetBible()" class="back-btn">⬅ Back</button>
-          <h3 style="margin: 0; font-size: 18px" id="current-header">
-            Genesis
-          </h3>
-        </div>
+    <div id="view-chapters" class="view-section">
+      <div style="padding: 15px; display: flex; align-items: center; gap: 10px">
+        <button class="header-btn" onclick="openBookPicker()">⬅ Books</button>
+        <h2 style="margin: 0" id="chapter-select-title">Genesis</h2>
+      </div>
+      <div id="chapter-grid" class="grid-chapters"></div>
+    </div>
 
-        <div id="loading-spinner" class="loader"></div>
-        <div id="chapter-grid"></div>
-        <div
-          id="verses-container"
-          style="
-            background: var(--surface);
-            padding: 20px;
-            border-radius: 20px;
-            box-shadow: var(--shadow);
-          "
-        ></div>
+    <div id="view-reader" class="view-section active">
+      <div id="loading-spinner" class="loader"></div>
+      <div id="verses-container" style="padding-top: 10px"></div>
+
+      <div class="chapter-nav">
+        <button id="btn-prev" class="nav-pill" onclick="changeChapter(-1)">
+          ⬅ Prev
+        </button>
+        <button id="btn-next" class="nav-pill" onclick="changeChapter(1)">
+          Next ➡
+        </button>
       </div>
     </div>
 
     <div id="view-songs" class="view-section">
-      <h2 style="margin: 0 0 15px 5px; font-size: 22px">Song Lyrics</h2>
       <input
         type="text"
         class="search-bar"
-        placeholder="🔍  Search songs (e.g. Yesayya)..."
+        placeholder="Search Songs..."
         onkeyup="filterSongs(this.value)"
       />
-
-      <div id="song-list-container"></div>
-
-      <div id="lyrics-view" style="display: none">
-        <div
-          style="
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-          "
-        >
-          <button onclick="closeLyrics()" class="back-btn">⬅ Back</button>
-        </div>
-        <h2
-          id="song-title-display"
-          style="margin: 0 0 20px 0; color: var(--primary)"
-        ></h2>
-        <div id="lyrics-content" class="lyrics-card"></div>
+      <div id="song-list"></div>
+      <div id="lyrics-view" class="hidden">
+        <button class="header-btn" style="margin: 15px" onclick="closeLyrics()">
+          ⬅ Back to Songs
+        </button>
+        <h2 id="song-title" style="margin: 0 15px; color: var(--primary)"></h2>
+        <div id="lyrics-content" class="lyrics-box"></div>
       </div>
     </div>
 
     <div id="view-video" class="view-section">
-      <h2 style="margin: 0 0 15px 5px; font-size: 22px">Prayer Beam TV</h2>
-
-      <div class="video-container">
+      <div class="video-card">
+        <h2>Prayer Beam TV</h2>
         <div
-          class="video-frame"
-          style="position: relative; padding-bottom: 56.25%; height: 0"
+          style="
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 10px;
+            background: black;
+            margin-top: 15px;
+          "
         >
           <iframe
             style="
@@ -472,46 +401,42 @@
             "
             src="https://www.youtube.com/embed/videoseries?list=PLpcEZmijMVLBVJlP4oPCukvrRo-5wB-0i"
             frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen
-          >
-          </iframe>
+          ></iframe>
         </div>
-
-        <h3 style="margin-top: 25px">Prayer Beam Channel</h3>
-        <p style="color: var(--text-sub); font-size: 14px; margin-bottom: 25px">
-          Watch our latest messages, worship songs and live prayers on the
-          official Prayer Beam channel.
-        </p>
-
         <a
           href="https://www.youtube.com/@Prayer_Beam"
           target="_blank"
-          class="cta-button"
+          style="
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: bold;
+          "
+          >Open YouTube Channel ↗</a
         >
-          Open Channel in YouTube ↗
-        </a>
       </div>
     </div>
 
     <nav class="bottom-nav">
-      <button class="nav-item active" onclick="switchTab('bible', this)">
-        <span class="nav-icon">📖</span>
-        <span>Bible</span>
+      <button class="nav-item active" onclick="switchTab('reader', this)">
+        <span class="nav-icon">📖</span> Bible
       </button>
       <button class="nav-item" onclick="switchTab('songs', this)">
-        <span class="nav-icon">🎵</span>
-        <span>Songs</span>
+        <span class="nav-icon">🎵</span> Songs
       </button>
       <button class="nav-item" onclick="switchTab('video', this)">
-        <span class="nav-icon">▶️</span>
-        <span>TV</span>
+        <span class="nav-icon">▶️</span> TV
       </button>
     </nav>
 
     <script>
-      // --- DATA & CONFIG ---
-      let currentLang = "te";
+      // CONFIG
+      let state = { lang: "te", bookIndex: 0, chapter: 1, themeIdx: 0 };
+      const themes = ["light", "royal", "sunrise", "dark"];
+      const langs = ["te", "en", "hi", "ta", "ka", "ml"];
+
       const sources = {
         te: {
           type: "split",
@@ -538,6 +463,7 @@
           url: "https://raw.githubusercontent.com/godlytalias/Bible-Database/master/Malayalam/Malayalam_Bible.json",
         },
       };
+
       const bookNames = [
         ["Genesis", "ఆదికాండము"],
         ["Exodus", "నిర్గమకాండము"],
@@ -607,13 +533,11 @@
         ["Revelation", "ప్రకటన గ్రంథము"],
       ];
 
-      let loadedData = null;
-
       const songsDB = [
         {
           title: "Yesayya Naa Pranama (2025)",
           lyrics:
-            "యేసయ్యా నా ప్రాణమా - ఘనమైన స్తుతిగానమా\nఅద్భుతమైన నీ ఆదరణే - ఆశ్రయమైన నీ సంరక్షణయే\nనను నీడగ వెంటాడెను - నే అలయక నడిపించెను\nనా జీవమా - నా స్తోత్రమా - నీకే ఆరాధన\nనా స్నేహము - సంక్షేమము - నీవే ఆరాధ్యుడా\n\n1. చిరకాలము నాతో ఉంటానని - క్షణమైనా వీడిపోలేదని\nనీలో ననుచేర్చుకున్నావని - తండ్రితో ఏకమై ఉన్నామని\nఆనందగానము నే పాడనా\nఏదైనా నాకున్న సంతోషము - నీతోనే కలిగున్న అనుబంధమే\nసృజనాత్మకమైన నీకృప చాలు - నే బ్రతికున్నది నీకోసమే",
+            "యేసయ్యా నా ప్రాణమా - ఘనమైన స్తుతిగానమా\nఅద్భుతమైన నీ ఆదరణే - ఆశ్రయమైన నీ సంరక్షణయే\n\n1. చిరకాలము నాతో ఉంటానని - క్షణమైనా వీడిపోలేదని\nనీలో ననుచేర్చుకున్నావని - తండ్రితో ఏకమై ఉన్నామని\nఆనందగానము నే పాడనా\n\nఏదైనా నాకున్న సంతోషము - నీతోనే కలిగున్న అనుబంధమే\nసృజనాత్మకమైన నీకృప చాలు - నే బ్రతికున్నది నీకోసమే",
         },
         {
           title: "Neeve Hrudaya Saradhi",
@@ -637,159 +561,186 @@
         },
       ];
 
-      // --- INIT ---
-      renderBookList();
-      renderSongs(songsDB);
+      let loadedData = null;
 
-      // --- LOGIC ---
-      function changeLanguage(lang) {
-        currentLang = lang;
+      // INIT
+      loadChapter(0, 1); // Start Genesis 1
+      renderSongs();
+
+      // FUNCTIONS
+      function toggleTheme() {
+        state.themeIdx = (state.themeIdx + 1) % themes.length;
+        document.body.setAttribute("data-theme", themes[state.themeIdx]);
+      }
+
+      function toggleLanguage() {
+        let idx = langs.indexOf(state.lang);
+        state.lang = langs[(idx + 1) % langs.length];
+        document.getElementById("lang-display").innerText =
+          state.lang.toUpperCase();
         loadedData = null;
-        renderBookList();
-        resetBible();
-        document.getElementById("status-text").innerText = lang.toUpperCase();
+        loadChapter(state.bookIndex, 1);
       }
 
-      function renderBookList() {
-        const list = document.getElementById("book-list");
-        list.innerHTML = "";
-        bookNames.forEach((book, idx) => {
-          const div = document.createElement("div");
-          div.className = "book-card";
-          div.innerText = currentLang === "te" ? book[1] : book[0];
-          div.onclick = () => openReader(idx, book[0], book[1]);
-          list.appendChild(div);
-        });
-      }
-
-      function openReader(index, engName, telName) {
-        document.getElementById("bible-content").style.display = "none";
-        document.getElementById("reader-view").style.display = "block";
-        document.getElementById("current-header").innerText =
-          currentLang === "te" ? telName : engName;
-        document.getElementById("loading-spinner").style.display = "block";
-        document.getElementById("chapter-grid").innerHTML = "";
-        document.getElementById("verses-container").innerHTML = "";
-
-        const source = sources[currentLang];
-        if (source.type === "split") {
-          fetch(`${source.url}/${engName}.json`)
-            .then((res) => res.json())
-            .then((data) => {
-              document.getElementById("loading-spinner").style.display = "none";
-              renderChapters(data.chapters || data);
-            });
-        } else {
-          if (loadedData) {
-            openBookFromSingleFile(index);
-          } else {
-            fetch(source.url)
-              .then((res) => res.json())
-              .then((data) => {
-                loadedData = data;
-                document.getElementById("loading-spinner").style.display =
-                  "none";
-                openBookFromSingleFile(index);
-              })
-              .catch((err) => alert("Error loading language"));
-          }
-        }
-      }
-
-      function openBookFromSingleFile(bookIndex) {
-        let books = loadedData.books || loadedData.Bible || loadedData;
-        if (!Array.isArray(books)) books = [books];
-        if (books[bookIndex]) renderChapters(books[bookIndex].chapters);
-      }
-
-      function renderChapters(chapters) {
-        const grid = document.getElementById("chapter-grid");
-        grid.innerHTML = "";
-        if (!Array.isArray(chapters)) chapters = [chapters];
-        chapters.forEach((chap, i) => {
-          const box = document.createElement("div");
-          box.className = "chap-box";
-          box.innerText = i + 1;
-          box.onclick = () => loadVerses(chap, i + 1);
-          grid.appendChild(box);
-        });
-        if (chapters.length > 0) loadVerses(chapters[0], 1);
-      }
-
-      function loadVerses(chapData, chapNum) {
-        document
-          .querySelectorAll(".chap-box")
-          .forEach((b) => b.classList.remove("active"));
-        const boxes = document.querySelectorAll(".chap-box");
-        if (boxes[chapNum - 1]) boxes[chapNum - 1].classList.add("active");
-
-        const container = document.getElementById("verses-container");
-        container.innerHTML = "";
-        let verses = chapData.verses || chapData.verse;
-        if (!Array.isArray(verses)) verses = [verses];
-
-        verses.forEach((v, i) => {
-          const p = document.createElement("div");
-          p.className = "verse";
-          let text = v.text || v.verse || v;
-          if (typeof v === "string") text = v;
-          let num = v.verse || i + 1;
-          p.innerHTML = `<span class="v-num">${num}</span> ${text}`;
-          container.appendChild(p);
-        });
-      }
-
-      function resetBible() {
-        document.getElementById("reader-view").style.display = "none";
-        document.getElementById("bible-content").style.display = "block";
-      }
-
-      // --- SONG LOGIC ---
-      function renderSongs(list) {
-        const container = document.getElementById("song-list-container");
-        container.innerHTML = "";
-        list.forEach((song) => {
-          const div = document.createElement("div");
-          div.className = "song-item";
-          div.innerHTML = `<div class="song-icon">♫</div> <div class="song-title">${song.title}</div>`;
-          div.onclick = () => openLyrics(song);
-          container.appendChild(div);
-        });
-      }
-
-      function filterSongs(query) {
-        const filtered = songsDB.filter((s) =>
-          s.title.toLowerCase().includes(query.toLowerCase())
-        );
-        renderSongs(filtered);
-      }
-
-      function openLyrics(song) {
-        document.getElementById("song-list-container").style.display = "none";
-        document.querySelector(".search-bar").style.display = "none";
-        document.getElementById("lyrics-view").style.display = "block";
-        document.getElementById("song-title-display").innerText = song.title;
-        document.getElementById("lyrics-content").innerText = song.lyrics;
-      }
-
-      function closeLyrics() {
-        document.getElementById("lyrics-view").style.display = "none";
-        document.getElementById("song-list-container").style.display = "block";
-        document.querySelector(".search-bar").style.display = "block";
-      }
-
-      function switchTab(tabName, btn) {
+      function switchTab(view, btn) {
         document
           .querySelectorAll(".view-section")
           .forEach((el) => el.classList.remove("active"));
-        document.getElementById("view-" + tabName).classList.add("active");
+        // If picker is open, force reader
+        if (view === "reader")
+          document.getElementById("view-reader").classList.add("active");
+        else document.getElementById("view-" + view).classList.add("active");
+
         document
           .querySelectorAll(".nav-item")
           .forEach((el) => el.classList.remove("active"));
         btn.classList.add("active");
-        document.getElementById("language-picker").style.display =
-          tabName === "bible" ? "block" : "none";
-        window.scrollTo(0, 0);
+      }
+
+      // --- BIBLE NAV ---
+      function openBookPicker() {
+        document
+          .querySelectorAll(".view-section")
+          .forEach((el) => el.classList.remove("active"));
+        document.getElementById("view-picker").classList.add("active");
+
+        const grid = document.getElementById("book-grid");
+        grid.innerHTML = "";
+        bookNames.forEach((b, i) => {
+          let div = document.createElement("div");
+          div.className = "selection-card";
+          div.innerText = state.lang === "te" ? b[1] : b[0];
+          div.onclick = () => openChapterPicker(i);
+          grid.appendChild(div);
+        });
+      }
+
+      function openChapterPicker(bookIdx) {
+        document.getElementById("view-picker").classList.remove("active");
+        document.getElementById("view-chapters").classList.add("active");
+
+        let name =
+          state.lang === "te" ? bookNames[bookIdx][1] : bookNames[bookIdx][0];
+        document.getElementById("chapter-select-title").innerText = name;
+
+        // Just assume 50 chapters for visual, or fetch if needed.
+        // For speed, we will load the book to get chapter count
+        const grid = document.getElementById("chapter-grid");
+        grid.innerHTML = "Loading...";
+
+        // We need to fetch to know chapters
+        fetchBook(bookIdx).then((data) => {
+          grid.innerHTML = "";
+          // Handle different JSON formats
+          let chapters =
+            data.chapters || data.books?.[bookIdx]?.chapters || data;
+          if (!Array.isArray(chapters)) chapters = [chapters];
+
+          chapters.forEach((c, i) => {
+            let pill = document.createElement("div");
+            pill.className = "chapter-pill";
+            pill.innerText = i + 1;
+            pill.onclick = () => {
+              loadChapter(bookIdx, i + 1);
+              document
+                .getElementById("view-chapters")
+                .classList.remove("active");
+              document.getElementById("view-reader").classList.add("active");
+            };
+            grid.appendChild(pill);
+          });
+        });
+      }
+
+      async function fetchBook(bookIdx) {
+        const src = sources[state.lang];
+        const engName = bookNames[bookIdx][0];
+
+        if (src.type === "split") {
+          let res = await fetch(`${src.url}/${engName}.json`);
+          return await res.json();
+        } else {
+          if (!loadedData) {
+            let res = await fetch(src.url);
+            loadedData = await res.json();
+          }
+          return loadedData;
+        }
+      }
+
+      function loadChapter(bookIdx, chapNum) {
+        state.bookIndex = bookIdx;
+        state.chapter = chapNum;
+
+        let name =
+          state.lang === "te" ? bookNames[bookIdx][1] : bookNames[bookIdx][0];
+        document.getElementById(
+          "current-book-btn"
+        ).innerText = `${name} ${chapNum}`;
+        document.getElementById("verses-container").innerHTML = "";
+        document.getElementById("loading-spinner").style.display = "block";
+
+        fetchBook(bookIdx).then((data) => {
+          document.getElementById("loading-spinner").style.display = "none";
+          let chapters =
+            data.chapters || data.books?.[bookIdx]?.chapters || data;
+          if (!Array.isArray(chapters)) chapters = [chapters];
+
+          let chapter = chapters[chapNum - 1];
+          let verses = chapter.verses || chapter.verse;
+          if (!Array.isArray(verses)) verses = [verses];
+
+          let html = verses
+            .map(
+              (v, i) =>
+                `<div class="verse"><span class="v-num">${
+                  v.verse || i + 1
+                }</span> ${v.text || v.verse || v}</div>`
+            )
+            .join("");
+          document.getElementById("verses-container").innerHTML = html;
+          window.scrollTo(0, 0);
+        });
+      }
+
+      function changeChapter(delta) {
+        let next = state.chapter + delta;
+        if (next < 1) return; // Logic for prev book could go here
+        loadChapter(state.bookIndex, next);
+      }
+
+      // --- SONGS ---
+      function renderSongs() {
+        const list = document.getElementById("song-list");
+        list.innerHTML = "";
+        songsDB.forEach((s) => {
+          let div = document.createElement("div");
+          div.className = "song-item";
+          div.innerHTML = `<div style="flex-grow:1; font-weight:600;">${s.title}</div> <span>🎵</span>`;
+          div.onclick = () => {
+            document.getElementById("song-list").classList.add("hidden");
+            document.querySelector(".search-bar").classList.add("hidden");
+            document.getElementById("lyrics-view").classList.remove("hidden");
+            document.getElementById("song-title").innerText = s.title;
+            document.getElementById("lyrics-content").innerText = s.lyrics;
+          };
+          list.appendChild(div);
+        });
+      }
+
+      function filterSongs(q) {
+        let cards = document.querySelectorAll(".song-item");
+        cards.forEach((c) => {
+          c.style.display = c.innerText.toLowerCase().includes(q.toLowerCase())
+            ? "flex"
+            : "none";
+        });
+      }
+
+      function closeLyrics() {
+        document.getElementById("lyrics-view").classList.add("hidden");
+        document.getElementById("song-list").classList.remove("hidden");
+        document.querySelector(".search-bar").classList.remove("hidden");
       }
     </script>
   </body>
