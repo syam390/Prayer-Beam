@@ -2,82 +2,578 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Prayer Beam</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Prayer Beam AI</title>
+    <link rel="icon" type="image/png" href="icon.png" />
+    <meta name="theme-color" content="#0f172a" />
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Crimson+Pro:wght@400;600&display=swap"
       rel="stylesheet"
     />
+
     <script>
       tailwind.config = {
+        darkMode: "class",
         theme: {
           extend: {
             fontFamily: {
               sans: ["Inter", "sans-serif"],
-              serif: ["Playfair Display", "serif"],
+              serif: ["Crimson Pro", "serif"],
             },
             colors: {
-              beam: {
-                gold: "#FFD700",
-                glow: "#FDB931",
-                deep: "#1a1a2e",
-                surface: "rgba(255, 255, 255, 0.05)",
-              },
-            },
-            animation: {
-              "pulse-slow": "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-              float: "float 6s ease-in-out infinite",
-              "beam-rise": "rise 2s ease-out forwards",
-            },
-            keyframes: {
-              float: {
-                "0%, 100%": { transform: "translateY(0)" },
-                "50%": { transform: "translateY(-10px)" },
-              },
-              rise: {
-                "0%": { transform: "translateY(100%)", opacity: "0" },
-                "100%": { transform: "translateY(0)", opacity: "1" },
-              },
+              primary: "#ef4444",
+              dark: "#0f172a",
+              surface: "#1e293b",
             },
           },
         },
       };
     </script>
-    <style>
-      body {
-        background-color: #0f172a;
-        color: white;
-        overflow-x: hidden;
-      }
-      /* Custom scrollbar */
-      ::-webkit-scrollbar {
-        width: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #1e293b;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #475569;
-        border-radius: 4px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #64748b;
-      }
-    </style>
+
     <script type="importmap">
       {
         "imports": {
-          "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
-          "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
-          "@google/genai": "https://esm.sh/@google/genai@^1.38.0",
-          "react/": "https://esm.sh/react@^19.2.4/",
-          "react": "https://esm.sh/react@^19.2.4"
+          "react": "https://esm.sh/react@18.2.0",
+          "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+          "lucide-react": "https://esm.sh/lucide-react@0.263.1",
+          "@google/generative-ai": "https://esm.sh/@google/generative-ai@0.1.3"
         }
       }
     </script>
   </head>
-  <body>
+  <body
+    class="bg-gray-50 text-slate-900 dark:bg-dark dark:text-white transition-colors duration-300"
+  >
     <div id="root"></div>
+
+    <script type="module">
+      import React, { useState, useEffect, useRef } from "react";
+      import { createRoot } from "react-dom/client";
+      import {
+        BookOpen,
+        Music,
+        Tv,
+        Sparkles,
+        Image as ImageIcon,
+        ChevronLeft,
+        ChevronRight,
+        Settings,
+        Share2,
+        Volume2,
+        X,
+      } from "lucide-react";
+
+      // --- DATA SOURCES ---
+      const SOURCES = {
+        te: {
+          url: "https://cdn.jsdelivr.net/gh/aruljohn/Bible-telugu@master",
+          type: "git",
+          code: "te-IN",
+        },
+        en: {
+          url: "https://cdn.jsdelivr.net/gh/aruljohn/Bible-kjv@master",
+          type: "git",
+          code: "en-US",
+        },
+      };
+      const BOOKS = [
+        "Genesis",
+        "Exodus",
+        "Leviticus",
+        "Numbers",
+        "Deuteronomy",
+        "Joshua",
+        "Judges",
+        "Ruth",
+        "1 Samuel",
+        "2 Samuel",
+        "1 Kings",
+        "2 Kings",
+        "1 Chronicles",
+        "2 Chronicles",
+        "Ezra",
+        "Nehemiah",
+        "Esther",
+        "Job",
+        "Psalms",
+        "Proverbs",
+        "Ecclesiastes",
+        "Song of Solomon",
+        "Isaiah",
+        "Jeremiah",
+        "Lamentations",
+        "Ezekiel",
+        "Daniel",
+        "Hosea",
+        "Joel",
+        "Amos",
+        "Obadiah",
+        "Jonah",
+        "Micah",
+        "Nahum",
+        "Habakkuk",
+        "Zephaniah",
+        "Haggai",
+        "Zechariah",
+        "Malachi",
+        "Matthew",
+        "Mark",
+        "Luke",
+        "John",
+        "Acts",
+        "Romans",
+        "1 Corinthians",
+        "2 Corinthians",
+        "Galatians",
+        "Ephesians",
+        "Philippians",
+        "Colossians",
+        "1 Thessalonians",
+        "2 Thessalonians",
+        "1 Timothy",
+        "2 Timothy",
+        "Titus",
+        "Philemon",
+        "Hebrews",
+        "James",
+        "1 Peter",
+        "2 Peter",
+        "1 John",
+        "2 John",
+        "3 John",
+        "Jude",
+        "Revelation",
+      ];
+
+      // --- MAIN APP COMPONENT ---
+      function App() {
+        const [tab, setTab] = useState("read");
+        const [lang, setLang] = useState("te");
+        const [bookIdx, setBookIdx] = useState(0);
+        const [chap, setChap] = useState(1);
+        const [verses, setVerses] = useState([]);
+        const [loading, setLoading] = useState(false);
+        const [fontSize, setFontSize] = useState(18);
+        const [theme, setTheme] = useState("light"); // light, dark, sepia
+        const [modal, setModal] = useState(null); // 'book', 'ai', 'image'
+        const [selectedVerse, setSelectedVerse] = useState(null);
+
+        // Load Bible Content
+        useEffect(() => {
+          async function load() {
+            setLoading(true);
+            try {
+              const src = SOURCES[lang];
+              const bookName = BOOKS[bookIdx];
+              const url = `${src.url}/${bookName}.json`;
+              const res = await fetch(url);
+              const data = await res.json();
+
+              // Handle different JSON structures
+              let chData = data.chapters
+                ? data.chapters[chap - 1]
+                : data[chap - 1];
+              let vsData = chData.verses || chData.verse;
+
+              setVerses(vsData.map((v) => ({ text: v.text || v.verse || v })));
+            } catch (e) {
+              console.error(e);
+            }
+            setLoading(false);
+          }
+          load();
+        }, [lang, bookIdx, chap]);
+
+        // Theme Effect
+        useEffect(() => {
+          document.body.className =
+            theme === "dark"
+              ? "bg-dark text-white"
+              : theme === "sepia"
+              ? "bg-[#f4ecd8] text-[#5b4636]"
+              : "bg-white text-slate-900";
+        }, [theme]);
+
+        // --- HANDLERS ---
+        const handleNext = () => setChap((c) => c + 1);
+        const handlePrev = () => setChap((c) => Math.max(1, c - 1));
+
+        const speak = (text) => {
+          window.speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance(text);
+          u.lang = SOURCES[lang].code;
+          window.speechSynthesis.speak(u);
+        };
+
+        // --- RENDERERS ---
+        return (
+          <div className="pb-24 pt-16 min-h-screen">
+            {/* HEADER */}
+            <header className="fixed top-0 inset-x-0 h-16 bg-white/80 dark:bg-dark/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 flex items-center justify-between px-4 z-40">
+              <button
+                onClick={() => setModal("book")}
+                className="flex items-center gap-2 bg-gray-100 dark:bg-surface px-4 py-2 rounded-full font-bold text-sm active:scale-95 transition"
+              >
+                {BOOKS[bookIdx]} {chap}{" "}
+                <span className="text-xs opacity-50">▼</span>
+              </button>
+
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setModal("ai")}
+                  className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 flex items-center justify-center"
+                >
+                  <Sparkles size={20} />
+                </button>
+                <button
+                  onClick={() =>
+                    setTheme((t) =>
+                      t === "light" ? "dark" : t === "dark" ? "sepia" : "light"
+                    )
+                  }
+                  className="w-10 h-10 rounded-full bg-gray-100 dark:bg-surface flex items-center justify-center"
+                >
+                  <Settings size={20} />
+                </button>
+              </div>
+            </header>
+
+            {/* MAIN CONTENT AREA */}
+            <main className="px-4 max-w-2xl mx-auto">
+              {tab === "read" && (
+                <>
+                  {loading ? (
+                    <div className="text-center py-20 opacity-50 animate-pulse">
+                      Loading Scripture...
+                    </div>
+                  ) : (
+                    <div className="space-y-6">
+                      {verses.map((v, i) => (
+                        <div
+                          key={i}
+                          onClick={() =>
+                            setSelectedVerse({
+                              text: v.text,
+                              ref: `${BOOKS[bookIdx]} ${chap}:${i + 1}`,
+                            })
+                          }
+                          className={`relative pl-2 py-1 rounded cursor-pointer transition ${
+                            selectedVerse?.text === v.text
+                              ? "bg-primary/10 ring-1 ring-primary"
+                              : "hover:bg-gray-100 dark:hover:bg-white/5"
+                          }`}
+                        >
+                          <span className="text-xs font-bold text-primary absolute left-0 top-1 opacity-50">
+                            {i + 1}
+                          </span>
+                          <p
+                            className={`pl-4 leading-loose font-serif`}
+                            style={{ fontSize: fontSize }}
+                          >
+                            {v.text}
+                          </p>
+                        </div>
+                      ))}
+
+                      <div className="flex gap-4 pt-8">
+                        <button
+                          onClick={handlePrev}
+                          className="flex-1 py-4 rounded-xl bg-gray-100 dark:bg-surface font-semibold"
+                        >
+                          Previous
+                        </button>
+                        <button
+                          onClick={handleNext}
+                          className="flex-1 py-4 rounded-xl bg-primary text-white font-semibold shadow-lg shadow-primary/30"
+                        >
+                          Next Chapter
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+
+              {tab === "songs" && (
+                <div className="space-y-4">
+                  <h2 className="text-2xl font-bold mb-6">Worship Songs</h2>
+                  {[
+                    "Yesayya Naa Pranama",
+                    "Neeve Hrudaya Saradhi",
+                    "Hosanna",
+                  ].map((s) => (
+                    <div
+                      key={s}
+                      className="p-4 rounded-xl bg-white dark:bg-surface border border-gray-100 dark:border-gray-800 shadow-sm flex items-center gap-4"
+                    >
+                      <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+                        <Music size={20} />
+                      </div>
+                      <div className="font-bold">{s}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </main>
+
+            {/* ACTION MENU (When verse selected) */}
+            {selectedVerse && (
+              <div className="fixed bottom-24 left-4 right-4 bg-white dark:bg-surface p-4 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 z-50 animate-bounce-in">
+                <div className="flex justify-between items-start mb-4">
+                  <div className="text-xs font-bold uppercase opacity-50">
+                    Selected Verse
+                  </div>
+                  <button onClick={() => setSelectedVerse(null)}>
+                    <X size={16} />
+                  </button>
+                </div>
+                <p className="line-clamp-2 text-sm opacity-80 mb-4 font-serif">
+                  "{selectedVerse.text}"
+                </p>
+                <div className="grid grid-cols-3 gap-2">
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(selectedVerse.text);
+                      setSelectedVerse(null);
+                    }}
+                    className="flex flex-col items-center gap-1 p-3 rounded-lg bg-gray-50 dark:bg-white/5 text-xs font-bold"
+                  >
+                    <Share2 size={18} /> Copy
+                  </button>
+                  <button
+                    onClick={() => speak(selectedVerse.text)}
+                    className="flex flex-col items-center gap-1 p-3 rounded-lg bg-gray-50 dark:bg-white/5 text-xs font-bold"
+                  >
+                    <Volume2 size={18} /> Listen
+                  </button>
+                  <button
+                    onClick={() => {
+                      setModal("image");
+                    }}
+                    className="flex flex-col items-center gap-1 p-3 rounded-lg bg-primary/10 text-primary text-xs font-bold"
+                  >
+                    <ImageIcon size={18} /> Image
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* TAB BAR */}
+            <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white/90 dark:bg-surface/90 backdrop-blur-xl border border-white/20 shadow-2xl rounded-full px-6 py-3 flex gap-8 z-50">
+              <TabButton
+                icon={BookOpen}
+                label="Read"
+                active={tab === "read"}
+                onClick={() => setTab("read")}
+              />
+              <TabButton
+                icon={Music}
+                label="Songs"
+                active={tab === "songs"}
+                onClick={() => setTab("songs")}
+              />
+              <TabButton
+                icon={Tv}
+                label="TV"
+                active={tab === "tv"}
+                onClick={() => setTab("tv")}
+              />
+            </nav>
+
+            {/* MODALS */}
+            {modal === "book" && (
+              <BookPicker
+                close={() => setModal(null)}
+                setBook={setBookIdx}
+                setChap={setChap}
+              />
+            )}
+            {modal === "image" && (
+              <ImageGenerator
+                verse={selectedVerse}
+                close={() => {
+                  setModal(null);
+                  setSelectedVerse(null);
+                }}
+              />
+            )}
+            {modal === "ai" && <AIAssistant close={() => setModal(null)} />}
+          </div>
+        );
+      }
+
+      // --- SUB COMPONENTS ---
+
+      function TabButton({ icon: Icon, label, active, onClick }) {
+        return (
+          <button
+            onClick={onClick}
+            className={`flex flex-col items-center gap-1 transition-all duration-300 ${
+              active
+                ? "text-primary scale-110"
+                : "text-gray-400 hover:text-gray-600"
+            }`}
+          >
+            <Icon weight={active ? "fill" : "regular"} size={24} />
+            <span className="text-[10px] font-bold">{label}</span>
+          </button>
+        );
+      }
+
+      function BookPicker({ close, setBook, setChap }) {
+        return (
+          <div className="fixed inset-0 bg-black/50 z-50 backdrop-blur-sm flex items-end sm:items-center justify-center p-4">
+            <div className="bg-white dark:bg-surface w-full max-w-md h-[80vh] rounded-3xl overflow-hidden flex flex-col">
+              <div className="p-4 border-b dark:border-gray-700 flex justify-between items-center">
+                <h3 className="font-bold">Select Book</h3>
+                <button
+                  onClick={close}
+                  className="p-2 bg-gray-100 dark:bg-white/10 rounded-full"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+              <div className="flex-1 overflow-y-auto p-4 grid grid-cols-2 gap-2">
+                {BOOKS.map((b, i) => (
+                  <button
+                    key={b}
+                    onClick={() => {
+                      setBook(i);
+                      setChap(1);
+                      close();
+                    }}
+                    className="p-3 text-left rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 font-medium text-sm"
+                  >
+                    {b}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      function ImageGenerator({ verse, close }) {
+        const canvasRef = useRef(null);
+        const [bg, setBg] = useState(0);
+
+        useEffect(() => {
+          const ctx = canvasRef.current.getContext("2d");
+          const w = 1080,
+            h = 1080;
+          canvasRef.current.width = w;
+          canvasRef.current.height = h;
+
+          // Background
+          const grads = [
+            ["#ff9a9e", "#fecfef"],
+            ["#a18cd1", "#fbc2eb"],
+            ["#000000", "#434343"],
+          ];
+          const grd = ctx.createLinearGradient(0, 0, w, h);
+          grd.addColorStop(0, grads[bg][0]);
+          grd.addColorStop(1, grads[bg][1]);
+          ctx.fillStyle = grd;
+          ctx.fillRect(0, 0, w, h);
+
+          // Text
+          ctx.fillStyle = bg === 2 ? "#fff" : "#333";
+          ctx.font = "bold 60px Crimson Pro";
+          ctx.textAlign = "center";
+          wrapText(ctx, verse.text, w / 2, h / 2 - 100, 900, 80);
+
+          ctx.font = "40px Inter";
+          ctx.fillText(verse.ref, w / 2, h - 200);
+        }, [bg, verse]);
+
+        function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+          const words = text.split(" ");
+          let line = "";
+          for (let n = 0; n < words.length; n++) {
+            const testLine = line + words[n] + " ";
+            const metrics = ctx.measureText(testLine);
+            if (metrics.width > maxWidth && n > 0) {
+              ctx.fillText(line, x, y);
+              line = words[n] + " ";
+              y += lineHeight;
+            } else {
+              line = testLine;
+            }
+          }
+          ctx.fillText(line, x, y);
+        }
+
+        const download = () => {
+          const link = document.createElement("a");
+          link.download = "verse-image.png";
+          link.href = canvasRef.current.toDataURL();
+          link.click();
+        };
+
+        return (
+          <div className="fixed inset-0 bg-black z-[60] flex flex-col">
+            <div className="flex justify-between items-center p-4 text-white">
+              <button onClick={close}>Cancel</button>
+              <button
+                onClick={download}
+                className="bg-white text-black px-4 py-1.5 rounded-full font-bold"
+              >
+                Save
+              </button>
+            </div>
+            <div className="flex-1 flex items-center justify-center p-4">
+              <canvas
+                ref={canvasRef}
+                className="w-full max-w-sm shadow-2xl rounded-xl aspect-square"
+              />
+            </div>
+            <div className="p-8 flex justify-center gap-4">
+              {[0, 1, 2].map((i) => (
+                <button
+                  key={i}
+                  onClick={() => setBg(i)}
+                  className={`w-10 h-10 rounded-full border-2 ${
+                    bg === i ? "border-white" : "border-transparent"
+                  }`}
+                  style={{ background: i === 2 ? "#333" : "pink" }}
+                />
+              ))}
+            </div>
+          </div>
+        );
+      }
+
+      function AIAssistant({ close }) {
+        return (
+          <div className="fixed inset-0 bg-white dark:bg-dark z-50 flex flex-col">
+            <div className="p-4 border-b dark:border-gray-800 flex justify-between items-center">
+              <div className="flex items-center gap-2 font-bold text-lg">
+                <Sparkles className="text-blue-500" /> AI Assistant
+              </div>
+              <button
+                onClick={close}
+                className="p-2 rounded-full bg-gray-100 dark:bg-surface"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <div className="flex-1 flex flex-col items-center justify-center text-center p-8 opacity-50">
+              <Sparkles size={48} className="mb-4 text-blue-500" />
+              <p>Ask about Bible verses, history, or prayer requests.</p>
+              <span className="text-xs mt-2">(API Key Required in Setup)</span>
+            </div>
+          </div>
+        );
+      }
+
+      // START APP
+      const root = createRoot(document.getElementById("root"));
+      root.render(<App />);
+    </script>
   </body>
 </html>
