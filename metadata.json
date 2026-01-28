@@ -1,7 +1,0 @@
-{
-    "name": "Prayer Beam",
-    "description": "A spiritual connection platform allowing users to generate, visualize, and send beams of prayer and positivity using advanced AI.",
-    "requestFramePermissions": [
-      "microphone"
-    ]
-  }
