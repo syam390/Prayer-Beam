@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Prayer Beam</title>
+
+    <link rel="icon" type="image/png" href="icon.png" />
+    <link rel="apple-touch-icon" href="icon.png" />
+
+    <meta name="theme-color" content="#d32f2f" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --primary: #d32f2f; /* Brand Red */
+        --primary-soft: #ffebee; /* Light Red */
+        --bg: #f8f9fc; /* Light Gray Blue Background */
+        --surface: #ffffff; /* Pure White */
+        --text-main: #1a1a1a;
+        --text-sub: #666666;
+        --border: #eef0f2;
+        --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        --nav-height: 70px;
+      }
+
+      * {
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Inter", sans-serif;
+        background: var(--bg);
+        color: var(--text-main);
+        padding-bottom: calc(var(--nav-height) + 20px);
+        padding-top: 60px; /* Space for fixed header */
+      }
+
+      /* --- MODERN HEADER (Glassmorphism) --- */
+      header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+        z-index: 1000;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      /* Small Logo in Header */
+      .header-logo {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 1px solid #eee;
+      }
+
+      .brand h1 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--text-main);
+        letter-spacing: -0.5px;
+      }
+
+      .lang-select {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-main);
+        outline: none;
+      }
+
+      /* --- VIEWS --- */
+      .view-section {
+        display: none;
+        padding: 20px;
+        animation: fadeIn 0.3s ease;
+      }
+      .view-section.active {
+        display: block;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(5px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* --- CARDS (Books) --- */
+      .grid-books {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 12px;
+      }
+
+      .book-card {
+        background: var(--surface);
+        padding: 18px 10px;
+        border-radius: 16px;
+        text-align: center;
+        font-weight: 600;
+        font-size: 13px;
+        color: var(--text-main);
+        box-shadow: var(--shadow);
+        border: 1px solid transparent;
+        transition: all 0.2s ease;
+        cursor: pointer;
+      }
+
+      .book-card:active {
+        transform: scale(0.96);
+      }
+      .book-card:hover {
+        border-color: var(--primary);
+        background: var(--primary-soft);
+        color: var(--primary);
+      }
+
+      /* --- READER & CHAPTERS --- */
+      #chapter-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 10px;
+        margin-top: 20px;
+      }
+      .chap-box {
+        background: var(--surface);
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        font-weight: 700;
+        color: var(--text-main);
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border);
+        cursor: pointer;
+      }
+      .chap-box.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
+
+      .verse {
+        margin-bottom: 18px;
+        line-height: 1.7;
+        font-size: 17px;
+        color: #2c3e50;
+      }
+      .v-num {
+        font-size: 11px;
+        font-weight: 800;
+        color: var(--primary);
+        vertical-align: super;
+        margin-right: 4px;
+        opacity: 0.8;
+      }
+
+      /* --- SONGS LIST --- */
+      .search-bar {
+        width: 100%;
+        padding: 16px;
+        border: none;
+        background: var(--surface);
+        box-shadow: var(--shadow);
+        border-radius: 16px;
+        font-size: 16px;
+        font-family: inherit;
+        margin-bottom: 20px;
+      }
+
+      .song-item {
+        background: var(--surface);
+        padding: 16px;
+        margin-bottom: 12px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        box-shadow: var(--shadow);
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+      .song-item:active {
+        transform: scale(0.98);
+      }
+      .song-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: var(--primary-soft);
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        margin-right: 15px;
+      }
+      .song-title {
+        font-weight: 600;
+        font-size: 15px;
+      }
+
+      /* --- LYRICS PAGE --- */
+      .lyrics-card {
+        background: var(--surface);
+        padding: 25px;
+        border-radius: 20px;
+        box-shadow: var(--shadow);
+        white-space: pre-wrap;
+        line-height: 2.2;
+        font-size: 16px;
+        color: #333;
+        border-top: 6px solid var(--primary);
+      }
+
+      /* --- VIDEO PLAYER --- */
+      .video-container {
+        background: var(--surface);
+        padding: 20px;
+        border-radius: 24px;
+        box-shadow: var(--shadow);
+        text-align: center;
+      }
+      .video-frame {
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        background: #000;
+      }
+      .cta-button {
+        display: inline-block;
+        background: #cc0000;
+        color: white;
+        text-decoration: none;
+        padding: 14px 28px;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 14px;
+        margin-top: 20px;
+        box-shadow: 0 4px 15px rgba(204, 0, 0, 0.3);
+        transition: transform 0.2s;
+      }
+      .cta-button:active {
+        transform: scale(0.95);
+      }
+
+      /* --- BOTTOM NAV (iOS Style) --- */
+      .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: var(--nav-height);
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        z-index: 1000;
+        padding-bottom: 10px; /* Safe area for iPhone home bar */
+      }
+
+      .nav-item {
+        border: none;
+        background: none;
+        color: #999;
+        font-size: 10px;
+        font-weight: 600;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        cursor: pointer;
+        width: 60px;
+        transition: color 0.2s;
+      }
+      .nav-icon {
+        font-size: 22px;
+        margin-bottom: 4px;
+        filter: grayscale(100%);
+        opacity: 0.5;
+        transition: all 0.2s;
+      }
+
+      .nav-item.active {
+        color: var(--primary);
+      }
+      .nav-item.active .nav-icon {
+        filter: grayscale(0%);
+        opacity: 1;
+        transform: translateY(-2px);
+      }
+
+      /* Utils */
+      .back-btn {
+        padding: 8px 16px;
+        border: none;
+        background: var(--bg);
+        color: var(--text-sub);
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 13px;
+        cursor: pointer;
+      }
+      .loader {
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid var(--primary);
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+        margin: 40px auto;
+        display: none;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="brand">
+        <img
+          src="icon.png"
+          class="header-logo"
+          onerror="this.style.display='none'"
+        />
+        <h1>Prayer Beam</h1>
+      </div>
+      <select
+        class="lang-select"
+        id="language-picker"
+        onchange="changeLanguage(this.value)"
+      >
+        <option value="te">తెలుగు</option>
+        <option value="hi">हिन्दी</option>
+        <option value="en">English</option>
+        <option value="ta">తమిళం</option>
+        <option value="ka">కన్నడ</option>
+        <option value="ml">మలయాళం</option>
+      </select>
+    </header>
+
+    <div id="view-bible" class="view-section active">
+      <div id="bible-content">
+        <div style="margin-bottom: 15px; padding-left: 5px">
+          <h2 style="margin: 0; font-size: 22px">Bible Books</h2>
+          <p style="margin: 0; color: var(--text-sub); font-size: 13px">
+            Select a book to start reading
+          </p>
+        </div>
+        <div id="book-list" class="grid-books"></div>
+      </div>
+
+      <div id="reader-view" style="display: none">
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            position: sticky;
+            top: 65px;
+            background: var(--bg);
+            padding: 10px 0;
+            z-index: 90;
+          "
+        >
+          <button onclick="resetBible()" class="back-btn">⬅ Back</button>
+          <h3 style="margin: 0; font-size: 18px" id="current-header">
+            Genesis
+          </h3>
+        </div>
+
+        <div id="loading-spinner" class="loader"></div>
+        <div id="chapter-grid"></div>
+        <div
+          id="verses-container"
+          style="
+            background: var(--surface);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+          "
+        ></div>
+      </div>
+    </div>
+
+    <div id="view-songs" class="view-section">
+      <h2 style="margin: 0 0 15px 5px; font-size: 22px">Song Lyrics</h2>
+      <input
+        type="text"
+        class="search-bar"
+        placeholder="🔍  Search songs (e.g. Yesayya)..."
+        onkeyup="filterSongs(this.value)"
+      />
+
+      <div id="song-list-container"></div>
+
+      <div id="lyrics-view" style="display: none">
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+          "
+        >
+          <button onclick="closeLyrics()" class="back-btn">⬅ Back</button>
+        </div>
+        <h2
+          id="song-title-display"
+          style="margin: 0 0 20px 0; color: var(--primary)"
+        ></h2>
+        <div id="lyrics-content" class="lyrics-card"></div>
+      </div>
+    </div>
+
+    <div id="view-video" class="view-section">
+      <h2 style="margin: 0 0 15px 5px; font-size: 22px">Prayer Beam TV</h2>
+
+      <div class="video-container">
+        <div
+          class="video-frame"
+          style="position: relative; padding-bottom: 56.25%; height: 0"
+        >
+          <iframe
+            style="
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+            "
+            src="https://www.youtube.com/embed/videoseries?list=PLpcEZmijMVLBVJlP4oPCukvrRo-5wB-0i"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          >
+          </iframe>
+        </div>
+
+        <h3 style="margin-top: 25px">Prayer Beam Channel</h3>
+        <p style="color: var(--text-sub); font-size: 14px; margin-bottom: 25px">
+          Watch our latest messages, worship songs and live prayers on the
+          official Prayer Beam channel.
+        </p>
+
+        <a
+          href="https://www.youtube.com/@Prayer_Beam"
+          target="_blank"
+          class="cta-button"
+        >
+          Open Channel in YouTube ↗
+        </a>
+      </div>
+    </div>
+
+    <nav class="bottom-nav">
+      <button class="nav-item active" onclick="switchTab('bible', this)">
+        <span class="nav-icon">📖</span>
+        <span>Bible</span>
+      </button>
+      <button class="nav-item" onclick="switchTab('songs', this)">
+        <span class="nav-icon">🎵</span>
+        <span>Songs</span>
+      </button>
+      <button class="nav-item" onclick="switchTab('video', this)">
+        <span class="nav-icon">▶️</span>
+        <span>TV</span>
+      </button>
+    </nav>
+
+    <script>
+      // --- DATA & CONFIG ---
+      let currentLang = "te";
+      const sources = {
+        te: {
+          type: "split",
+          url: "https://cdn.jsdelivr.net/gh/aruljohn/Bible-telugu@master",
+        },
+        en: {
+          type: "split",
+          url: "https://cdn.jsdelivr.net/gh/aruljohn/Bible-kjv@master",
+        },
+        hi: {
+          type: "single",
+          url: "https://raw.githubusercontent.com/godlytalias/Bible-Database/master/Hindi/Hindi_Bible.json",
+        },
+        ta: {
+          type: "single",
+          url: "https://raw.githubusercontent.com/godlytalias/Bible-Database/master/Tamil/Tamil_Bible.json",
+        },
+        ka: {
+          type: "single",
+          url: "https://raw.githubusercontent.com/godlytalias/Bible-Database/master/Kannada/Kannada_Bible.json",
+        },
+        ml: {
+          type: "single",
+          url: "https://raw.githubusercontent.com/godlytalias/Bible-Database/master/Malayalam/Malayalam_Bible.json",
+        },
+      };
+      const bookNames = [
+        ["Genesis", "ఆదికాండము"],
+        ["Exodus", "నిర్గమకాండము"],
+        ["Leviticus", "లేవీయకాండము"],
+        ["Numbers", "సంఖ్యాకాండము"],
+        ["Deuteronomy", "ద్వితీయోపదేశకాండము"],
+        ["Joshua", "యెహోషువ"],
+        ["Judges", "న్యాయాధిపతులు"],
+        ["Ruth", "రూతు"],
+        ["1Samuel", "1 సమూయేలు"],
+        ["2Samuel", "2 సమూయేలు"],
+        ["1Kings", "1 రాజులు"],
+        ["2Kings", "2 రాజులు"],
+        ["1Chronicles", "1 దినవృత్తాంతములు"],
+        ["2Chronicles", "2 దినవృత్తాంతములు"],
+        ["Ezra", "ఎజ్రా"],
+        ["Nehemiah", "నెహెమ్యా"],
+        ["Esther", "ఎస్తేరు"],
+        ["Job", "యోబు"],
+        ["Psalms", "కీర్తనలు"],
+        ["Proverbs", "సామెతలు"],
+        ["Ecclesiastes", "ప్రసంగి"],
+        ["SongofSolomon", "పరమగీతము"],
+        ["Isaiah", "యెషయా"],
+        ["Jeremiah", "యిర్మియా"],
+        ["Lamentations", "విలాపవాక్యములు"],
+        ["Ezekiel", "యెహెజ్కేలు"],
+        ["Daniel", "దానియేలు"],
+        ["Hosea", "హోషేయ"],
+        ["Joel", "యోవేలు"],
+        ["Amos", "ఆమోసు"],
+        ["Obadiah", "ఓబద్యా"],
+        ["Jonah", "యోనా"],
+        ["Micah", "మీకా"],
+        ["Nahum", "నహూము"],
+        ["Habakkuk", "హబక్కూకు"],
+        ["Zephaniah", "జెఫన్యా"],
+        ["Haggai", "హగ్గయి"],
+        ["Zechariah", "జెకర్యా"],
+        ["Malachi", "మలాకీ"],
+        ["Matthew", "మత్తయి"],
+        ["Mark", "మార్కు"],
+        ["Luke", "లూకా"],
+        ["John", "యోహాను"],
+        ["Acts", "అపొస్తలుల కార్యములు"],
+        ["Romans", "రోమీయులకు"],
+        ["1Corinthians", "1 కోరింథీయులకు"],
+        ["2Corinthians", "2 కోరింథీయులకు"],
+        ["Galatians", "గలతీయులకు"],
+        ["Ephesians", "ఎఫెసీయులకు"],
+        ["Philippians", "ఫిలిప్పీయులకు"],
+        ["Colossians", "కొలొస్సయులకు"],
+        ["1Thessalonians", "1 థెస్సలొనీకయులకు"],
+        ["2Thessalonians", "2 థెస్సలొనీకయులకు"],
+        ["1Timothy", "1 తిమోతికి"],
+        ["2Timothy", "2 తిమోతికి"],
+        ["Titus", "తీతుకు"],
+        ["Philemon", "ఫిలేమోనుకు"],
+        ["Hebrews", "హెబ్రీయులకు"],
+        ["James", "యాకోబు"],
+        ["1Peter", "1 పేతురు"],
+        ["2Peter", "2 పేతురు"],
+        ["1John", "1 యోహాను"],
+        ["2John", "2 యోహాను"],
+        ["3John", "3 యోహాను"],
+        ["Jude", "యూదా"],
+        ["Revelation", "ప్రకటన గ్రంథము"],
+      ];
+
+      let loadedData = null;
+
+      const songsDB = [
+        {
+          title: "Yesayya Naa Pranama (2025)",
+          lyrics:
+            "యేసయ్యా నా ప్రాణమా - ఘనమైన స్తుతిగానమా\nఅద్భుతమైన నీ ఆదరణే - ఆశ్రయమైన నీ సంరక్షణయే\nనను నీడగ వెంటాడెను - నే అలయక నడిపించెను\nనా జీవమా - నా స్తోత్రమా - నీకే ఆరాధన\nనా స్నేహము - సంక్షేమము - నీవే ఆరాధ్యుడా\n\n1. చిరకాలము నాతో ఉంటానని - క్షణమైనా వీడిపోలేదని\nనీలో ననుచేర్చుకున్నావని - తండ్రితో ఏకమై ఉన్నామని\nఆనందగానము నే పాడనా\nఏదైనా నాకున్న సంతోషము - నీతోనే కలిగున్న అనుబంధమే\nసృజనాత్మకమైన నీకృప చాలు - నే బ్రతికున్నది నీకోసమే",
+        },
+        {
+          title: "Neeve Hrudaya Saradhi",
+          lyrics:
+            "నీవే హృదయ సారధి - ప్రగతికి వారధి\nనీవే హృదయ సారధి - ప్రగతికి వారధి\nనీ స్నేహమే సౌభాగ్యము - సంక్షేమ సంతకం\nనా పాటకే సౌందర్యము - నీవే యేసయ్యా\n\n1. మదిలో చేదు జ్ఞాపకాల విలయ వేదిక కూల్చి\nచిగురాశల దిశగా నను పయనింపజేసినా\nనీ మాటలు స్థిరపరచెను విశ్వాస ప్రేమలో\nకలనైనా అనుకోని అనురాగ బంధమైతివే",
+        },
+        {
+          title: "Naa Hrudayam",
+          lyrics:
+            "నా హృదయం నిండెను నీ ప్రేమతో\nనా ప్రాణం పొంగెను నీ కృపతో\n\nయేసయ్యా.. నా యేసయ్యా..\nనిన్నే ఆరాధింతును",
+        },
+        {
+          title: "Melimami Bangaru",
+          lyrics:
+            "మేలిమి బంగారు నీవే యేసయ్యా\nమాణిక్యాల కంటెను గొప్పవాడవు\n\nవజ్రాల కన్నా.. వైడూర్యాల కన్నా..\nవిలువైన వాడవు నీవే",
+        },
+        {
+          title: "Hosanna",
+          lyrics:
+            "హోసన్నా.. హోసన్నా..\nఉన్నతమైన వాడవు నీవే\nసర్వోన్నతుడవు నీవే",
+        },
+      ];
+
+      // --- INIT ---
+      renderBookList();
+      renderSongs(songsDB);
+
+      // --- LOGIC ---
+      function changeLanguage(lang) {
+        currentLang = lang;
+        loadedData = null;
+        renderBookList();
+        resetBible();
+        document.getElementById("status-text").innerText = lang.toUpperCase();
+      }
+
+      function renderBookList() {
+        const list = document.getElementById("book-list");
+        list.innerHTML = "";
+        bookNames.forEach((book, idx) => {
+          const div = document.createElement("div");
+          div.className = "book-card";
+          div.innerText = currentLang === "te" ? book[1] : book[0];
+          div.onclick = () => openReader(idx, book[0], book[1]);
+          list.appendChild(div);
+        });
+      }
+
+      function openReader(index, engName, telName) {
+        document.getElementById("bible-content").style.display = "none";
+        document.getElementById("reader-view").style.display = "block";
+        document.getElementById("current-header").innerText =
+          currentLang === "te" ? telName : engName;
+        document.getElementById("loading-spinner").style.display = "block";
+        document.getElementById("chapter-grid").innerHTML = "";
+        document.getElementById("verses-container").innerHTML = "";
+
+        const source = sources[currentLang];
+        if (source.type === "split") {
+          fetch(`${source.url}/${engName}.json`)
+            .then((res) => res.json())
+            .then((data) => {
+              document.getElementById("loading-spinner").style.display = "none";
+              renderChapters(data.chapters || data);
+            });
+        } else {
+          if (loadedData) {
+            openBookFromSingleFile(index);
+          } else {
+            fetch(source.url)
+              .then((res) => res.json())
+              .then((data) => {
+                loadedData = data;
+                document.getElementById("loading-spinner").style.display =
+                  "none";
+                openBookFromSingleFile(index);
+              })
+              .catch((err) => alert("Error loading language"));
+          }
+        }
+      }
+
+      function openBookFromSingleFile(bookIndex) {
+        let books = loadedData.books || loadedData.Bible || loadedData;
+        if (!Array.isArray(books)) books = [books];
+        if (books[bookIndex]) renderChapters(books[bookIndex].chapters);
+      }
+
+      function renderChapters(chapters) {
+        const grid = document.getElementById("chapter-grid");
+        grid.innerHTML = "";
+        if (!Array.isArray(chapters)) chapters = [chapters];
+        chapters.forEach((chap, i) => {
+          const box = document.createElement("div");
+          box.className = "chap-box";
+          box.innerText = i + 1;
+          box.onclick = () => loadVerses(chap, i + 1);
+          grid.appendChild(box);
+        });
+        if (chapters.length > 0) loadVerses(chapters[0], 1);
+      }
+
+      function loadVerses(chapData, chapNum) {
+        document
+          .querySelectorAll(".chap-box")
+          .forEach((b) => b.classList.remove("active"));
+        const boxes = document.querySelectorAll(".chap-box");
+        if (boxes[chapNum - 1]) boxes[chapNum - 1].classList.add("active");
+
+        const container = document.getElementById("verses-container");
+        container.innerHTML = "";
+        let verses = chapData.verses || chapData.verse;
+        if (!Array.isArray(verses)) verses = [verses];
+
+        verses.forEach((v, i) => {
+          const p = document.createElement("div");
+          p.className = "verse";
+          let text = v.text || v.verse || v;
+          if (typeof v === "string") text = v;
+          let num = v.verse || i + 1;
+          p.innerHTML = `<span class="v-num">${num}</span> ${text}`;
+          container.appendChild(p);
+        });
+      }
+
+      function resetBible() {
+        document.getElementById("reader-view").style.display = "none";
+        document.getElementById("bible-content").style.display = "block";
+      }
+
+      // --- SONG LOGIC ---
+      function renderSongs(list) {
+        const container = document.getElementById("song-list-container");
+        container.innerHTML = "";
+        list.forEach((song) => {
+          const div = document.createElement("div");
+          div.className = "song-item";
+          div.innerHTML = `<div class="song-icon">♫</div> <div class="song-title">${song.title}</div>`;
+          div.onclick = () => openLyrics(song);
+          container.appendChild(div);
+        });
+      }
+
+      function filterSongs(query) {
+        const filtered = songsDB.filter((s) =>
+          s.title.toLowerCase().includes(query.toLowerCase())
+        );
+        renderSongs(filtered);
+      }
+
+      function openLyrics(song) {
+        document.getElementById("song-list-container").style.display = "none";
+        document.querySelector(".search-bar").style.display = "none";
+        document.getElementById("lyrics-view").style.display = "block";
+        document.getElementById("song-title-display").innerText = song.title;
+        document.getElementById("lyrics-content").innerText = song.lyrics;
+      }
+
+      function closeLyrics() {
+        document.getElementById("lyrics-view").style.display = "none";
+        document.getElementById("song-list-container").style.display = "block";
+        document.querySelector(".search-bar").style.display = "block";
+      }
+
+      function switchTab(tabName, btn) {
+        document
+          .querySelectorAll(".view-section")
+          .forEach((el) => el.classList.remove("active"));
+        document.getElementById("view-" + tabName).classList.add("active");
+        document
+          .querySelectorAll(".nav-item")
+          .forEach((el) => el.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById("language-picker").style.display =
+          tabName === "bible" ? "block" : "none";
+        window.scrollTo(0, 0);
+      }
+    </script>
+  </body>
+</html>
