@@ -14,889 +14,936 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
 
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Crimson+Pro:wght@400;600;700&display=swap"
       rel="stylesheet"
     />
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
     <style>
-      /* --- 1. PREMIUM DESIGN SYSTEM --- */
+      /* --- 1. THEME VARIABLES --- */
       :root {
-        --primary-grad: linear-gradient(135deg, #ff512f 0%, #dd2476 100%);
-        --primary-color: #dd2476;
-
-        /* Light Theme (Glass) */
-        --bg-body: #fdfdfd;
-        --bg-mesh: radial-gradient(
-            at 0% 0%,
-            hsla(253, 16%, 7%, 1) 0,
-            transparent 50%
-          ),
-          radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
-          radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%);
-        --glass-surface: rgba(255, 255, 255, 0.85);
-        --glass-border: rgba(255, 255, 255, 0.5);
-        --text-main: #1d1d1f;
-        --text-sec: #86868b;
-        --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.05);
-        --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.1);
-
-        --nav-height: 65px;
-        --safe-bottom: env(safe-area-inset-bottom, 20px);
+        --primary: #d32f2f;
+        --primary-bg: rgba(211, 47, 47, 0.08);
+        --bg-body: #ffffff;
+        --bg-glass: rgba(255, 255, 255, 0.92);
+        --surface: #ffffff;
+        --text-main: #1a1a1a;
+        --text-sec: #666666;
+        --border: #f0f0f0;
+        --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        --font-ui: "Inter", sans-serif;
+        --font-read: "Crimson Pro", serif;
+        --read-size: 20px;
       }
 
+      [data-theme="sepia"] {
+        --bg-body: #fdf6e3;
+        --bg-glass: rgba(253, 246, 227, 0.95);
+        --surface: #eee8d5;
+        --text-main: #5f4b32;
+        --border: #e0dacc;
+      }
       [data-theme="dark"] {
-        --bg-body: #000000;
-        --glass-surface: rgba(28, 28, 30, 0.85);
-        --glass-border: rgba(255, 255, 255, 0.1);
-        --text-main: #f5f5f7;
-        --text-sec: #86868b;
-        --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.3);
+        --bg-body: #0a0a0a;
+        --bg-glass: rgba(20, 20, 20, 0.95);
+        --surface: #1f1f1f;
+        --text-main: #ededed;
+        --text-sec: #a0a0a0;
+        --border: #333;
       }
 
       * {
         box-sizing: border-box;
         -webkit-tap-highlight-color: transparent;
         outline: none;
-        user-select: none;
       }
-
       body {
         margin: 0;
-        font-family: "Inter", sans-serif;
+        font-family: var(--font-ui);
         background: var(--bg-body);
         color: var(--text-main);
-        overflow: hidden;
-        height: 100vh;
-        width: 100vw;
-      }
-
-      /* Background Mesh Gradient (Subtle) */
-      .mesh-bg {
-        position: fixed;
-        top: -50%;
-        left: -50%;
-        right: -50%;
-        bottom: -50%;
-        background: radial-gradient(
-            circle at 50% 10%,
-            rgba(221, 36, 118, 0.08),
-            transparent 40%
+        padding-top: 65px;
+        padding-bottom: 100px;
+        /* Subtle Mesh Gradient Background */
+        background-image: radial-gradient(
+            circle at 10% 20%,
+            rgba(211, 47, 47, 0.03) 0%,
+            transparent 20%
           ),
           radial-gradient(
-            circle at 80% 80%,
-            rgba(255, 81, 47, 0.08),
-            transparent 40%
+            circle at 90% 80%,
+            rgba(50, 100, 255, 0.03) 0%,
+            transparent 20%
           );
-        z-index: -1;
-        pointer-events: none;
-        animation: pulse 10s ease-in-out infinite;
-      }
-      @keyframes pulse {
-        0% {
-          transform: scale(1);
-        }
-        50% {
-          transform: scale(1.1);
-        }
-        100% {
-          transform: scale(1);
-        }
+        background-attachment: fixed;
+        transition: background 0.3s;
       }
 
-      /* --- 2. APP SHELL --- */
-      #app {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-      }
-
-      .screen {
-        flex: 1;
-        overflow-y: auto;
-        overflow-x: hidden;
-        padding-bottom: calc(var(--nav-height) + var(--safe-bottom) + 90px);
-        display: none;
-        opacity: 0;
-        transform: scale(0.98);
-        transition: 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
-      }
-      .screen.active {
-        display: block;
-        opacity: 1;
-        transform: scale(1);
-      }
-
-      /* Glass Header */
-      .glass-header {
-        position: sticky;
+      /* --- 2. MODERN HEADER --- */
+      header {
+        position: fixed;
         top: 0;
-        z-index: 50;
-        padding: 15px 20px;
-        background: var(--glass-surface);
+        left: 0;
+        right: 0;
+        height: 60px;
+        background: var(--bg-glass);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
-        border-bottom: 1px solid var(--glass-border);
+        border-bottom: 1px solid var(--border);
         display: flex;
         align-items: center;
         justify-content: space-between;
-      }
-      .app-title {
-        font-size: 22px;
-        font-weight: 800;
-        background: var(--primary-grad);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        padding: 0 16px;
+        z-index: 1000;
       }
 
-      /* --- 3. COMPONENTS --- */
+      .book-pill {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        padding: 8px 16px;
+        border-radius: 30px;
+        font-weight: 700;
+        font-size: 15px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+        transition: transform 0.1s;
+      }
+      .book-pill:active {
+        transform: scale(0.96);
+      }
 
-      /* Buttons */
-      .btn-icon {
+      .header-actions {
+        display: flex;
+        gap: 8px;
+      }
+      .icon-btn {
         width: 40px;
         height: 40px;
         border-radius: 50%;
         border: none;
         background: transparent;
         color: var(--text-main);
-        font-size: 20px;
-        cursor: pointer;
-        transition: 0.2s;
-      }
-      .btn-icon:active {
-        transform: scale(0.9);
-        background: rgba(0, 0, 0, 0.05);
-      }
-
-      .btn-pill {
-        background: var(--glass-surface);
-        border: 1px solid var(--glass-border);
-        padding: 10px 20px;
-        border-radius: 30px;
-        font-weight: 600;
-        font-size: 14px;
-        box-shadow: var(--shadow-sm);
+        font-size: 22px;
         cursor: pointer;
         display: flex;
         align-items: center;
-        gap: 8px;
-        color: var(--text-main);
+        justify-content: center;
+        transition: background 0.2s;
       }
-      .btn-pill:active {
-        transform: scale(0.96);
+      .icon-btn:active {
+        background: var(--border);
       }
-
-      /* Cards */
-      .glass-card {
-        background: var(--glass-surface);
-        border: 1px solid var(--glass-border);
-        border-radius: 20px;
-        padding: 20px;
-        margin-bottom: 15px;
-        box-shadow: var(--shadow-sm);
+      .icon-btn.active {
+        color: var(--primary);
+        background: var(--primary-bg);
       }
 
-      /* --- 4. NAVIGATION BAR --- */
-      .tab-bar {
-        position: fixed;
-        bottom: 20px;
-        left: 20px;
-        right: 20px;
-        height: 70px;
-        background: var(--glass-surface);
-        backdrop-filter: blur(25px);
-        -webkit-backdrop-filter: blur(25px);
-        border: 1px solid var(--glass-border);
-        border-radius: 35px;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        box-shadow: var(--shadow-lg);
-        z-index: 1000;
-      }
-      .tab-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        color: var(--text-sec);
-        background: none;
-        border: none;
-        font-size: 10px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: 0.3s;
-        width: 60px;
-      }
-      .tab-icon {
-        font-size: 24px;
-        margin-bottom: 2px;
-        transition: 0.3s;
-      }
-      .tab-item.active {
-        color: var(--primary-color);
-      }
-      .tab-item.active .tab-icon {
-        transform: translateY(-3px);
-      }
-
-      /* --- 5. BIBLE READER --- */
-      #bible-text-area {
+      /* --- 3. READER --- */
+      #verses-container {
         padding: 20px;
         max-width: 700px;
         margin: 0 auto;
       }
-      .verse {
-        font-family: "Crimson Pro", serif;
-        font-size: 20px;
-        line-height: 1.7;
-        margin-bottom: 15px;
+
+      .verse-card {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 18px;
+        padding: 4px;
+        border-radius: 8px;
+        transition: background 0.2s;
       }
-      .v-num {
-        font-family: "Inter";
-        font-size: 11px;
-        font-weight: 800;
-        color: var(--primary-color);
-        vertical-align: super;
-        margin-right: 4px;
+      .verse-card.highlight {
+        background: rgba(255, 235, 59, 0.2);
+      }
+
+      /* Verse Number */
+      .v-num-box {
+        min-width: 25px;
+        text-align: right;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--primary);
+        padding-top: 6px;
+        font-family: var(--font-ui);
         opacity: 0.7;
       }
 
-      .nav-controls {
-        display: flex;
-        gap: 15px;
-        margin-top: 40px;
-        padding-bottom: 20px;
-      }
-      .nav-btn-big {
+      /* Verse Text */
+      .v-content {
         flex: 1;
-        padding: 15px;
-        border-radius: 15px;
-        border: none;
-        font-weight: 700;
-        background: var(--glass-surface);
+      }
+      .v-text {
+        font-family: var(--font-read);
+        font-size: var(--read-size);
+        line-height: 1.7;
         color: var(--text-main);
-        box-shadow: var(--shadow-sm);
-        cursor: pointer;
-        font-size: 16px;
-        border: 1px solid var(--glass-border);
       }
-      .nav-btn-big:active {
-        transform: scale(0.98);
+      /* English Parallel Text */
+      .v-parallel {
+        margin-top: 8px;
+        font-family: var(--font-read);
+        font-size: calc(var(--read-size) * 0.85);
+        color: var(--text-sec);
+        font-style: italic;
+        display: none;
+        padding-top: 8px;
+        border-top: 1px dashed var(--border);
       }
-      .nav-btn-big.primary {
-        background: var(--primary-grad);
-        color: white;
-        border: none;
+      .v-parallel.show {
+        display: block;
       }
 
-      /* --- 6. MINI PLAYER --- */
-      #mini-player {
-        position: fixed;
-        bottom: 100px;
-        left: 20px;
-        right: 20px;
-        background: rgba(20, 20, 20, 0.85);
-        backdrop-filter: blur(20px);
-        color: white;
-        border-radius: 18px;
-        padding: 12px;
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        transform: translateY(150px);
-        transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        z-index: 900;
-      }
-      #mini-player.show {
-        transform: translateY(0);
-      }
-      .mp-img {
-        width: 44px;
-        height: 44px;
-        background: var(--primary-grad);
-        border-radius: 10px;
+      /* Arrow Button */
+      .v-action {
+        width: 30px;
+        height: 30px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 20px;
+        color: var(--text-sec);
+        opacity: 0.4;
+        cursor: pointer;
+        margin-top: 2px;
+      }
+      .v-action:active {
+        opacity: 1;
+        color: var(--primary);
+        background: var(--border);
+        border-radius: 50%;
       }
 
-      /* --- 7. BOTTOM SHEETS --- */
-      .sheet-backdrop {
+      /* --- 4. BOTTOM ACTION SHEET (For Arrow Click) --- */
+      .action-sheet {
         position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.3);
-        z-index: 2000;
-        opacity: 0;
-        pointer-events: none;
-        transition: 0.3s;
-      }
-      .sheet-backdrop.active {
-        opacity: 1;
-        pointer-events: auto;
-      }
-      .sheet {
-        position: absolute;
         bottom: 0;
         left: 0;
         right: 0;
         background: var(--bg-body);
-        border-radius: 30px 30px 0 0;
-        padding: 25px;
-        transform: translateY(100%);
-        transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-        max-height: 70vh;
-        display: flex;
-        flex-direction: column;
+        border-radius: 20px 20px 0 0;
+        padding: 24px;
+        z-index: 2500;
+        transform: translateY(110%);
+        transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.15);
+        border-top: 1px solid var(--border);
       }
-      .sheet-backdrop.active .sheet {
+      .action-sheet.active {
         transform: translateY(0);
       }
-      .sheet-bar {
-        width: 40px;
-        height: 5px;
-        background: var(--text-sec);
-        opacity: 0.2;
-        border-radius: 10px;
-        margin: 0 auto 20px auto;
+      .sheet-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 2400;
+        display: none;
+        backdrop-filter: blur(2px);
+      }
+      .sheet-overlay.active {
+        display: block;
       }
 
-      .grid-books {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-        overflow-y: auto;
-      }
-      .book-item {
-        padding: 12px;
-        background: var(--glass-surface);
-        border: 1px solid var(--glass-border);
-        border-radius: 12px;
-        text-align: center;
+      .sheet-opt {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 16px;
+        font-size: 16px;
         font-weight: 600;
-        font-size: 13px;
         cursor: pointer;
+        border-radius: 12px;
+      }
+      .sheet-opt:active {
+        background: var(--surface);
+      }
+      .sheet-icon {
+        font-size: 22px;
+        color: var(--primary);
+      }
+
+      /* --- 5. UI COMPONENTS --- */
+      .nav-btn-lg {
+        width: 100%;
+        padding: 15px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        font-weight: 600;
+        color: var(--text-main);
+        font-size: 15px;
+        margin-top: 20px;
+        cursor: pointer;
+        text-align: center;
+      }
+      .nav-btn-lg:active {
+        background: var(--border);
+      }
+
+      /* Toast */
+      #toast {
+        position: fixed;
+        top: 90px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #222;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 30px;
+        font-size: 13px;
+        font-weight: 600;
+        opacity: 0;
+        pointer-events: none;
+        transition: 0.3s;
+        z-index: 3000;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      #toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(5px);
+      }
+
+      /* Dock */
+      .dock {
+        position: fixed;
+        bottom: 25px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--bg-glass);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 8px;
+        border-radius: 32px;
+        display: flex;
+        gap: 8px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        z-index: 1500;
+      }
+      .dock-item {
+        width: 60px;
+        height: 50px;
+        border-radius: 24px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-sec);
+        cursor: pointer;
+      }
+      .dock-item.active {
+        background: var(--primary);
+        color: white;
+      }
+      .dock-label {
+        font-size: 9px;
+        font-weight: 700;
+        margin-top: 2px;
+      }
+
+      /* Modals & Views */
+      .view-section {
+        display: none;
+      }
+      .view-section.active {
+        display: block;
+        animation: fadeUp 0.3s;
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .full-modal {
+        position: fixed;
+        inset: 0;
+        background: var(--bg-body);
+        z-index: 3000;
+        overflow-y: auto;
+        padding: 20px;
+        display: none;
+      }
+      .full-modal.active {
+        display: block;
+      }
+      .grid-chip {
+        display: inline-block;
+        padding: 10px 18px;
+        margin: 4px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 13px;
       }
     </style>
   </head>
   <body data-theme="light">
-    <div class="mesh-bg"></div>
+    <div id="toast">
+      <i class="ph ph-check-circle"></i> <span>Message</span>
+    </div>
+    <div class="sheet-overlay" onclick="closeSheet()"></div>
 
-    <div id="app">
-      <div id="screen-home" class="screen active">
-        <div class="glass-header">
-          <div class="app-title">Prayer Beam</div>
-          <button class="btn-icon">🔔</button>
-        </div>
-
-        <div style="padding: 20px">
-          <div
-            class="glass-card"
-            style="
-              background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
-              border: none;
-              color: #333;
-            "
-          >
-            <div
-              style="
-                font-size: 12px;
-                font-weight: 700;
-                opacity: 0.6;
-                margin-bottom: 10px;
-                text-transform: uppercase;
-                letter-spacing: 1px;
-              "
-            >
-              Verse of the Day
-            </div>
-            <div
-              style="
-                font-family: 'Crimson Pro';
-                font-size: 24px;
-                font-weight: 600;
-                line-height: 1.4;
-                margin-bottom: 15px;
-              "
-            >
-              "Your word is a lamp for my feet, a light on my path."
-            </div>
-            <div style="font-weight: 700; font-size: 14px">Psalm 119:105</div>
-          </div>
-
-          <h3 style="margin: 25px 0 15px 0">Quick Access</h3>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px">
-            <div
-              class="glass-card"
-              onclick="Nav.to('songs')"
-              style="text-align: center; cursor: pointer"
-            >
-              <div style="font-size: 32px; margin-bottom: 10px">🎵</div>
-              <div style="font-weight: 700">Lyrics</div>
-            </div>
-            <div
-              class="glass-card"
-              onclick="Nav.to('tv')"
-              style="text-align: center; cursor: pointer"
-            >
-              <div style="font-size: 32px; margin-bottom: 10px">📺</div>
-              <div style="font-weight: 700">TV</div>
-            </div>
-          </div>
-        </div>
+    <header>
+      <div class="book-pill" onclick="openBookModal()">
+        <span id="lbl-book">Genesis</span>
+        <span id="lbl-chap" style="color: var(--primary)">1</span>
+        <i class="ph-bold ph-caret-down"></i>
       </div>
+      <div class="header-actions">
+        <button id="btn-parallel" class="icon-btn" onclick="toggleParallel()">
+          <i class="ph ph-arrows-left-right"></i>
+        </button>
+        <button id="btn-audio" class="icon-btn" onclick="toggleAudio()">
+          <i class="ph-bold ph-speaker-high"></i>
+        </button>
+        <button class="icon-btn" onclick="toggleSettings()">
+          <i class="ph-bold ph-text-aa"></i>
+        </button>
+      </div>
+    </header>
 
-      <div id="screen-bible" class="screen">
-        <div class="glass-header">
-          <button class="btn-pill" onclick="Sheet.open('books')">
-            <span id="label-book">Genesis</span>
-            <span id="label-chap" style="color: var(--primary-color)">1</span>
-            <span>▼</span>
+    <main>
+      <div id="view-read" class="view-section active">
+        <div id="verses-container">Loading...</div>
+        <div style="padding: 20px; display: flex; gap: 10px">
+          <button class="nav-btn-lg" onclick="navChap(-1)">Previous</button>
+          <button
+            class="nav-btn-lg"
+            style="background: var(--text-main); color: var(--bg-body)"
+            onclick="navChap(1)"
+          >
+            Next Chapter
           </button>
-          <div style="display: flex; gap: 5px">
-            <button class="btn-icon" onclick="AudioPlayer.playChapter()">
-              🔊
-            </button>
-            <button class="btn-icon" onclick="Sheet.open('settings')">
-              Aa
-            </button>
-          </div>
         </div>
+      </div>
 
-        <div id="bible-text-area">
+      <div id="view-songs" class="view-section" style="padding: 20px">
+        <h2 style="margin: 0 0 20px 0">Worship Songs</h2>
+        <div id="song-list"></div>
+      </div>
+
+      <div id="view-tv" class="view-section" style="padding: 20px">
+        <div
+          style="
+            background: var(--surface);
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+          "
+        >
+          <h2>Prayer Beam TV</h2>
           <div
-            style="text-align: center; margin-top: 50px; color: var(--text-sec)"
-          >
-            Loading Scripture...
-          </div>
-        </div>
-
-        <div style="padding: 0 20px">
-          <div class="nav-controls">
-            <button class="nav-btn-big" onclick="Bible.nav(-1)">Prev</button>
-            <button class="nav-btn-big primary" onclick="Bible.nav(1)">
-              Next Chapter
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div id="screen-songs" class="screen">
-        <div class="glass-header">
-          <div class="app-title">Worship Songs</div>
-        </div>
-        <div style="padding: 20px">
-          <input
-            type="text"
-            placeholder="Search lyrics..."
-            onkeyup="Songs.render(this.value)"
             style="
-              width: 100%;
-              padding: 15px;
-              border-radius: 15px;
-              border: 1px solid var(--glass-border);
-              background: var(--glass-surface);
-              font-size: 16px;
-              margin-bottom: 20px;
+              position: relative;
+              padding-bottom: 56.25%;
+              height: 0;
+              overflow: hidden;
+              border-radius: 12px;
+              background: #000;
             "
-          />
-          <div id="songs-list"></div>
-        </div>
-      </div>
-
-      <div id="screen-tv" class="screen">
-        <div class="glass-header">
-          <div class="app-title">Prayer Beam TV</div>
-        </div>
-        <div style="padding: 20px">
-          <div class="glass-card" style="padding: 0; overflow: hidden">
-            <div
+          >
+            <iframe
               style="
-                position: relative;
-                padding-bottom: 56.25%;
-                height: 0;
-                background: #000;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
               "
-            >
-              <iframe
-                style="
-                  position: absolute;
-                  top: 0;
-                  left: 0;
-                  width: 100%;
-                  height: 100%;
-                "
-                src="https://www.youtube.com/embed/videoseries?list=PLpcEZmijMVLBVJlP4oPCukvrRo-5wB-0i"
-                frameborder="0"
-                allowfullscreen
-              ></iframe>
-            </div>
-          </div>
-          <div class="glass-card" style="text-align: center">
-            <h3>Subscribe Channel</h3>
-            <p style="color: var(--text-sec); margin-bottom: 20px">
-              Watch latest sermons and live events.
-            </p>
-            <a
-              href="https://www.youtube.com/@Prayer_Beam"
-              target="_blank"
-              class="nav-btn-big primary"
-              style="display: inline-block; text-decoration: none"
-              >Open YouTube</a
-            >
+              src="https://www.youtube.com/embed/videoseries?list=PLpcEZmijMVLBVJlP4oPCukvrRo-5wB-0i"
+              frameborder="0"
+              allowfullscreen
+            ></iframe>
           </div>
         </div>
       </div>
-    </div>
+    </main>
 
-    <div id="mini-player">
-      <div class="mp-img">🔊</div>
-      <div style="flex: 1">
-        <div style="font-size: 14px; font-weight: 700">Audio Bible</div>
-        <div style="font-size: 11px; opacity: 0.7" id="mp-text">Genesis 1</div>
-      </div>
-      <button
-        class="btn-icon"
-        style="color: white"
-        onclick="AudioPlayer.stop()"
+    <div id="verse-sheet" class="action-sheet">
+      <div
+        style="
+          font-size: 13px;
+          font-weight: 700;
+          color: #888;
+          margin-bottom: 10px;
+          text-transform: uppercase;
+        "
       >
-        ⏹
-      </button>
+        Verse Actions
+      </div>
+      <div class="sheet-opt" onclick="actionCopy()">
+        <i class="ph-bold ph-copy sheet-icon"></i> Copy Verse
+      </div>
+      <div class="sheet-opt" onclick="actionHighlight()">
+        <i class="ph-bold ph-highlighter sheet-icon"></i> Highlight
+      </div>
+      <div class="sheet-opt" onclick="actionCompare()">
+        <i class="ph-bold ph-translate sheet-icon"></i> Compare (English)
+      </div>
+      <div class="sheet-opt" style="color: #d32f2f" onclick="closeSheet()">
+        <i class="ph-bold ph-x sheet-icon" style="color: #d32f2f"></i> Cancel
+      </div>
     </div>
 
-    <nav class="tab-bar">
-      <button class="tab-item active" onclick="Nav.to('home')">
-        <span class="tab-icon">🏠</span> Home
-      </button>
-      <button class="tab-item" onclick="Nav.to('bible')">
-        <span class="tab-icon">📖</span> Bible
-      </button>
-      <button class="tab-item" onclick="Nav.to('songs')">
-        <span class="tab-icon">🎵</span> Songs
-      </button>
-      <button class="tab-item" onclick="Nav.to('tv')">
-        <span class="tab-icon">▶️</span> TV
-      </button>
+    <div id="settings-drawer" class="action-sheet">
+      <div
+        style="
+          width: 40px;
+          height: 5px;
+          background: var(--border);
+          border-radius: 10px;
+          margin: 0 auto 20px auto;
+        "
+        onclick="toggleSettings()"
+      ></div>
+      <div style="display: flex; gap: 10px; margin-bottom: 20px">
+        <button
+          class="nav-btn-lg"
+          onclick="setTheme('light')"
+          style="margin: 0"
+        >
+          Day
+        </button>
+        <button
+          class="nav-btn-lg"
+          onclick="setTheme('sepia')"
+          style="margin: 0; background: #f8f4e9; color: #5f4b32"
+        >
+          Sepia
+        </button>
+        <button
+          class="nav-btn-lg"
+          onclick="setTheme('dark')"
+          style="margin: 0; background: #222; color: #fff"
+        >
+          Night
+        </button>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px">
+        <div class="grid-chip" onclick="setLang('te')">Telugu</div>
+        <div class="grid-chip" onclick="setLang('en')">English</div>
+        <div class="grid-chip" onclick="setLang('hi')">Hindi</div>
+        <div class="grid-chip" onclick="setLang('ta')">Tamil</div>
+      </div>
+    </div>
+
+    <nav class="dock">
+      <div class="dock-item active" onclick="switchView('read', this)">
+        <i class="ph-fill ph-book-open-text" style="font-size: 24px"></i
+        ><span class="dock-label">Read</span>
+      </div>
+      <div class="dock-item" onclick="switchView('songs', this)">
+        <i class="ph-fill ph-music-note" style="font-size: 24px"></i
+        ><span class="dock-label">Songs</span>
+      </div>
+      <div class="dock-item" onclick="switchView('tv', this)">
+        <i class="ph-fill ph-television-simple" style="font-size: 24px"></i
+        ><span class="dock-label">TV</span>
+      </div>
     </nav>
 
-    <div id="sheet-overlay" class="sheet-backdrop" onclick="Sheet.close()">
-      <div class="sheet" onclick="event.stopPropagation()">
-        <div class="sheet-bar"></div>
-        <div id="sheet-content"></div>
-      </div>
+    <div id="modal-book" class="full-modal">
+      <button
+        class="icon-btn"
+        onclick="closeModals()"
+        style="position: fixed; top: 20px; right: 20px"
+      >
+        ✕
+      </button>
+      <h2>Select Book</h2>
+      <div id="grid-book"></div>
     </div>
 
     <script>
-      // --- 1. DATA (FULL 66 BOOKS) ---
-      const BOOKS_EN = [
-        "Genesis",
-        "Exodus",
-        "Leviticus",
-        "Numbers",
-        "Deuteronomy",
-        "Joshua",
-        "Judges",
-        "Ruth",
-        "1 Samuel",
-        "2 Samuel",
-        "1 Kings",
-        "2 Kings",
-        "1 Chronicles",
-        "2 Chronicles",
-        "Ezra",
-        "Nehemiah",
-        "Esther",
-        "Job",
-        "Psalms",
-        "Proverbs",
-        "Ecclesiastes",
-        "Song of Solomon",
-        "Isaiah",
-        "Jeremiah",
-        "Lamentations",
-        "Ezekiel",
-        "Daniel",
-        "Hosea",
-        "Joel",
-        "Amos",
-        "Obadiah",
-        "Jonah",
-        "Micah",
-        "Nahum",
-        "Habakkuk",
-        "Zephaniah",
-        "Haggai",
-        "Zechariah",
-        "Malachi",
-        "Matthew",
-        "Mark",
-        "Luke",
-        "John",
-        "Acts",
-        "Romans",
-        "1 Corinthians",
-        "2 Corinthians",
-        "Galatians",
-        "Ephesians",
-        "Philippians",
-        "Colossians",
-        "1 Thessalonians",
-        "2 Thessalonians",
-        "1 Timothy",
-        "2 Timothy",
-        "Titus",
-        "Philemon",
-        "Hebrews",
-        "James",
-        "1 Peter",
-        "2 Peter",
-        "1 John",
-        "2 John",
-        "3 John",
-        "Jude",
-        "Revelation",
-      ];
-      const BOOKS_TE = [
-        "ఆదికాండము",
-        "నిర్గమకాండము",
-        "లేవీయకాండము",
-        "సంఖ్యాకాండము",
-        "ద్వితీయోపదేశకాండము",
-        "యెహోషువ",
-        "న్యాయాధిపతులు",
-        "రూతు",
-        "1 సమూయేలు",
-        "2 సమూయేలు",
-        "1 రాజులు",
-        "2 రాజులు",
-        "1 దినవృత్తాంతములు",
-        "2 దినవృత్తాంతములు",
-        "ఎజ్రా",
-        "నెహెమ్యా",
-        "ఎస్తేరు",
-        "యోబు",
-        "కీర్తనలు",
-        "సామెతలు",
-        "ప్రసంగి",
-        "పరమగీతము",
-        "యెషయా",
-        "యిర్మియా",
-        "విలాపవాక్యములు",
-        "యెహెజ్కేలు",
-        "దానియేలు",
-        "హోషేయ",
-        "యోవేలు",
-        "ఆమోసు",
-        "ఓబద్యా",
-        "యోనా",
-        "మీకా",
-        "నహూము",
-        "హబక్కూకు",
-        "జెఫన్యా",
-        "హగ్గయి",
-        "జెకర్యా",
-        "మలాకీ",
-        "మత్తయి",
-        "మార్కు",
-        "లూకా",
-        "యోహాను",
-        "అపొస్తలుల కార్యములు",
-        "రోమీయులకు",
-        "1 కోరింథీయులకు",
-        "2 కోరింథీయులకు",
-        "గలతీయులకు",
-        "ఎఫెసీయులకు",
-        "ఫిలిప్పీయులకు",
-        "కొలొస్సయులకు",
-        "1 థెస్సలొనీకయులకు",
-        "2 థెస్సలొనీకయులకు",
-        "1 తిమోతికి",
-        "2 తిమోతికి",
-        "తీతుకు",
-        "ఫిలేమోనుకు",
-        "హెబ్రీయులకు",
-        "యాకోబు",
-        "1 పేతురు",
-        "2 పేతురు",
-        "1 యోహాను",
-        "2 యోహాను",
-        "3 యోహాను",
-        "యూదా",
-        "ప్రకటన గ్రంథము",
-      ];
-
-      const SONGS_DB = [
-        {
-          t: "Yesayya Naa Pranama",
-          l: "యేసయ్యా నా ప్రాణమా - ఘనమైన స్తుతిగానమా...",
-        },
-        { t: "Neeve Hrudaya Saradhi", l: "నీవే హృదయ సారధి..." },
-        { t: "Hosanna", l: "హోసన్నా.. హోసన్నా.." },
-      ];
-
-      // --- 2. STATE ---
-      let state = JSON.parse(localStorage.getItem("pb_v9")) || {
+      // --- STATE & DATA ---
+      let state = JSON.parse(localStorage.getItem("pb_v7")) || {
         lang: "te",
         bIdx: 0,
         cNum: 1,
         theme: "light",
+        parallel: false,
       };
+      let selectedVerse = null; // Holds verse data for actions
+      let cachedEng = null; // Stores English chapter for comparison
+
+      const sources = {
+        te: {
+          url: "https://cdn.jsdelivr.net/gh/aruljohn/Bible-telugu@master",
+          type: "git",
+          code: "te-IN",
+        },
+        en: {
+          url: "https://cdn.jsdelivr.net/gh/aruljohn/Bible-kjv@master",
+          type: "git",
+          code: "en-US",
+        },
+        hi: {
+          url: "https://bolls.life/get-text/HINCL",
+          type: "api",
+          code: "hi-IN",
+        },
+        ta: {
+          url: "https://bolls.life/get-text/TAMOV",
+          type: "api",
+          code: "ta-IN",
+        },
+      };
+      const bookNames = [
+        ["Genesis", "ఆదికాండము"],
+        ["Exodus", "నిర్గమకాండము"],
+        ["Leviticus", "లేవీయకాండము"],
+        ["Numbers", "సంఖ్యాకాండము"],
+        ["Deuteronomy", "ద్వితీయోపదేశకాండము"],
+        ["Joshua", "యెహోషువ"],
+        ["Judges", "న్యాయాధిపతులు"],
+        ["Ruth", "రూతు"],
+        ["1Samuel", "1 సమూయేలు"],
+        ["2Samuel", "2 సమూయేలు"],
+        ["1Kings", "1 రాజులు"],
+        ["2Kings", "2 రాజులు"],
+        ["1Chronicles", "1 దినవృత్తాంతములు"],
+        ["2Chronicles", "2 దినవృత్తాంతములు"],
+        ["Ezra", "ఎజ్రా"],
+        ["Nehemiah", "నెహెమ్యా"],
+        ["Esther", "ఎస్తేరు"],
+        ["Job", "యోబు"],
+        ["Psalms", "కీర్తనలు"],
+        ["Proverbs", "సామెతలు"],
+        ["Ecclesiastes", "ప్రసంగి"],
+        ["SongofSolomon", "పరమగీతము"],
+        ["Isaiah", "యెషయా"],
+        ["Jeremiah", "యిర్మియా"],
+        ["Lamentations", "విలాపవాక్యములు"],
+        ["Ezekiel", "యెహెజ్కేలు"],
+        ["Daniel", "దానియేలు"],
+        ["Hosea", "హోషేయ"],
+        ["Joel", "యోవేలు"],
+        ["Amos", "ఆమోసు"],
+        ["Obadiah", "ఓబద్యా"],
+        ["Jonah", "యోనా"],
+        ["Micah", "మీకా"],
+        ["Nahum", "నహూము"],
+        ["Habakkuk", "హబక్కూకు"],
+        ["Zephaniah", "జెఫన్యా"],
+        ["Haggai", "హగ్గయి"],
+        ["Zechariah", "జెకర్యా"],
+        ["Malachi", "మలాకీ"],
+        ["Matthew", "మత్తయి"],
+        ["Mark", "మార్కు"],
+        ["Luke", "లూకా"],
+        ["John", "యోహాను"],
+        ["Acts", "అపొస్తలుల కార్యములు"],
+        ["Romans", "రోమీయులకు"],
+        ["1Corinthians", "1 కోరింథీయులకు"],
+        ["2Corinthians", "2 కోరింథీయులకు"],
+        ["Galatians", "గలతీయులకు"],
+        ["Ephesians", "ఎఫెసీయులకు"],
+        ["Philippians", "ఫిలిప్పీయులకు"],
+        ["Colossians", "కొలొస్సయులకు"],
+        ["1Thessalonians", "1 థెస్సలొనీకయులకు"],
+        ["2Thessalonians", "2 థెస్సలొనీకయులకు"],
+        ["1Timothy", "1 తిమోతికి"],
+        ["2Timothy", "2 తిమోతికి"],
+        ["Titus", "తీతుకు"],
+        ["Philemon", "ఫిలేమోనుకు"],
+        ["Hebrews", "హెబ్రీయులకు"],
+        ["James", "యాకోబు"],
+        ["1Peter", "1 పేతురు"],
+        ["2Peter", "2 పేతురు"],
+        ["1John", "1 యోహాను"],
+        ["2John", "2 యోహాను"],
+        ["3John", "3 యోహాను"],
+        ["Jude", "యూదా"],
+        ["Revelation", "ప్రకటన గ్రంథము"],
+      ];
+      const bollsCodes = [
+        "GEN",
+        "EXO",
+        "LEV",
+        "NUM",
+        "DEU",
+        "JOS",
+        "JDG",
+        "RUT",
+        "1SA",
+        "2SA",
+        "1KI",
+        "2KI",
+        "1CH",
+        "2CH",
+        "EZR",
+        "NEH",
+        "EST",
+        "JOB",
+        "PSA",
+        "PRO",
+        "ECC",
+        "SNG",
+        "ISA",
+        "JER",
+        "LAM",
+        "EZE",
+        "DAN",
+        "HOS",
+        "JOE",
+        "AMO",
+        "OBA",
+        "JON",
+        "MIC",
+        "NAH",
+        "HAB",
+        "ZEP",
+        "HAG",
+        "ZEC",
+        "MAL",
+        "MAT",
+        "MAR",
+        "LUK",
+        "JOH",
+        "ACT",
+        "ROM",
+        "1CO",
+        "2CO",
+        "GAL",
+        "EPH",
+        "PHI",
+        "COL",
+        "1TH",
+        "2TH",
+        "1TI",
+        "2TI",
+        "TIT",
+        "PHM",
+        "HEB",
+        "JAS",
+        "1PE",
+        "2PE",
+        "1JO",
+        "2JO",
+        "3JO",
+        "JUD",
+        "REV",
+      ];
 
       window.onload = () => {
-        document.body.setAttribute("data-theme", state.theme);
-        Bible.load();
-        Songs.render();
+        applyState();
+        loadChapter();
       };
 
       function save() {
-        localStorage.setItem("pb_v9", JSON.stringify(state));
+        localStorage.setItem("pb_v7", JSON.stringify(state));
       }
 
-      // --- 3. NAVIGATION ---
-      const Nav = {
-        to(screen) {
-          document
-            .querySelectorAll(".screen")
-            .forEach((s) => s.classList.remove("active"));
-          document.getElementById("screen-" + screen).classList.add("active");
+      // --- CORE: LOAD CHAPTER ---
+      async function loadChapter() {
+        let bName =
+          state.lang === "te"
+            ? bookNames[state.bIdx][1]
+            : bookNames[state.bIdx][0];
+        document.getElementById("lbl-book").innerText = bName;
+        document.getElementById("lbl-chap").innerText = state.cNum;
+        document.getElementById(
+          "verses-container"
+        ).innerHTML = `<div style="text-align:center; color:#999;">Loading...</div>`;
 
-          document
-            .querySelectorAll(".tab-item")
-            .forEach((b) => b.classList.remove("active"));
-          // Simple index matching for active tab
-          const ids = ["home", "bible", "songs", "tv"];
-          document
-            .querySelectorAll(".tab-item")
-            [ids.indexOf(screen)].classList.add("active");
-        },
-      };
+        // 1. Fetch Main Text
+        let mainVerses = await fetchText(state.lang, state.bIdx, state.cNum);
 
-      // --- 4. BIBLE ENGINE ---
-      const Bible = {
-        async load() {
-          const el = document.getElementById("bible-text-area");
-          el.innerHTML =
-            '<div style="text-align:center; padding:50px; opacity:0.5;">Loading...</div>';
+        // 2. Fetch Parallel Text (English) if mode is active
+        let parallelVerses = [];
+        if (state.parallel) {
+          document.getElementById("btn-parallel").classList.add("active");
+          parallelVerses = await fetchText("en", state.bIdx, state.cNum);
+        } else {
+          document.getElementById("btn-parallel").classList.remove("active");
+        }
 
-          // Update Labels
-          const bName =
-            state.lang === "te" ? BOOKS_TE[state.bIdx] : BOOKS_EN[state.bIdx];
-          document.getElementById("label-book").innerText = bName;
-          document.getElementById("label-chap").innerText = state.cNum;
+        // 3. Render
+        let html = mainVerses
+          .map((v, i) => {
+            let vNum = i + 1;
+            let engText =
+              state.parallel && parallelVerses[i] ? parallelVerses[i].text : "";
 
-          // Fetch
-          try {
-            const engName = BOOKS_EN[state.bIdx];
-            const res = await fetch(
-              `https://cdn.jsdelivr.net/gh/aruljohn/Bible-telugu@master/${engName}.json`
-            );
-            const json = await res.json();
-
-            // Handle Chapter Logic
-            let chapters = json.chapters || json;
-            if (!Array.isArray(chapters)) chapters = [chapters];
-
-            if (state.cNum > chapters.length) state.cNum = 1; // Reset if out of bounds
-
-            const verses =
-              chapters[state.cNum - 1].verses || chapters[state.cNum - 1].verse;
-
-            el.innerHTML = verses
-              .map(
-                (v) =>
-                  `<div class="verse"><span class="v-num">${v.verse}</span>${v.text}</div>`
-              )
-              .join("");
-          } catch (e) {
-            el.innerHTML = "Error loading chapter. Check internet.";
-          }
-          save();
-        },
-        nav(dir) {
-          let n = state.cNum + dir;
-          if (n < 1) return;
-          state.cNum = n;
-          Bible.load();
-          window.scrollTo(0, 0);
-        },
-      };
-
-      // --- 5. AUDIO PLAYER ---
-      const AudioPlayer = {
-        playChapter() {
-          const text = document
-            .getElementById("bible-text-area")
-            .innerText.replace(/\d+/g, "");
-          window.speechSynthesis.cancel();
-          const u = new SpeechSynthesisUtterance(text);
-          u.lang = "te-IN";
-          window.speechSynthesis.speak(u);
-
-          document.getElementById("mini-player").classList.add("show");
-          const bName =
-            state.lang === "te" ? BOOKS_TE[state.bIdx] : BOOKS_EN[state.bIdx];
-          document.getElementById(
-            "mp-text"
-          ).innerText = `${bName} ${state.cNum}`;
-        },
-        stop() {
-          window.speechSynthesis.cancel();
-          document.getElementById("mini-player").classList.remove("show");
-        },
-      };
-
-      // --- 6. SONGS ---
-      const Songs = {
-        render(q = "") {
-          const list = document.getElementById("songs-list");
-          const query = q.toLowerCase();
-          list.innerHTML = SONGS_DB.filter((s) =>
-            s.t.toLowerCase().includes(query)
-          )
-            .map(
-              (s) => `
-                    <div class="glass-card" onclick="Sheet.openLyrics('${s.t}', '${s.l}')" style="display:flex; align-items:center; gap:15px; cursor:pointer;">
-                        <div style="width:40px; height:40px; background:var(--primary-grad); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white;">🎵</div>
-                        <div style="font-weight:600;">${s.t}</div>
+            return `
+                <div class="verse-card" id="v-${vNum}">
+                    <div class="v-num-box">${vNum}</div>
+                    <div class="v-content">
+                        <div class="v-text">${v.text}</div>
+                        <div class="v-parallel ${
+                          state.parallel ? "show" : ""
+                        }">${engText}</div>
                     </div>
-                `
-            )
-            .join("");
-        },
-      };
+                    <div class="v-action" onclick="openVerseSheet('${vNum}', \`${
+              v.text
+            }\`)">
+                        <i class="ph-bold ph-caret-right"></i>
+                    </div>
+                </div>`;
+          })
+          .join("");
 
-      // --- 7. BOTTOM SHEETS ---
-      const Sheet = {
-        open(type) {
-          const el = document.getElementById("sheet-content");
-          document.getElementById("sheet-overlay").classList.add("active");
+        document.getElementById("verses-container").innerHTML = html;
+      }
 
-          if (type === "books") {
-            el.innerHTML = `<h3>Select Book</h3><div class="grid-books">
-                        ${BOOKS_TE.map(
-                          (b, i) =>
-                            `<div class="book-item" onclick="state.bIdx=${i}; state.cNum=1; Bible.load(); Sheet.close()">${b}</div>`
-                        ).join("")}
-                    </div>`;
-          } else if (type === "settings") {
-            el.innerHTML = `<h3>Appearance</h3>
-                    <div class="grid-books">
-                        <div class="book-item" onclick="state.theme='light'; document.body.setAttribute('data-theme','light'); save()">☀️ Light</div>
-                        <div class="book-item" onclick="state.theme='dark'; document.body.setAttribute('data-theme','dark'); save()">🌙 Dark</div>
-                    </div>`;
-          }
-        },
-        openLyrics(t, l) {
-          document.getElementById("sheet-content").innerHTML = `
-                    <h3 style="color:var(--primary-color);">${t}</h3>
-                    <div style="white-space:pre-wrap; line-height:2; font-size:18px; max-height:60vh; overflow-y:auto;">${l}</div>
-                `;
-          document.getElementById("sheet-overlay").classList.add("active");
-        },
-        close() {
-          document.getElementById("sheet-overlay").classList.remove("active");
-        },
-      };
+      async function fetchText(lang, bIdx, cNum) {
+        const src = sources[lang] || sources["en"];
+        const engName = bookNames[bIdx][0];
+
+        if (src.type === "git") {
+          let r = await fetch(`${src.url}/${engName}.json`);
+          let data = await r.json();
+          let chapters = data.chapters || data;
+          let vs = chapters[cNum - 1].verses || chapters[cNum - 1].verse;
+          // Normalize to array of objects {text: "..."}
+          return vs.map((v) => ({ text: v.text || v.verse || v }));
+        } else {
+          let r = await fetch(`${src.url}/${bollsCodes[bIdx]}/${cNum}/`);
+          let json = await r.json();
+          return json; // Already has .text property
+        }
+      }
+
+      function navChap(d) {
+        let n = state.cNum + d;
+        if (n < 1) return;
+        state.cNum = n;
+        loadChapter();
+      }
+
+      // --- FEATURES ---
+      function toggleParallel() {
+        state.parallel = !state.parallel;
+        save();
+        loadChapter(); // Reload to fetch/show english
+        showToast(state.parallel ? "Parallel Mode ON" : "Parallel Mode OFF");
+      }
+
+      function openVerseSheet(num, text) {
+        selectedVerse = { num, text };
+        document.querySelector(".sheet-overlay").classList.add("active");
+        document.getElementById("verse-sheet").classList.add("active");
+      }
+      function closeSheet() {
+        document.querySelector(".sheet-overlay").classList.remove("active");
+        document
+          .querySelectorAll(".action-sheet")
+          .forEach((el) => el.classList.remove("active"));
+      }
+
+      function actionCopy() {
+        navigator.clipboard.writeText(
+          `${selectedVerse.text} (${bookNames[state.bIdx][0]} ${state.cNum}:${
+            selectedVerse.num
+          })`
+        );
+        closeSheet();
+        showToast("Copied to clipboard");
+      }
+      function actionCompare() {
+        // Force turn on parallel mode
+        state.parallel = true;
+        save();
+        loadChapter();
+        closeSheet();
+      }
+      function actionHighlight() {
+        let el = document.getElementById("v-" + selectedVerse.num);
+        el.classList.toggle("highlight");
+        closeSheet();
+      }
+
+      // --- AUDIO ---
+      function toggleAudio() {
+        if (window.speechSynthesis.speaking) {
+          window.speechSynthesis.cancel();
+          document.getElementById("btn-audio").classList.remove("active");
+        } else {
+          // Read text only
+          let txt = document.querySelectorAll(".v-text");
+          let full = "";
+          txt.forEach((t) => (full += t.innerText + ". "));
+          let u = new SpeechSynthesisUtterance(full);
+          u.lang = sources[state.lang].code;
+          window.speechSynthesis.speak(u);
+          document.getElementById("btn-audio").classList.add("active");
+          u.onend = () =>
+            document.getElementById("btn-audio").classList.remove("active");
+          showToast("Playing Audio...");
+        }
+      }
+
+      // --- UTILS ---
+      function showToast(msg) {
+        let t = document.getElementById("toast");
+        t.innerHTML = `<i class="ph-fill ph-info"></i> ${msg}`;
+        t.classList.add("show");
+        setTimeout(() => t.classList.remove("show"), 2500);
+      }
+
+      function toggleSettings() {
+        document.querySelector(".sheet-overlay").classList.add("active");
+        document.getElementById("settings-drawer").classList.add("active");
+      }
+      function setTheme(thm) {
+        state.theme = thm;
+        save();
+        applyState();
+      }
+      function setLang(l) {
+        state.lang = l;
+        save();
+        loadChapter();
+        closeSheet();
+      }
+      function applyState() {
+        document.body.setAttribute("data-theme", state.theme);
+      }
+
+      function switchView(view, btn) {
+        document
+          .querySelectorAll(".view-section")
+          .forEach((el) => el.classList.remove("active"));
+        document.getElementById("view-" + view).classList.add("active");
+        document
+          .querySelectorAll(".dock-item")
+          .forEach((el) => el.classList.remove("active"));
+        btn.classList.add("active");
+      }
+
+      function openBookModal() {
+        document.getElementById("modal-book").classList.add("active");
+        let g = document.getElementById("grid-book");
+        g.innerHTML = "";
+        bookNames.forEach((b, i) => {
+          let c = document.createElement("span");
+          c.className = "grid-chip";
+          c.innerText = state.lang === "te" ? b[1] : b[0];
+          c.onclick = () => {
+            state.bIdx = i;
+            state.cNum = 1;
+            closeModals();
+            loadChapter();
+          };
+          g.appendChild(c);
+        });
+      }
+      function closeModals() {
+        document
+          .querySelectorAll(".full-modal")
+          .forEach((m) => m.classList.remove("active"));
+      }
     </script>
   </body>
 </html>
