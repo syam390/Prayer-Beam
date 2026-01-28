@@ -14,896 +14,657 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
 
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=Crimson+Pro:wght@400;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Crimson+Pro:wght@400;600&display=swap"
       rel="stylesheet"
     />
 
     <style>
-      /* --- DESIGN SYSTEM --- */
+      /* --- 1. SUPER APP VARIABLES --- */
       :root {
         --primary: #d32f2f;
-        --bg-body: #ffffff;
-        --bg-glass: rgba(255, 255, 255, 0.95);
-        --surface: #f3f4f6;
-        --text-main: #111827;
-        --text-sec: #6b7280;
+        --bg: #ffffff;
+        --surface: #f4f5f7;
+        --text: #111827;
+        --text-sub: #6b7280;
         --border: #e5e7eb;
-        --font-ui: "Inter", sans-serif;
-        --font-read: "Crimson Pro", serif;
-        --read-size: 20px;
+        --nav-height: 65px;
+        --safe-area-top: env(safe-area-inset-top);
       }
 
-      /* THEMES */
-      [data-theme="sepia"] {
-        --bg-body: #f8f4e9;
-        --bg-glass: rgba(244, 236, 216, 0.95);
-        --surface: #eaddcf;
-        --text-main: #5f4b32;
-        --border: #d7c9b1;
-      }
       [data-theme="dark"] {
-        --bg-body: #0f0f0f;
-        --bg-glass: rgba(20, 20, 20, 0.95);
-        --surface: #272727;
-        --text-main: #e5e5e5;
-        --text-sec: #a3a3a3;
-        --border: #333;
+        --bg: #000000;
+        --surface: #1c1c1e;
+        --text: #f3f4f6;
+        --text-sub: #9ca3af;
+        --border: #2c2c2e;
       }
 
       * {
         box-sizing: border-box;
         -webkit-tap-highlight-color: transparent;
-        outline: none;
+        user-select: none;
       }
       body {
         margin: 0;
-        font-family: var(--font-ui);
-        background: var(--bg-body);
-        color: var(--text-main);
-        padding-top: 60px;
-        padding-bottom: 100px;
-        user-select: none;
+        font-family: "Inter", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        padding-bottom: 90px;
       }
 
-      /* HEADER */
-      header {
-        position: fixed;
+      /* --- 2. HOME DASHBOARD (New!) --- */
+      .home-header {
+        padding: 20px;
+        padding-top: max(20px, var(--safe-area-top));
+      }
+      .date-badge {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-sub);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .greet-title {
+        font-size: 28px;
+        font-weight: 800;
+        margin: 5px 0 20px 0;
+      }
+
+      /* Verse of the Day Card */
+      .vod-card {
+        background: linear-gradient(
+          135deg,
+          #ff9a9e 0%,
+          #fecfef 99%,
+          #fecfef 100%
+        );
+        border-radius: 20px;
+        padding: 25px;
+        color: #333;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+        position: relative;
+        overflow: hidden;
+      }
+      .vod-text {
+        font-family: "Crimson Pro", serif;
+        font-size: 22px;
+        font-weight: 600;
+        line-height: 1.4;
+        margin-bottom: 15px;
+      }
+      .vod-ref {
+        font-weight: 700;
+        font-size: 14px;
+        opacity: 0.7;
+      }
+      .btn-share-vod {
+        margin-top: 15px;
+        background: rgba(255, 255, 255, 0.3);
+        border: none;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 600;
+        cursor: pointer;
+        backdrop-filter: blur(5px);
+      }
+
+      /* Streak / Plan Section */
+      .section-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .plan-card {
+        background: var(--surface);
+        border-radius: 16px;
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 15px;
+      }
+      .plan-ring {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 4px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 12px;
+      }
+      .plan-ring.done {
+        border-color: #34d399;
+        color: #34d399;
+      }
+
+      /* --- 3. BIBLE READER (Advanced) --- */
+      .reader-header {
+        position: sticky;
         top: 0;
-        left: 0;
-        right: 0;
-        height: 60px;
-        background: var(--bg-glass);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
+        background: var(--bg);
         border-bottom: 1px solid var(--border);
         display: flex;
         align-items: center;
-        padding: 0 16px;
-        z-index: 1000;
+        justify-content: space-between;
+        padding: 10px 15px;
+        z-index: 100;
       }
-      .book-trigger {
+      .book-pill {
         background: var(--surface);
         padding: 8px 16px;
-        border-radius: 20px;
+        border-radius: 30px;
         font-weight: 700;
-        font-size: 15px;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        cursor: pointer;
-      }
-      .header-actions {
-        display: flex;
-        gap: 4px;
-        margin-left: auto;
-      }
-      .icon-btn {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        border: none;
-        background: transparent;
-        color: var(--text-main);
-        font-size: 20px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      /* Active state for audio button */
-      .icon-btn.active {
-        color: var(--primary);
-        background: rgba(211, 47, 47, 0.1);
+        font-size: 14px;
       }
 
-      /* READER */
-      #verses-container {
-        padding: 24px 20px;
+      #verses-area {
+        padding: 20px;
         max-width: 700px;
         margin: 0 auto;
-        min-height: 60vh;
       }
-      .verse {
-        font-family: var(--font-read);
-        font-size: var(--read-size);
+      .verse-block {
+        font-family: "Crimson Pro", serif;
+        font-size: 20px;
         line-height: 1.8;
-        margin-bottom: 16px;
-        padding-left: 4px;
+        margin-bottom: 12px;
+        padding: 2px 5px;
+        border-radius: 4px;
+        transition: 0.2s;
       }
-      .v-num {
-        font-family: var(--font-ui);
-        color: var(--primary);
-        font-size: 0.6em;
-        font-weight: 800;
+      .v-idx {
+        font-family: "Inter", sans-serif;
+        font-size: 11px;
+        color: var(--text-sub);
+        font-weight: 700;
         vertical-align: super;
-        margin-right: 6px;
+        margin-right: 4px;
       }
 
-      .chapter-actions {
-        display: flex;
-        gap: 15px;
-        margin-top: 40px;
-        justify-content: center;
+      /* Highlighting Colors */
+      .hl-yellow {
+        background: rgba(255, 235, 59, 0.4);
       }
-      .nav-btn-lg {
-        flex: 1;
-        background: var(--surface);
-        color: var(--text-main);
-        border: none;
-        padding: 15px;
-        border-radius: 16px;
-        font-weight: 600;
+      .hl-green {
+        background: rgba(76, 175, 80, 0.3);
+      }
+      .hl-pink {
+        background: rgba(233, 30, 99, 0.2);
+      }
+
+      /* --- 4. IMAGE CREATOR (Canvas) --- */
+      #creator-canvas-container {
+        width: 100%;
+        aspect-ratio: 1;
+        background: #333;
+        margin: 20px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        border-radius: 12px;
+      }
+      #gen-canvas {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+      .color-dots {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+      .color-dot {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: 2px solid white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         cursor: pointer;
       }
-      .nav-btn-lg.primary {
-        background: var(--primary);
-        color: white;
-      }
 
-      /* SETTINGS DRAWER */
-      #settings-drawer {
+      /* --- 5. NAVIGATION (Tab Bar) --- */
+      .tab-bar {
         position: fixed;
         bottom: 0;
         left: 0;
         right: 0;
-        background: var(--bg-body);
-        border-radius: 24px 24px 0 0;
-        padding: 24px;
-        transform: translateY(110%);
-        transition: transform 0.3s;
-        z-index: 2000;
+        height: var(--nav-height);
+        background: var(--bg);
         border-top: 1px solid var(--border);
-        box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.2);
-      }
-      #settings-drawer.active {
-        transform: translateY(0);
-      }
-      .theme-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 10px;
-        margin-top: 10px;
-      }
-      .lang-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        margin-top: 10px;
-      }
-      .theme-opt {
-        padding: 12px;
-        border-radius: 12px;
-        border: 2px solid var(--border);
-        text-align: center;
-        font-weight: 600;
-        cursor: pointer;
-        font-size: 13px;
-      }
-      .theme-opt.active {
-        border-color: var(--primary);
-        background: rgba(211, 47, 47, 0.05);
-        color: var(--primary);
-      }
-
-      /* DOCK */
-      .dock {
-        position: fixed;
-        bottom: 25px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: var(--bg-glass);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        padding: 8px 12px;
-        border-radius: 30px;
         display: flex;
-        gap: 8px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-        z-index: 1500;
+        justify-content: space-around;
+        align-items: center;
+        z-index: 1000;
+        padding-bottom: env(safe-area-inset-bottom);
       }
-      .dock-item {
-        width: 60px;
-        height: 50px;
-        border-radius: 20px;
+      .tab-btn {
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
-        color: var(--text-sec);
-        cursor: pointer;
+        color: var(--text-sub);
+        font-size: 10px;
+        font-weight: 600;
+        background: none;
+        border: none;
+        width: 60px;
       }
-      .dock-item.active {
-        background: var(--primary);
-        color: white;
+      .tab-btn.active {
+        color: var(--primary);
       }
-      .dock-label {
-        font-size: 9px;
-        font-weight: 700;
-        margin-top: 2px;
+      .tab-icon {
+        font-size: 22px;
+        margin-bottom: 3px;
       }
 
-      /* UTILS */
-      .view-section {
+      /* --- UTILS --- */
+      .view {
         display: none;
-        animation: fadeUp 0.3s;
+        padding-top: var(--safe-area-top);
       }
-      .view-section.active {
+      .view.active {
         display: block;
+        animation: fadeIn 0.2s;
       }
-      @keyframes fadeUp {
+      @keyframes fadeIn {
         from {
           opacity: 0;
-          transform: translateY(10px);
         }
         to {
           opacity: 1;
-          transform: translateY(0);
         }
       }
 
-      .full-modal {
+      .modal-sheet {
         position: fixed;
-        inset: 0;
-        background: var(--bg-body);
-        z-index: 3000;
-        overflow-y: auto;
-        padding: 20px;
-        display: none;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: var(--bg);
+        border-radius: 20px 20px 0 0;
+        padding: 25px;
+        box-shadow: 0 -5px 40px rgba(0, 0, 0, 0.2);
+        transform: translateY(100%);
+        transition: 0.3s;
+        z-index: 2000;
       }
-      .full-modal.active {
-        display: block;
-      }
-      .grid-chip {
-        display: inline-block;
-        padding: 10px 18px;
-        margin: 4px;
-        background: var(--surface);
-        border-radius: 12px;
-        font-weight: 600;
-        cursor: pointer;
-        font-size: 13px;
+      .modal-sheet.open {
+        transform: translateY(0);
       }
 
-      /* Song/TV */
-      .song-card {
-        background: var(--surface);
-        border-radius: 16px;
-        padding: 16px;
-        margin-bottom: 12px;
-        display: flex;
-        align-items: center;
-        gap: 16px;
+      .btn-primary {
+        background: var(--text);
+        color: var(--bg);
+        padding: 12px;
+        border-radius: 12px;
+        text-align: center;
+        font-weight: 600;
+        margin-top: 10px;
         cursor: pointer;
-      }
-      #toast {
-        position: fixed;
-        top: 80px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: #111;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 50px;
-        opacity: 0;
-        transition: 0.3s;
-        pointer-events: none;
-        z-index: 4000;
-        font-size: 13px;
-      }
-      #toast.show {
-        opacity: 1;
       }
     </style>
   </head>
   <body data-theme="light">
-    <div id="toast">Message</div>
+    <div id="view-home" class="view active">
+      <div class="home-header">
+        <div class="date-badge" id="date-display">WEDNESDAY, JAN 28</div>
+        <div class="greet-title">Good Morning</div>
 
-    <header>
-      <div class="book-trigger" onclick="openBookModal()">
-        <span id="label-book">Genesis</span>
-        <span id="label-chap" style="color: var(--primary)">1</span>
-        <span>▼</span>
-      </div>
-      <div class="header-actions">
-        <button id="btn-audio" class="icon-btn" onclick="toggleAudio()">
-          🔊
-        </button>
-        <button class="icon-btn" onclick="toggleSettings()">Aa</button>
-      </div>
-    </header>
-
-    <main>
-      <div id="view-read" class="view-section active">
-        <div id="verses-container">Loading...</div>
-        <div class="chapter-actions">
-          <button class="nav-btn-lg" onclick="navChap(-1)">Previous</button>
-          <button class="nav-btn-lg primary" onclick="navChap(1)">Next</button>
-        </div>
-      </div>
-
-      <div id="view-songs" class="view-section" style="padding: 20px">
-        <h2 style="margin: 0 0 20px 0">Worship Songs</h2>
-        <div id="song-list"></div>
-      </div>
-
-      <div id="view-tv" class="view-section" style="padding: 20px">
-        <div
-          style="
-            background: var(--surface);
-            padding: 20px;
-            border-radius: 20px;
-            text-align: center;
-          "
-        >
-          <h2>Prayer Beam TV</h2>
-          <div
-            style="
-              position: relative;
-              padding-bottom: 56.25%;
-              height: 0;
-              overflow: hidden;
-              border-radius: 12px;
-              background: #000;
-            "
-          >
-            <iframe
-              style="
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-              "
-              src="https://www.youtube.com/embed/videoseries?list=PLpcEZmijMVLBVJlP4oPCukvrRo-5wB-0i"
-              frameborder="0"
-              allowfullscreen
-            ></iframe>
+        <div class="vod-card" id="vod-card">
+          <div class="vod-text">
+            "Your word is a lamp for my feet, a light on my path."
           </div>
-          <br /><a
-            href="https://www.youtube.com/@Prayer_Beam"
-            target="_blank"
-            class="nav-btn-lg primary"
-            style="display: inline-block; text-decoration: none"
-            >Open Channel</a
-          >
+          <div class="vod-ref">Psalm 119:105</div>
+          <button class="btn-share-vod" onclick="openCreatorWithVod()">
+            🎨 Create Image
+          </button>
+        </div>
+
+        <div class="section-title">
+          <span>Daily Challenge</span>
+          <span style="font-size: 12px; color: var(--primary)">View All</span>
+        </div>
+        <div class="plan-card" onclick="goToRead()">
+          <div class="plan-ring" id="progress-ring">0%</div>
+          <div>
+            <div style="font-weight: 700">30 Days of Genesis</div>
+            <div style="font-size: 12px; color: var(--text-sub)">
+              Continue Day 1
+            </div>
+          </div>
         </div>
       </div>
-    </main>
+    </div>
 
-    <div id="settings-drawer">
+    <div id="view-read" class="view">
+      <div class="reader-header">
+        <div class="book-pill" onclick="openBookPicker()">Genesis 1 ▼</div>
+        <div style="display: flex; gap: 15px">
+          <span onclick="toggleTheme()">🌗</span>
+          <span onclick="toggleSettings()">Aa</span>
+        </div>
+      </div>
+      <div id="verses-area">Loading...</div>
+
+      <div id="context-menu" class="modal-sheet">
+        <h3 style="margin-top: 0">Selected Verse</h3>
+        <div style="display: flex; gap: 10px; margin-bottom: 20px">
+          <div
+            class="color-dot hl-yellow"
+            onclick="highlight('hl-yellow')"
+          ></div>
+          <div class="color-dot hl-green" onclick="highlight('hl-green')"></div>
+          <div class="color-dot hl-pink" onclick="highlight('hl-pink')"></div>
+          <div
+            class="color-dot"
+            style="
+              background: #ddd;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            "
+            onclick="highlight('')"
+          >
+            ✕
+          </div>
+        </div>
+        <div class="btn-primary" onclick="createImageFromSelection()">
+          🎨 Create Verse Image
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="view-create"
+      class="view"
+      style="padding: 20px; background: #111; color: #fff; min-height: 100vh"
+    >
       <div
         style="
-          width: 40px;
-          height: 5px;
-          background: #ccc;
-          border-radius: 10px;
-          margin: 0 auto 20px auto;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
         "
-        onclick="toggleSettings()"
-      ></div>
-
-      <div style="margin-bottom: 20px">
-        <div
+      >
+        <button
+          onclick="switchTab('home')"
+          style="background: none; border: none; color: #fff"
+        >
+          ✕ Cancel
+        </button>
+        <button
+          onclick="downloadImage()"
           style="
-            font-size: 12px;
+            background: white;
+            color: black;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
             font-weight: 700;
-            color: #888;
-            margin-bottom: 10px;
           "
         >
-          LANGUAGE
-        </div>
-        <div class="lang-grid">
-          <div class="theme-opt" onclick="setLang('te')" id="btn-te">
-            Telugu
-          </div>
-          <div class="theme-opt" onclick="setLang('en')" id="btn-en">
-            English
-          </div>
-          <div class="theme-opt" onclick="setLang('hi')" id="btn-hi">Hindi</div>
-          <div class="theme-opt" onclick="setLang('ta')" id="btn-ta">Tamil</div>
-          <div class="theme-opt" onclick="setLang('ka')" id="btn-ka">
-            Kannada
-          </div>
-          <div class="theme-opt" onclick="setLang('ml')" id="btn-ml">
-            Malayalam
-          </div>
-        </div>
+          Save
+        </button>
       </div>
 
-      <div style="margin-bottom: 20px">
+      <div id="creator-canvas-container">
+        <canvas id="gen-canvas" width="1080" height="1080"></canvas>
+      </div>
+
+      <div
+        style="
+          text-align: center;
+          font-size: 12px;
+          margin-bottom: 10px;
+          opacity: 0.7;
+        "
+      >
+        CHOOSE BACKGROUND
+      </div>
+      <div class="color-dots">
         <div
-          style="
-            font-size: 12px;
-            font-weight: 700;
-            color: #888;
-            margin-bottom: 10px;
-          "
-        >
-          THEME
-        </div>
-        <div class="theme-grid">
-          <div class="theme-opt" onclick="setTheme('light', this)">Day</div>
-          <div class="theme-opt" onclick="setTheme('sepia', this)">Sepia</div>
-          <div class="theme-opt" onclick="setTheme('dark', this)">Night</div>
-        </div>
+          class="color-dot"
+          style="background: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%)"
+          onclick="bgType=0; drawCanvas()"
+        ></div>
+        <div
+          class="color-dot"
+          style="background: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%)"
+          onclick="bgType=1; drawCanvas()"
+        ></div>
+        <div
+          class="color-dot"
+          style="background: linear-gradient(to top, #30cfd0 0%, #330867 100%)"
+          onclick="bgType=2; drawCanvas()"
+        ></div>
+        <div
+          class="color-dot"
+          style="background: #222"
+          onclick="bgType=3; drawCanvas()"
+        ></div>
       </div>
     </div>
 
-    <nav class="dock">
-      <div class="dock-item active" onclick="switchView('read', this)">
-        <span style="font-size: 20px">📖</span
-        ><span class="dock-label">Read</span>
-      </div>
-      <div class="dock-item" onclick="switchView('songs', this)">
-        <span style="font-size: 20px">🎵</span
-        ><span class="dock-label">Songs</span>
-      </div>
-      <div class="dock-item" onclick="switchView('tv', this)">
-        <span style="font-size: 20px">▶️</span
-        ><span class="dock-label">TV</span>
-      </div>
+    <nav class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab('home')">
+        <span class="tab-icon">🏠</span> Home
+      </button>
+      <button class="tab-btn" onclick="switchTab('read')">
+        <span class="tab-icon">📖</span> Bible
+      </button>
+      <button class="tab-btn" onclick="switchTab('create')">
+        <span class="tab-icon">🎨</span> Create
+      </button>
     </nav>
 
-    <div id="modal-book" class="full-modal">
-      <button
-        class="icon-btn"
-        onclick="closeModals()"
-        style="position: fixed; top: 20px; right: 20px"
-      >
-        ✕
-      </button>
-      <h2>Select Book</h2>
-      <div id="grid-book"></div>
-    </div>
-    <div id="modal-lyrics" class="full-modal">
-      <button
-        class="icon-btn"
-        onclick="document.getElementById('modal-lyrics').classList.remove('active')"
-        style="position: fixed; top: 20px; right: 20px"
-      >
-        ✕
-      </button>
-      <h2
-        id="lyrics-title"
-        style="color: var(--primary); margin-top: 40px"
-      ></h2>
-      <div
-        id="lyrics-text"
-        style="white-space: pre-wrap; line-height: 2.2; font-size: 18px"
-      ></div>
-    </div>
-
     <script>
-      // CONFIG
-      let state = JSON.parse(localStorage.getItem("pb_v4")) || {
-        lang: "te",
+      // --- 1. STATE & DATA ---
+      let state = JSON.parse(localStorage.getItem("pb_os")) || {
         bIdx: 0,
         cNum: 1,
+        highlights: {},
         theme: "light",
       };
-
-      // --- 1. NEW UNIFIED SOURCES (API + Static) ---
-      const sources = {
-        te: {
-          type: "git",
-          url: "https://cdn.jsdelivr.net/gh/aruljohn/Bible-telugu@master",
-          code: "te-IN",
-        },
-        en: {
-          type: "git",
-          url: "https://cdn.jsdelivr.net/gh/aruljohn/Bible-kjv@master",
-          code: "en-US",
-        },
-        hi: {
-          type: "api",
-          url: "https://bolls.life/get-text/HINCL",
-          code: "hi-IN",
-        },
-        ta: {
-          type: "api",
-          url: "https://bolls.life/get-text/TAMOV",
-          code: "ta-IN",
-        },
-        ka: {
-          type: "api",
-          url: "https://bolls.life/get-text/KANJV",
-          code: "kn-IN",
-        },
-        ml: {
-          type: "api",
-          url: "https://bolls.life/get-text/MALOV",
-          code: "ml-IN",
-        },
-      };
-
-      const bollsCodes = [
-        "GEN",
-        "EXO",
-        "LEV",
-        "NUM",
-        "DEU",
-        "JOS",
-        "JDG",
-        "RUT",
-        "1SA",
-        "2SA",
-        "1KI",
-        "2KI",
-        "1CH",
-        "2CH",
-        "EZR",
-        "NEH",
-        "EST",
-        "JOB",
-        "PSA",
-        "PRO",
-        "ECC",
-        "SNG",
-        "ISA",
-        "JER",
-        "LAM",
-        "EZE",
-        "DAN",
-        "HOS",
-        "JOE",
-        "AMO",
-        "OBA",
-        "JON",
-        "MIC",
-        "NAH",
-        "HAB",
-        "ZEP",
-        "HAG",
-        "ZEC",
-        "MAL",
-        "MAT",
-        "MAR",
-        "LUK",
-        "JOH",
-        "ACT",
-        "ROM",
-        "1CO",
-        "2CO",
-        "GAL",
-        "EPH",
-        "PHI",
-        "COL",
-        "1TH",
-        "2TH",
-        "1TI",
-        "2TI",
-        "TIT",
-        "PHM",
-        "HEB",
-        "JAS",
-        "1PE",
-        "2PE",
-        "1JO",
-        "2JO",
-        "3JO",
-        "JUD",
-        "REV",
-      ];
+      let currentVerseText =
+        "God is light; in him there is no darkness at all.";
+      let currentVerseRef = "1 John 1:5";
+      let bgType = 0;
 
       const bookNames = [
-        ["Genesis", "ఆదికాండము"],
-        ["Exodus", "నిర్గమకాండము"],
-        ["Leviticus", "లేవీయకాండము"],
-        ["Numbers", "సంఖ్యాకాండము"],
-        ["Deuteronomy", "ద్వితీయోపదేశకాండము"],
-        ["Joshua", "యెహోషువ"],
-        ["Judges", "న్యాయాధిపతులు"],
-        ["Ruth", "రూతు"],
-        ["1Samuel", "1 సమూయేలు"],
-        ["2Samuel", "2 సమూయేలు"],
-        ["1Kings", "1 రాజులు"],
-        ["2Kings", "2 రాజులు"],
-        ["1Chronicles", "1 దినవృత్తాంతములు"],
-        ["2Chronicles", "2 దినవృత్తాంతములు"],
-        ["Ezra", "ఎజ్రా"],
-        ["Nehemiah", "నెహెమ్యా"],
-        ["Esther", "ఎస్తేరు"],
-        ["Job", "యోబు"],
-        ["Psalms", "కీర్తనలు"],
-        ["Proverbs", "సామెతలు"],
-        ["Ecclesiastes", "ప్రసంగి"],
-        ["SongofSolomon", "పరమగీతము"],
-        ["Isaiah", "యెషయా"],
-        ["Jeremiah", "యిర్మియా"],
-        ["Lamentations", "విలాపవాక్యములు"],
-        ["Ezekiel", "యెహెజ్కేలు"],
-        ["Daniel", "దానియేలు"],
-        ["Hosea", "హోషేయ"],
-        ["Joel", "యోవేలు"],
-        ["Amos", "ఆమోసు"],
-        ["Obadiah", "ఓబద్యా"],
-        ["Jonah", "యోనా"],
-        ["Micah", "మీకా"],
-        ["Nahum", "నహూము"],
-        ["Habakkuk", "హబక్కూకు"],
-        ["Zephaniah", "జెఫన్యా"],
-        ["Haggai", "హగ్గయి"],
-        ["Zechariah", "జెకర్యా"],
-        ["Malachi", "మలాకీ"],
-        ["Matthew", "మత్తయి"],
-        ["Mark", "మార్కు"],
-        ["Luke", "లూకా"],
-        ["John", "యోహాను"],
-        ["Acts", "అపొస్తలుల కార్యములు"],
-        ["Romans", "రోమీయులకు"],
-        ["1Corinthians", "1 కోరింథీయులకు"],
-        ["2Corinthians", "2 కోరింథీయులకు"],
-        ["Galatians", "గలతీయులకు"],
-        ["Ephesians", "ఎఫెసీయులకు"],
-        ["Philippians", "ఫిలిప్పీయులకు"],
-        ["Colossians", "కొలొస్సయులకు"],
-        ["1Thessalonians", "1 థెస్సలొనీకయులకు"],
-        ["2Thessalonians", "2 థెస్సలొనీకయులకు"],
-        ["1Timothy", "1 తిమోతికి"],
-        ["2Timothy", "2 తిమోతికి"],
-        ["Titus", "తీతుకు"],
-        ["Philemon", "ఫిలేమోనుకు"],
-        ["Hebrews", "హెబ్రీయులకు"],
-        ["James", "యాకోబు"],
-        ["1Peter", "1 పేతురు"],
-        ["2Peter", "2 పేతురు"],
-        ["1John", "1 యోహాను"],
-        ["2John", "2 యోహాను"],
-        ["3John", "3 యోహాను"],
-        ["Jude", "యూదా"],
-        ["Revelation", "ప్రకటన గ్రంథము"],
+        "Genesis",
+        "Exodus",
+        "Leviticus",
+        "Numbers",
+        "Deuteronomy",
+        "Joshua",
+        "Judges",
+        "Ruth",
+        "1 Samuel",
+      ]; // Shortened for demo
+      const telNames = [
+        "ఆదికాండము",
+        "నిర్గమకాండము",
+        "లేవీయకాండము",
+        "సంఖ్యాకాండము",
       ];
-      const songs = [
-        { t: "Yesayya Naa Pranama (2025)", l: "యేసయ్యా నా ప్రాణమా..." },
-        { t: "Neeve Hrudaya Saradhi", l: "నీవే హృదయ సారధి..." },
-      ]; // Add full lyrics as before
 
-      let loadedData = null; // Cache for Git sources
-
+      // --- 2. INIT ---
       window.onload = () => {
-        applyState();
+        updateDate();
         loadChapter();
-        renderSongs();
-        updateLangUI();
+        drawCanvas(); // Init the creator
       };
 
       function save() {
-        localStorage.setItem("pb_v4", JSON.stringify(state));
+        localStorage.setItem("pb_os", JSON.stringify(state));
       }
 
-      // --- 2. UNIFIED FETCHER ---
-      async function loadChapter() {
-        // Stop audio if playing when changing chapter
-        window.speechSynthesis.cancel();
-        resetAudioBtn();
-
-        let bName =
-          state.lang === "te"
-            ? bookNames[state.bIdx][1]
-            : bookNames[state.bIdx][0];
-        document.getElementById("label-book").innerText = bName;
-        document.getElementById("label-chap").innerText = state.cNum;
-        document.getElementById(
-          "verses-container"
-        ).innerHTML = `<div style="text-align:center; padding:50px; color:#888;">Loading...</div>`;
-
-        try {
-          const src = sources[state.lang];
-          let html = "";
-
-          if (src.type === "git") {
-            const engName = bookNames[state.bIdx][0];
-            if (!loadedData || loadedData.book !== engName) {
-              let r = await fetch(`${src.url}/${engName}.json`);
-              loadedData = await r.json();
-              loadedData.book = engName;
-            }
-            let chapters = loadedData.chapters || loadedData;
-            if (!Array.isArray(chapters)) chapters = [chapters];
-            let vs =
-              chapters[state.cNum - 1].verses || chapters[state.cNum - 1].verse;
-
-            html = vs
-              .map(
-                (v, i) =>
-                  `<div class="verse"><span class="v-num">${
-                    v.verse || i + 1
-                  }</span>${v.text || v.verse || v}</div>`
-              )
-              .join("");
-          } else {
-            const bookCode = bollsCodes[state.bIdx];
-            let r = await fetch(`${src.url}/${bookCode}/${state.cNum}/`);
-            let json = await r.json();
-            html = json
-              .map(
-                (v) =>
-                  `<div class="verse"><span class="v-num">${v.verse}</span>${v.text}</div>`
-              )
-              .join("");
-          }
-
-          document.getElementById("verses-container").innerHTML = html;
-          window.scrollTo(0, 0);
-        } catch (err) {
-          document.getElementById(
-            "verses-container"
-          ).innerHTML = `<div style="text-align:center; padding:20px;">Error loading. Check internet.</div>`;
-        }
-        save();
-      }
-
-      function navChap(d) {
-        let n = state.cNum + d;
-        if (n < 1) return;
-        state.cNum = n;
-        loadChapter();
-      }
-
-      // --- 3. SMART AUDIO TOGGLE ---
-      function toggleAudio() {
-        if (window.speechSynthesis.speaking) {
-          window.speechSynthesis.cancel();
-          resetAudioBtn();
-          showToast("Audio Stopped");
-        } else {
-          speakChapter();
-        }
-      }
-
-      function speakChapter() {
-        let verses = document.querySelectorAll(".verse");
-        let text = "";
-        verses.forEach((v) => {
-          let clone = v.cloneNode(true);
-          if (clone.querySelector(".v-num"))
-            clone.querySelector(".v-num").remove();
-          text += clone.innerText.trim() + ". ";
-        });
-
-        if (!text) return;
-
-        window.speechSynthesis.cancel();
-        let u = new SpeechSynthesisUtterance(text);
-        let code = sources[state.lang].code;
-        u.lang = code;
-
-        // Set UI to Playing state
-        let btn = document.getElementById("btn-audio");
-        btn.innerText = "⏹"; // Stop icon
-        btn.classList.add("active");
-
-        u.onend = function () {
-          resetAudioBtn();
-        };
-
-        window.speechSynthesis.speak(u);
-        showToast(`Playing Audio (${code})...`);
-      }
-
-      function resetAudioBtn() {
-        let btn = document.getElementById("btn-audio");
-        btn.innerText = "🔊";
-        btn.classList.remove("active");
-      }
-
-      function showToast(msg) {
-        let t = document.getElementById("toast");
-        t.innerText = msg;
-        t.classList.add("show");
-        setTimeout(() => t.classList.remove("show"), 3000);
-      }
-
-      // --- SETTINGS ---
-      function toggleSettings() {
-        document.getElementById("settings-drawer").classList.toggle("active");
-      }
-      function setTheme(thm, btn) {
-        state.theme = thm;
-        save();
-        applyState();
-      }
-      function setLang(l) {
-        state.lang = l;
-        loadedData = null;
-        save();
-        updateLangUI();
-        loadChapter();
-        toggleSettings();
-      }
-
-      function updateLangUI() {
+      // --- 3. NAVIGATION ---
+      function switchTab(view) {
         document
-          .querySelectorAll(".theme-opt")
-          .forEach((b) => b.classList.remove("active"));
-        if (document.getElementById("btn-" + state.lang))
-          document.getElementById("btn-" + state.lang).classList.add("active");
-      }
-
-      function applyState() {
-        document.body.setAttribute("data-theme", state.theme);
-      }
-
-      function switchView(view, btn) {
-        document
-          .querySelectorAll(".view-section")
+          .querySelectorAll(".view")
           .forEach((el) => el.classList.remove("active"));
         document.getElementById("view-" + view).classList.add("active");
-        document
-          .querySelectorAll(".dock-item")
-          .forEach((el) => el.classList.remove("active"));
-        btn.classList.add("active");
+
+        // Hide Tab Bar in Creator Mode
+        document.querySelector(".tab-bar").style.display =
+          view === "create" ? "none" : "flex";
       }
 
-      // --- MODALS ---
-      function openBookModal() {
-        document.getElementById("modal-book").classList.add("active");
-        let g = document.getElementById("grid-book");
-        g.innerHTML = "";
-        bookNames.forEach((b, i) => {
-          let c = document.createElement("span");
-          c.className = "grid-chip";
-          c.innerText = state.lang === "te" ? b[1] : b[0];
-          c.onclick = () => {
-            state.bIdx = i;
-            state.cNum = 1;
-            closeModals();
-            loadChapter();
-          };
-          g.appendChild(c);
-        });
-      }
-      function closeModals() {
-        document
-          .querySelectorAll(".full-modal")
-          .forEach((m) => m.classList.remove("active"));
-      }
-      function renderSongs() {
-        let l = document.getElementById("song-list");
-        l.innerHTML = "";
-        songs.forEach((s) => {
-          let d = document.createElement("div");
-          d.className = "song-card";
-          d.innerHTML = `<div style="font-size:20px;">🎵</div><b>${s.t}</b>`;
-          d.onclick = () => {
-            document.getElementById("modal-lyrics").classList.add("active");
-            document.getElementById("lyrics-title").innerText = s.t;
-            document.getElementById("lyrics-text").innerText = s.l;
-          };
-          l.appendChild(d);
-        });
+      function updateDate() {
+        const d = new Date();
+        document.getElementById("date-display").innerText =
+          d.toLocaleDateString("en-US", {
+            weekday: "long",
+            month: "short",
+            day: "numeric",
+          });
       }
 
-      document.addEventListener("click", (e) => {
-        if (
-          !e.target.closest("#settings-drawer") &&
-          !e.target.closest(".icon-btn")
-        ) {
-          document.getElementById("settings-drawer").classList.remove("active");
+      // --- 4. BIBLE ENGINE ---
+      async function loadChapter() {
+        const container = document.getElementById("verses-area");
+        container.innerHTML = "Loading...";
+
+        // Fetch Telugu Bible (using Git API)
+        const res = await fetch(
+          `https://cdn.jsdelivr.net/gh/aruljohn/Bible-telugu@master/Genesis.json`
+        );
+        const data = await res.json();
+        const verses = data.chapters[state.cNum - 1].verses;
+
+        let html = "";
+        verses.forEach((v, i) => {
+          const vNum = i + 1;
+          const hlClass =
+            state.highlights[`${state.bIdx}-${state.cNum}-${vNum}`] || "";
+
+          html += `<div class="verse-block ${hlClass}" onclick="openContext('${v.text}', '${vNum}')">
+                    <span class="v-idx">${vNum}</span> ${v.text}
+                </div>`;
+        });
+        container.innerHTML = html;
+      }
+
+      // --- 5. CONTEXT MENU (Highlighting) ---
+      let selectedVerseNum = null;
+      function openContext(text, num) {
+        currentVerseText = text;
+        currentVerseRef = `Genesis 1:${num}`; // Dynamic ref in real app
+        selectedVerseNum = num;
+        document.getElementById("context-menu").classList.add("open");
+      }
+
+      function highlight(color) {
+        const key = `${state.bIdx}-${state.cNum}-${selectedVerseNum}`;
+        if (color) state.highlights[key] = color;
+        else delete state.highlights[key];
+
+        save();
+        loadChapter(); // Redraw
+        document.getElementById("context-menu").classList.remove("open");
+      }
+
+      // --- 6. IMAGE GENERATOR (Canvas Logic) ---
+      function createImageFromSelection() {
+        document.getElementById("context-menu").classList.remove("open");
+        switchTab("create");
+        drawCanvas();
+      }
+
+      function openCreatorWithVod() {
+        currentVerseText =
+          "Your word is a lamp for my feet, a light on my path.";
+        currentVerseRef = "Psalm 119:105";
+        switchTab("create");
+        drawCanvas();
+      }
+
+      function drawCanvas() {
+        const canvas = document.getElementById("gen-canvas");
+        const ctx = canvas.getContext("2d");
+
+        // 1. Draw Background
+        const w = canvas.width,
+          h = canvas.height;
+        let grad;
+
+        if (bgType === 0) grad = ctx.createLinearGradient(0, 0, w, h); // Pink
+        else if (bgType === 1)
+          grad = ctx.createLinearGradient(0, 0, 0, h); // Blue
+        else if (bgType === 2)
+          grad = ctx.createLinearGradient(0, h, w, 0); // Purple
+        else grad = "#111"; // Black
+
+        if (bgType !== 3) {
+          const colors = [
+            ["#ff9a9e", "#fecfef"],
+            ["#a1c4fd", "#c2e9fb"],
+            ["#30cfd0", "#330867"],
+          ];
+          grad.addColorStop(0, colors[bgType][0]);
+          grad.addColorStop(1, colors[bgType][1]);
         }
-      });
+
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, w, h);
+
+        // 2. Draw Text
+        ctx.fillStyle = bgType === 3 ? "white" : "#333";
+        if (bgType === 2) ctx.fillStyle = "white";
+
+        ctx.font = "bold 60px 'Crimson Pro'";
+        ctx.textAlign = "center";
+
+        // Text Wrapping Logic
+        const words = currentVerseText.split(" ");
+        let line = "";
+        let y = h / 2 - 100;
+
+        words.forEach((word) => {
+          const testLine = line + word + " ";
+          if (ctx.measureText(testLine).width > w - 200) {
+            ctx.fillText(line, w / 2, y);
+            line = word + " ";
+            y += 80;
+          } else {
+            line = testLine;
+          }
+        });
+        ctx.fillText(line, w / 2, y);
+
+        // 3. Draw Reference
+        ctx.font = "40px 'Inter'";
+        ctx.fillText(currentVerseRef, w / 2, y + 100);
+
+        // 4. Branding
+        ctx.font = "30px 'Inter'";
+        ctx.globalAlpha = 0.6;
+        ctx.fillText("PRAYER BEAM", w / 2, h - 50);
+        ctx.globalAlpha = 1.0;
+      }
+
+      function downloadImage() {
+        const link = document.createElement("a");
+        link.download = "prayer-beam-verse.png";
+        link.href = document.getElementById("gen-canvas").toDataURL();
+        link.click();
+      }
+
+      // --- 7. UTILS ---
+      function toggleTheme() {
+        const themes = ["light", "dark"];
+        state.theme = state.theme === "light" ? "dark" : "light";
+        document.body.setAttribute("data-theme", state.theme);
+        save();
+      }
+      document.body.setAttribute("data-theme", state.theme); // Apply on load
     </script>
   </body>
 </html>
