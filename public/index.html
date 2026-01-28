@@ -13,52 +13,18 @@
     <meta name="theme-color" content="#d32f2f" />
 
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
       rel="stylesheet"
     />
 
     <style>
-      /* --- THEME VARIABLES --- */
+      /* --- CORE VARIABLES --- */
       :root {
-        --primary: #d32f2f;
-        --primary-soft: #ffebee;
-        --bg: #ffffff;
-        --text: #1a1a1a;
-        --surface: #f8f9fa;
-        --border: #eef0f2;
-        --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        --header-bg: rgba(255, 255, 255, 0.95);
-        --nav-bg: rgba(255, 255, 255, 0.95);
-      }
-
-      /* DARK THEME */
-      [data-theme="dark"] {
-        --primary: #ff6659;
-        --primary-soft: #3e2723;
-        --bg: #121212;
-        --text: #ffffff;
-        --surface: #1e1e1e;
-        --border: #333;
-        --shadow: none;
-        --header-bg: rgba(18, 18, 18, 0.95);
-        --nav-bg: rgba(18, 18, 18, 0.95);
-      }
-
-      /* GRADIENT THEME (ROYAL) */
-      [data-theme="royal"] {
-        --bg: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        --surface: rgba(255, 255, 255, 0.7);
-        --header-bg: rgba(255, 255, 255, 0.6);
-        --nav-bg: rgba(255, 255, 255, 0.8);
-      }
-
-      /* GRADIENT THEME (SUNRISE) */
-      [data-theme="sunrise"] {
-        --primary: #d35400;
-        --bg: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
-        --surface: rgba(255, 255, 255, 0.8);
-        --header-bg: rgba(255, 255, 255, 0.6);
-        --nav-bg: rgba(255, 255, 255, 0.8);
+        --bar-bg: #e8ebf0; /* The greyish-blue from your screenshot */
+        --input-bg: #ffffff;
+        --primary: #2b6cb0; /* Professional Blue */
+        --text: #333;
+        --border: #ccc;
       }
 
       * {
@@ -69,165 +35,177 @@
       body {
         margin: 0;
         font-family: "Inter", sans-serif;
-        background: var(--bg);
+        background: #ffffff;
         color: var(--text);
-        padding-bottom: 90px;
-        padding-top: 60px;
-        min-height: 100vh;
-        transition: background 0.3s, color 0.3s;
+        padding-top: 60px; /* Space for the top bar */
+        padding-bottom: 80px; /* Space for bottom nav */
       }
 
-      /* --- HEADER --- */
+      /* --- SAJEEVA VAHINI STYLE TOP BAR --- */
       header {
         position: fixed;
         top: 0;
         left: 0;
         right: 0;
         height: 60px;
-        background: var(--header-bg);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border-bottom: 1px solid var(--border);
+        background: var(--bar-bg);
+        border-bottom: 1px solid #d1d5db;
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        padding: 0 15px;
+        padding: 0 10px;
+        gap: 8px;
         z-index: 1000;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
       }
 
-      .header-btn {
-        background: var(--surface);
+      /* The Control Inputs (White Boxes) */
+      .control-box {
+        background: var(--input-bg);
         border: 1px solid var(--border);
-        color: var(--text);
-        padding: 8px 12px;
-        border-radius: 20px;
-        font-size: 13px;
-        font-weight: 600;
-        cursor: pointer;
-        box-shadow: var(--shadow);
+        border-radius: 6px;
+        padding: 0 10px;
+        height: 38px;
         display: flex;
         align-items: center;
-        gap: 5px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #333;
+        cursor: pointer;
+        white-space: nowrap;
       }
 
-      /* --- NAVIGATION PILLS --- */
-      .nav-controls {
-        display: flex;
-        gap: 10px;
+      /* Book Select (Wide) */
+      .book-select {
+        flex-grow: 1; /* Takes available space */
+        justify-content: space-between;
+        overflow: hidden;
+        max-width: 50%;
       }
 
-      /* --- BIBLE READER --- */
-      .verse {
-        margin-bottom: 15px;
-        line-height: 1.8;
+      /* Chapter Select (Small) */
+      .chap-select {
+        min-width: 40px;
+        justify-content: center;
+      }
+
+      /* Language Select (Right Side) */
+      .lang-select {
+        margin-left: auto; /* Pushes to far right */
+        font-size: 12px;
+      }
+
+      /* Arrows */
+      .nav-arrow {
+        color: #555;
         font-size: 18px;
+        padding: 5px;
+        cursor: pointer;
+        border: none;
+        background: none;
+        display: flex;
+        align-items: center;
+      }
+      .nav-arrow:active {
+        color: var(--primary);
+        transform: scale(0.9);
+      }
+
+      /* --- READER CONTENT --- */
+      .verse {
         padding: 5px 15px;
+        line-height: 1.9;
+        font-size: 18px;
+        color: #222;
       }
       .v-num {
         color: var(--primary);
         font-size: 11px;
-        font-weight: 800;
+        font-weight: 700;
         vertical-align: super;
-        margin-right: 5px;
-        opacity: 0.8;
+        margin-right: 4px;
       }
 
-      /* --- SELECTION GRIDS (YouVersion Style) --- */
+      /* --- PICKER MENUS (Popups) --- */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 60px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: white;
+        z-index: 999;
+        overflow-y: auto;
+        padding: 15px;
+      }
+      .modal.active {
+        display: block;
+        animation: slideDown 0.2s ease;
+      }
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
       .grid-container {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
         gap: 10px;
-        padding: 15px;
       }
-
-      .selection-card {
-        background: var(--surface);
+      .grid-item {
+        background: #f8f9fa;
+        border: 1px solid #eee;
         padding: 15px;
-        border-radius: 12px;
         text-align: center;
+        border-radius: 8px;
         font-weight: 600;
-        font-size: 14px;
-        color: var(--text);
-        box-shadow: var(--shadow);
-        border: 1px solid rgba(0, 0, 0, 0.05);
+        font-size: 13px;
         cursor: pointer;
-        transition: transform 0.1s;
       }
-      .selection-card:active {
-        transform: scale(0.95);
-        background: var(--primary-soft);
+      .grid-item:active {
+        background: #e2e8f0;
+        color: var(--primary);
       }
 
-      /* Chapters are round */
-      .grid-chapters {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 12px;
-        padding: 15px;
-      }
-      .chapter-pill {
-        background: var(--surface);
-        aspect-ratio: 1;
+      /* Chapters Grid */
+      .chap-circle {
+        background: white;
+        border: 1px solid #ccc;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 50%;
-        font-weight: 700;
-        box-shadow: var(--shadow);
+        font-weight: bold;
         cursor: pointer;
-        border: 1px solid var(--border);
-        color: var(--text);
-      }
-      .chapter-pill.active {
-        background: var(--primary);
-        color: white;
-        border: none;
+        margin: auto;
       }
 
-      /* --- FOOTER NAV (Next/Prev) --- */
-      .chapter-nav {
-        display: flex;
-        justify-content: space-between;
-        padding: 20px 15px;
-        margin-top: 20px;
-      }
-      .nav-pill {
-        background: var(--primary);
-        color: white;
-        padding: 12px 24px;
-        border-radius: 30px;
-        font-weight: 600;
-        border: none;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        cursor: pointer;
-      }
-      .nav-pill:disabled {
-        background: #ccc;
-        box-shadow: none;
-      }
-
-      /* --- BOTTOM TAB BAR --- */
+      /* --- BOTTOM NAV --- */
       .bottom-nav {
         position: fixed;
         bottom: 0;
         left: 0;
         right: 0;
-        height: 70px;
-        background: var(--nav-bg);
-        backdrop-filter: blur(15px);
-        -webkit-backdrop-filter: blur(15px);
-        border-top: 1px solid var(--border);
+        height: 65px;
+        background: white;
+        border-top: 1px solid #eee;
         display: flex;
         justify-content: space-around;
         align-items: center;
         z-index: 1000;
-        padding-bottom: 10px;
       }
       .nav-item {
         border: none;
         background: none;
-        color: var(--text);
-        opacity: 0.5;
+        color: #888;
         font-size: 10px;
         font-weight: 600;
         display: flex;
@@ -235,18 +213,20 @@
         align-items: center;
       }
       .nav-item.active {
-        opacity: 1;
-        color: var(--primary);
-      }
+        color: #d32f2f;
+      } /* Keep your red brand color for bottom nav */
       .nav-icon {
-        font-size: 24px;
+        font-size: 22px;
         margin-bottom: 4px;
       }
 
-      /* Loader */
+      /* --- UTILS --- */
+      .hidden {
+        display: none !important;
+      }
       .loader {
         border: 3px solid #f3f3f3;
-        border-top: 3px solid var(--primary);
+        border-top: 3px solid #d32f2f;
         border-radius: 50%;
         width: 30px;
         height: 30px;
@@ -263,104 +243,77 @@
         }
       }
 
-      /* Utils */
-      .view-section {
-        display: none;
-      }
-      .view-section.active {
-        display: block;
-      }
-      .hidden {
-        display: none !important;
-      }
-
-      /* Songs & Video Styles (Inherited) */
+      /* Inherited Styles for Songs/TV */
       .search-bar {
-        width: 100%;
-        padding: 15px;
-        border-radius: 12px;
-        border: none;
-        background: var(--surface);
-        box-shadow: var(--shadow);
-        margin: 15px;
-        width: calc(100% - 30px);
+        width: 90%;
+        margin: 15px 5%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
         font-size: 16px;
       }
       .song-item {
-        background: var(--surface);
-        margin: 10px 15px;
         padding: 15px;
-        border-radius: 12px;
+        margin: 0 15px 10px;
+        background: #f9f9f9;
+        border-radius: 8px;
         display: flex;
         align-items: center;
-        box-shadow: var(--shadow);
-      }
-      .video-card {
-        background: var(--surface);
-        margin: 15px;
-        padding: 15px;
-        border-radius: 15px;
-        text-align: center;
-        box-shadow: var(--shadow);
+        cursor: pointer;
       }
       .lyrics-box {
-        background: var(--surface);
-        padding: 20px;
-        margin: 15px;
-        border-radius: 15px;
         white-space: pre-wrap;
-        line-height: 2.2;
+        line-height: 2;
+        padding: 20px;
         font-size: 16px;
-        color: var(--text);
-        box-shadow: var(--shadow);
-        border-top: 4px solid var(--primary);
+        background: #fff;
+      }
+      .video-box {
+        padding: 15px;
+        text-align: center;
       }
     </style>
   </head>
-  <body data-theme="light">
-    <header>
-      <button class="header-btn" onclick="openBookPicker()">
-        <span id="current-book-btn">Genesis 1</span> ▾
-      </button>
+  <body>
+    <header id="main-header">
+      <div class="control-box book-select" onclick="openBookPicker()">
+        <span id="current-book-label">Genesis</span>
+        <span style="font-size: 10px; margin-left: 5px">▼</span>
+      </div>
 
-      <div class="nav-controls">
-        <button class="header-btn" onclick="toggleLanguage()">
-          <span id="lang-display">TE</span>
-        </button>
-        <button class="header-btn" onclick="toggleTheme()">🎨</button>
+      <div class="control-box chap-select" onclick="openChapterPicker()">
+        <span id="current-chap-label">1</span>
+      </div>
+
+      <button class="nav-arrow" onclick="changeChapter(-1)">❮</button>
+      <button class="nav-arrow" onclick="changeChapter(1)">❯</button>
+
+      <div class="control-box lang-select" onclick="toggleLanguage()">
+        <span id="lang-label">TEL</span>
+        <span style="font-size: 10px; margin-left: 5px">▼</span>
       </div>
     </header>
 
-    <div id="view-picker" class="view-section">
-      <div style="padding: 15px">
-        <h2 style="margin: 0 0 10px 0">Select Book</h2>
-      </div>
-      <div id="book-grid" class="grid-container"></div>
-    </div>
-
-    <div id="view-chapters" class="view-section">
-      <div style="padding: 15px; display: flex; align-items: center; gap: 10px">
-        <button class="header-btn" onclick="openBookPicker()">⬅ Books</button>
-        <h2 style="margin: 0" id="chapter-select-title">Genesis</h2>
-      </div>
-      <div id="chapter-grid" class="grid-chapters"></div>
-    </div>
-
-    <div id="view-reader" class="view-section active">
+    <div id="view-reader" class="view-section">
       <div id="loading-spinner" class="loader"></div>
       <div id="verses-container" style="padding-top: 10px"></div>
-
-      <div class="chapter-nav">
-        <button id="btn-prev" class="nav-pill" onclick="changeChapter(-1)">
-          ⬅ Prev
-        </button>
-        <button id="btn-next" class="nav-pill" onclick="changeChapter(1)">
-          Next ➡
-        </button>
-      </div>
     </div>
 
-    <div id="view-songs" class="view-section">
+    <div id="modal-books" class="modal">
+      <h3 style="margin-top: 0">Select Book</h3>
+      <div id="grid-books" class="grid-container"></div>
+    </div>
+
+    <div id="modal-chapters" class="modal">
+      <h3 style="margin-top: 0">Select Chapter</h3>
+      <div
+        id="grid-chapters"
+        class="grid-container"
+        style="grid-template-columns: repeat(5, 1fr)"
+      ></div>
+    </div>
+
+    <div id="view-songs" class="view-section hidden">
       <input
         type="text"
         class="search-bar"
@@ -369,16 +322,16 @@
       />
       <div id="song-list"></div>
       <div id="lyrics-view" class="hidden">
-        <button class="header-btn" style="margin: 15px" onclick="closeLyrics()">
-          ⬅ Back to Songs
+        <button onclick="closeLyrics()" style="margin: 15px; padding: 8px 15px">
+          ⬅ Back
         </button>
-        <h2 id="song-title" style="margin: 0 15px; color: var(--primary)"></h2>
+        <h2 id="song-title-display" style="margin: 0 15px; color: #d32f2f"></h2>
         <div id="lyrics-content" class="lyrics-box"></div>
       </div>
     </div>
 
-    <div id="view-video" class="view-section">
-      <div class="video-card">
+    <div id="view-video" class="view-section hidden">
+      <div class="video-box">
         <h2>Prayer Beam TV</h2>
         <div
           style="
@@ -388,7 +341,7 @@
             overflow: hidden;
             border-radius: 10px;
             background: black;
-            margin-top: 15px;
+            margin-top: 10px;
           "
         >
           <iframe
@@ -410,11 +363,14 @@
           style="
             display: inline-block;
             margin-top: 20px;
+            padding: 10px 20px;
+            background: #cc0000;
+            color: white;
             text-decoration: none;
-            color: var(--primary);
+            border-radius: 20px;
             font-weight: bold;
           "
-          >Open YouTube Channel ↗</a
+          >Open YouTube Channel</a
         >
       </div>
     </div>
@@ -433,8 +389,7 @@
 
     <script>
       // CONFIG
-      let state = { lang: "te", bookIndex: 0, chapter: 1, themeIdx: 0 };
-      const themes = ["light", "royal", "sunrise", "dark"];
+      let state = { lang: "te", bookIdx: 0, chapter: 1 };
       const langs = ["te", "en", "hi", "ta", "ka", "ml"];
 
       const sources = {
@@ -563,99 +518,85 @@
 
       let loadedData = null;
 
-      // INIT
-      loadChapter(0, 1); // Start Genesis 1
+      // STARTUP
+      loadChapter(0, 1);
       renderSongs();
 
       // FUNCTIONS
-      function toggleTheme() {
-        state.themeIdx = (state.themeIdx + 1) % themes.length;
-        document.body.setAttribute("data-theme", themes[state.themeIdx]);
-      }
-
       function toggleLanguage() {
         let idx = langs.indexOf(state.lang);
         state.lang = langs[(idx + 1) % langs.length];
-        document.getElementById("lang-display").innerText =
+        document.getElementById("lang-label").innerText =
           state.lang.toUpperCase();
         loadedData = null;
-        loadChapter(state.bookIndex, 1);
+        loadChapter(state.bookIdx, 1);
       }
 
       function switchTab(view, btn) {
-        document
-          .querySelectorAll(".view-section")
-          .forEach((el) => el.classList.remove("active"));
-        // If picker is open, force reader
-        if (view === "reader")
-          document.getElementById("view-reader").classList.add("active");
-        else document.getElementById("view-" + view).classList.add("active");
+        document.getElementById("view-reader").classList.add("hidden");
+        document.getElementById("view-songs").classList.add("hidden");
+        document.getElementById("view-video").classList.add("hidden");
+
+        document.getElementById("view-" + view).classList.remove("hidden");
 
         document
           .querySelectorAll(".nav-item")
           .forEach((el) => el.classList.remove("active"));
         btn.classList.add("active");
+
+        // Show/Hide Header based on tab
+        document.getElementById("main-header").style.display =
+          view === "reader" ? "flex" : "none";
       }
 
-      // --- BIBLE NAV ---
+      // --- BIBLE LOGIC ---
       function openBookPicker() {
-        document
-          .querySelectorAll(".view-section")
-          .forEach((el) => el.classList.remove("active"));
-        document.getElementById("view-picker").classList.add("active");
-
-        const grid = document.getElementById("book-grid");
+        let grid = document.getElementById("grid-books");
         grid.innerHTML = "";
         bookNames.forEach((b, i) => {
           let div = document.createElement("div");
-          div.className = "selection-card";
+          div.className = "grid-item";
           div.innerText = state.lang === "te" ? b[1] : b[0];
-          div.onclick = () => openChapterPicker(i);
+          div.onclick = () => {
+            state.bookIdx = i;
+            document.getElementById("modal-books").classList.remove("active");
+            openChapterPicker(); // Auto open chapters after book
+          };
           grid.appendChild(div);
         });
+        document.getElementById("modal-books").classList.add("active");
       }
 
-      function openChapterPicker(bookIdx) {
-        document.getElementById("view-picker").classList.remove("active");
-        document.getElementById("view-chapters").classList.add("active");
-
-        let name =
-          state.lang === "te" ? bookNames[bookIdx][1] : bookNames[bookIdx][0];
-        document.getElementById("chapter-select-title").innerText = name;
-
-        // Just assume 50 chapters for visual, or fetch if needed.
-        // For speed, we will load the book to get chapter count
-        const grid = document.getElementById("chapter-grid");
+      function openChapterPicker() {
+        // We need a dummy count or fetch real count. For speed, using default logic or fetching
+        document.getElementById("modal-chapters").classList.add("active");
+        let grid = document.getElementById("grid-chapters");
         grid.innerHTML = "Loading...";
 
-        // We need to fetch to know chapters
-        fetchBook(bookIdx).then((data) => {
+        fetchBook(state.bookIdx).then((data) => {
           grid.innerHTML = "";
-          // Handle different JSON formats
           let chapters =
-            data.chapters || data.books?.[bookIdx]?.chapters || data;
+            data.chapters || data.books?.[state.bookIdx]?.chapters || data;
           if (!Array.isArray(chapters)) chapters = [chapters];
 
           chapters.forEach((c, i) => {
-            let pill = document.createElement("div");
-            pill.className = "chapter-pill";
-            pill.innerText = i + 1;
-            pill.onclick = () => {
-              loadChapter(bookIdx, i + 1);
+            let div = document.createElement("div");
+            div.className = "chap-circle";
+            div.innerText = i + 1;
+            div.onclick = () => {
+              loadChapter(state.bookIdx, i + 1);
               document
-                .getElementById("view-chapters")
+                .getElementById("modal-chapters")
                 .classList.remove("active");
-              document.getElementById("view-reader").classList.add("active");
             };
-            grid.appendChild(pill);
+            grid.appendChild(div);
           });
         });
       }
 
-      async function fetchBook(bookIdx) {
+      async function fetchBook(idx) {
         const src = sources[state.lang];
-        const engName = bookNames[bookIdx][0];
-
+        const engName = bookNames[idx][0];
         if (src.type === "split") {
           let res = await fetch(`${src.url}/${engName}.json`);
           return await res.json();
@@ -668,25 +609,26 @@
         }
       }
 
-      function loadChapter(bookIdx, chapNum) {
-        state.bookIndex = bookIdx;
-        state.chapter = chapNum;
+      function loadChapter(bIdx, cNum) {
+        state.bookIdx = bIdx;
+        state.chapter = cNum;
 
-        let name =
-          state.lang === "te" ? bookNames[bookIdx][1] : bookNames[bookIdx][0];
-        document.getElementById(
-          "current-book-btn"
-        ).innerText = `${name} ${chapNum}`;
+        // Update Header UI
+        let bName =
+          state.lang === "te" ? bookNames[bIdx][1] : bookNames[bIdx][0];
+        document.getElementById("current-book-label").innerText = bName;
+        document.getElementById("current-chap-label").innerText = cNum;
+
+        // Load Text
         document.getElementById("verses-container").innerHTML = "";
         document.getElementById("loading-spinner").style.display = "block";
 
-        fetchBook(bookIdx).then((data) => {
+        fetchBook(bIdx).then((data) => {
           document.getElementById("loading-spinner").style.display = "none";
-          let chapters =
-            data.chapters || data.books?.[bookIdx]?.chapters || data;
+          let chapters = data.chapters || data.books?.[bIdx]?.chapters || data;
           if (!Array.isArray(chapters)) chapters = [chapters];
 
-          let chapter = chapters[chapNum - 1];
+          let chapter = chapters[cNum - 1];
           let verses = chapter.verses || chapter.verse;
           if (!Array.isArray(verses)) verses = [verses];
 
@@ -705,43 +647,46 @@
 
       function changeChapter(delta) {
         let next = state.chapter + delta;
-        if (next < 1) return; // Logic for prev book could go here
-        loadChapter(state.bookIndex, next);
+        if (next < 1) return;
+        loadChapter(state.bookIdx, next);
       }
 
       // --- SONGS ---
       function renderSongs() {
-        const list = document.getElementById("song-list");
+        let list = document.getElementById("song-list");
         list.innerHTML = "";
         songsDB.forEach((s) => {
           let div = document.createElement("div");
           div.className = "song-item";
-          div.innerHTML = `<div style="flex-grow:1; font-weight:600;">${s.title}</div> <span>🎵</span>`;
+          div.innerHTML = `<span style="font-size:20px; margin-right:10px;">🎵</span> <b>${s.title}</b>`;
           div.onclick = () => {
             document.getElementById("song-list").classList.add("hidden");
-            document.querySelector(".search-bar").classList.add("hidden");
             document.getElementById("lyrics-view").classList.remove("hidden");
-            document.getElementById("song-title").innerText = s.title;
+            document.getElementById("song-title-display").innerText = s.title;
             document.getElementById("lyrics-content").innerText = s.lyrics;
           };
           list.appendChild(div);
         });
       }
-
       function filterSongs(q) {
-        let cards = document.querySelectorAll(".song-item");
-        cards.forEach((c) => {
-          c.style.display = c.innerText.toLowerCase().includes(q.toLowerCase())
+        document.querySelectorAll(".song-item").forEach((el) => {
+          el.style.display = el.innerText
+            .toLowerCase()
+            .includes(q.toLowerCase())
             ? "flex"
             : "none";
         });
       }
-
       function closeLyrics() {
         document.getElementById("lyrics-view").classList.add("hidden");
         document.getElementById("song-list").classList.remove("hidden");
-        document.querySelector(".search-bar").classList.remove("hidden");
       }
+
+      // CLOSE MODALS ON CLICK OUTSIDE
+      window.onclick = function (e) {
+        if (e.target.classList.contains("modal"))
+          e.target.classList.remove("active");
+      };
     </script>
   </body>
 </html>
