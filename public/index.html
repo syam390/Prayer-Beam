@@ -110,12 +110,18 @@
         align-items: center;
         justify-content: center;
       }
+      /* Active state for audio button */
+      .icon-btn.active {
+        color: var(--primary);
+        background: rgba(211, 47, 47, 0.1);
+      }
 
       /* READER */
       #verses-container {
         padding: 24px 20px;
         max-width: 700px;
         margin: 0 auto;
+        min-height: 60vh;
       }
       .verse {
         font-family: var(--font-read);
@@ -178,6 +184,12 @@
         gap: 10px;
         margin-top: 10px;
       }
+      .lang-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 10px;
+      }
       .theme-opt {
         padding: 12px;
         border-radius: 12px;
@@ -185,9 +197,12 @@
         text-align: center;
         font-weight: 600;
         cursor: pointer;
+        font-size: 13px;
       }
       .theme-opt.active {
         border-color: var(--primary);
+        background: rgba(211, 47, 47, 0.05);
+        color: var(--primary);
       }
 
       /* DOCK */
@@ -267,6 +282,7 @@
         border-radius: 12px;
         font-weight: 600;
         cursor: pointer;
+        font-size: 13px;
       }
 
       /* Song/TV */
@@ -292,6 +308,8 @@
         opacity: 0;
         transition: 0.3s;
         pointer-events: none;
+        z-index: 4000;
+        font-size: 13px;
       }
       #toast.show {
         opacity: 1;
@@ -299,31 +317,7 @@
     </style>
   </head>
   <body data-theme="light">
-    <div
-      id="splash"
-      style="
-        position: fixed;
-        inset: 0;
-        background: #fff;
-        z-index: 5000;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        transition: 0.5s;
-      "
-    >
-      <img
-        src="icon.png"
-        style="width: 90px; border-radius: 22px"
-        onerror="this.style.display='none'"
-      />
-      <h1 style="color: #d32f2f; margin-top: 20px; font-family: 'Inter'">
-        Prayer Beam
-      </h1>
-    </div>
-
-    <div id="toast">Playing Audio...</div>
+    <div id="toast">Message</div>
 
     <header>
       <div class="book-trigger" onclick="openBookModal()">
@@ -332,19 +326,19 @@
         <span>▼</span>
       </div>
       <div class="header-actions">
-        <button class="icon-btn" onclick="speakChapter()">🔊</button>
+        <button id="btn-audio" class="icon-btn" onclick="toggleAudio()">
+          🔊
+        </button>
         <button class="icon-btn" onclick="toggleSettings()">Aa</button>
       </div>
     </header>
 
     <main>
       <div id="view-read" class="view-section active">
-        <div id="verses-container"></div>
+        <div id="verses-container">Loading...</div>
         <div class="chapter-actions">
           <button class="nav-btn-lg" onclick="navChap(-1)">Previous</button>
-          <button class="nav-btn-lg primary" onclick="navChap(1)">
-            Next Chapter
-          </button>
+          <button class="nav-btn-lg primary" onclick="navChap(1)">Next</button>
         </div>
       </div>
 
@@ -410,40 +404,49 @@
       ></div>
 
       <div style="margin-bottom: 20px">
-        <div style="font-size: 12px; font-weight: 700; color: #888">THEME</div>
-        <div class="theme-grid">
-          <div
-            class="theme-opt active"
-            onclick="setTheme('light', this)"
-            style="background: #fff; border-color: #d32f2f"
-          >
-            Day
+        <div
+          style="
+            font-size: 12px;
+            font-weight: 700;
+            color: #888;
+            margin-bottom: 10px;
+          "
+        >
+          LANGUAGE
+        </div>
+        <div class="lang-grid">
+          <div class="theme-opt" onclick="setLang('te')" id="btn-te">
+            Telugu
           </div>
-          <div
-            class="theme-opt"
-            onclick="setTheme('sepia', this)"
-            style="background: #f8f4e9"
-          >
-            Sepia
+          <div class="theme-opt" onclick="setLang('en')" id="btn-en">
+            English
           </div>
-          <div
-            class="theme-opt"
-            onclick="setTheme('dark', this)"
-            style="background: #222; color: #fff"
-          >
-            Night
+          <div class="theme-opt" onclick="setLang('hi')" id="btn-hi">Hindi</div>
+          <div class="theme-opt" onclick="setLang('ta')" id="btn-ta">Tamil</div>
+          <div class="theme-opt" onclick="setLang('ka')" id="btn-ka">
+            Kannada
+          </div>
+          <div class="theme-opt" onclick="setLang('ml')" id="btn-ml">
+            Malayalam
           </div>
         </div>
       </div>
 
       <div style="margin-bottom: 20px">
-        <div style="font-size: 12px; font-weight: 700; color: #888">
-          LANGUAGE
+        <div
+          style="
+            font-size: 12px;
+            font-weight: 700;
+            color: #888;
+            margin-bottom: 10px;
+          "
+        >
+          THEME
         </div>
         <div class="theme-grid">
-          <div class="theme-opt" onclick="setLang('te')">TEL</div>
-          <div class="theme-opt" onclick="setLang('en')">ENG</div>
-          <div class="theme-opt" onclick="setLang('hi')">HIN</div>
+          <div class="theme-opt" onclick="setTheme('light', this)">Day</div>
+          <div class="theme-opt" onclick="setTheme('sepia', this)">Sepia</div>
+          <div class="theme-opt" onclick="setTheme('dark', this)">Night</div>
         </div>
       </div>
     </div>
@@ -494,30 +497,116 @@
 
     <script>
       // CONFIG
-      let state = JSON.parse(localStorage.getItem("pb_v3")) || {
+      let state = JSON.parse(localStorage.getItem("pb_v4")) || {
         lang: "te",
         bIdx: 0,
         cNum: 1,
         theme: "light",
       };
 
+      // --- 1. NEW UNIFIED SOURCES (API + Static) ---
       const sources = {
         te: {
+          type: "git",
           url: "https://cdn.jsdelivr.net/gh/aruljohn/Bible-telugu@master",
-          type: "split",
           code: "te-IN",
         },
         en: {
+          type: "git",
           url: "https://cdn.jsdelivr.net/gh/aruljohn/Bible-kjv@master",
-          type: "split",
           code: "en-US",
         },
         hi: {
-          url: "https://raw.githubusercontent.com/godlytalias/Bible-Database/master/Hindi/Hindi_Bible.json",
-          type: "single",
+          type: "api",
+          url: "https://bolls.life/get-text/HINCL",
           code: "hi-IN",
         },
+        ta: {
+          type: "api",
+          url: "https://bolls.life/get-text/TAMOV",
+          code: "ta-IN",
+        },
+        ka: {
+          type: "api",
+          url: "https://bolls.life/get-text/KANJV",
+          code: "kn-IN",
+        },
+        ml: {
+          type: "api",
+          url: "https://bolls.life/get-text/MALOV",
+          code: "ml-IN",
+        },
       };
+
+      const bollsCodes = [
+        "GEN",
+        "EXO",
+        "LEV",
+        "NUM",
+        "DEU",
+        "JOS",
+        "JDG",
+        "RUT",
+        "1SA",
+        "2SA",
+        "1KI",
+        "2KI",
+        "1CH",
+        "2CH",
+        "EZR",
+        "NEH",
+        "EST",
+        "JOB",
+        "PSA",
+        "PRO",
+        "ECC",
+        "SNG",
+        "ISA",
+        "JER",
+        "LAM",
+        "EZE",
+        "DAN",
+        "HOS",
+        "JOE",
+        "AMO",
+        "OBA",
+        "JON",
+        "MIC",
+        "NAH",
+        "HAB",
+        "ZEP",
+        "HAG",
+        "ZEC",
+        "MAL",
+        "MAT",
+        "MAR",
+        "LUK",
+        "JOH",
+        "ACT",
+        "ROM",
+        "1CO",
+        "2CO",
+        "GAL",
+        "EPH",
+        "PHI",
+        "COL",
+        "1TH",
+        "2TH",
+        "1TI",
+        "2TI",
+        "TIT",
+        "PHM",
+        "HEB",
+        "JAS",
+        "1PE",
+        "2PE",
+        "1JO",
+        "2JO",
+        "3JO",
+        "JUD",
+        "REV",
+      ];
+
       const bookNames = [
         ["Genesis", "ఆదికాండము"],
         ["Exodus", "నిర్గమకాండము"],
@@ -589,66 +678,80 @@
       const songs = [
         { t: "Yesayya Naa Pranama (2025)", l: "యేసయ్యా నా ప్రాణమా..." },
         { t: "Neeve Hrudaya Saradhi", l: "నీవే హృదయ సారధి..." },
-      ];
+      ]; // Add full lyrics as before
 
-      let loadedData = null;
+      let loadedData = null; // Cache for Git sources
 
       window.onload = () => {
-        setTimeout(() => document.getElementById("splash").remove(), 2000);
         applyState();
         loadChapter();
         renderSongs();
+        updateLangUI();
       };
 
       function save() {
-        localStorage.setItem("pb_v3", JSON.stringify(state));
+        localStorage.setItem("pb_v4", JSON.stringify(state));
       }
 
-      async function fetchBook(idx) {
-        const src = sources[state.lang] || sources["en"];
-        const name = bookNames[idx][0];
-        if (src.type === "split") {
-          let r = await fetch(`${src.url}/${name}.json`);
-          return await r.json();
-        } else {
-          if (!loadedData) {
-            let r = await fetch(src.url);
-            loadedData = await r.json();
-          }
-          return loadedData;
-        }
-      }
+      // --- 2. UNIFIED FETCHER ---
+      async function loadChapter() {
+        // Stop audio if playing when changing chapter
+        window.speechSynthesis.cancel();
+        resetAudioBtn();
 
-      function loadChapter() {
-        document.getElementById("label-book").innerText =
+        let bName =
           state.lang === "te"
             ? bookNames[state.bIdx][1]
             : bookNames[state.bIdx][0];
+        document.getElementById("label-book").innerText = bName;
         document.getElementById("label-chap").innerText = state.cNum;
         document.getElementById(
           "verses-container"
-        ).innerHTML = `<div style="text-align:center; padding:50px;">Loading...</div>`;
+        ).innerHTML = `<div style="text-align:center; padding:50px; color:#888;">Loading...</div>`;
 
-        fetchBook(state.bIdx).then((data) => {
-          let chapters =
-            data.chapters || data.books?.[state.bIdx]?.chapters || data;
-          if (!Array.isArray(chapters)) chapters = [chapters];
-          let vs =
-            chapters[state.cNum - 1].verses || chapters[state.cNum - 1].verse;
-          if (!Array.isArray(vs)) vs = [vs];
+        try {
+          const src = sources[state.lang];
+          let html = "";
 
-          document.getElementById("verses-container").innerHTML = vs
-            .map(
-              (v, i) =>
-                `<div class="verse">
-                        <span class="v-num">${v.verse || i + 1}</span>${
-                  v.text || v.verse || v
-                }
-                    </div>`
-            )
-            .join("");
+          if (src.type === "git") {
+            const engName = bookNames[state.bIdx][0];
+            if (!loadedData || loadedData.book !== engName) {
+              let r = await fetch(`${src.url}/${engName}.json`);
+              loadedData = await r.json();
+              loadedData.book = engName;
+            }
+            let chapters = loadedData.chapters || loadedData;
+            if (!Array.isArray(chapters)) chapters = [chapters];
+            let vs =
+              chapters[state.cNum - 1].verses || chapters[state.cNum - 1].verse;
+
+            html = vs
+              .map(
+                (v, i) =>
+                  `<div class="verse"><span class="v-num">${
+                    v.verse || i + 1
+                  }</span>${v.text || v.verse || v}</div>`
+              )
+              .join("");
+          } else {
+            const bookCode = bollsCodes[state.bIdx];
+            let r = await fetch(`${src.url}/${bookCode}/${state.cNum}/`);
+            let json = await r.json();
+            html = json
+              .map(
+                (v) =>
+                  `<div class="verse"><span class="v-num">${v.verse}</span>${v.text}</div>`
+              )
+              .join("");
+          }
+
+          document.getElementById("verses-container").innerHTML = html;
           window.scrollTo(0, 0);
-        });
+        } catch (err) {
+          document.getElementById(
+            "verses-container"
+          ).innerHTML = `<div style="text-align:center; padding:20px;">Error loading. Check internet.</div>`;
+        }
         save();
       }
 
@@ -659,32 +762,61 @@
         loadChapter();
       }
 
-      // --- FIXED AUDIO FEATURE ---
-      function speakChapter() {
-        // 1. Get all verse elements
-        let verses = document.querySelectorAll(".verse");
-        let cleanText = "";
+      // --- 3. SMART AUDIO TOGGLE ---
+      function toggleAudio() {
+        if (window.speechSynthesis.speaking) {
+          window.speechSynthesis.cancel();
+          resetAudioBtn();
+          showToast("Audio Stopped");
+        } else {
+          speakChapter();
+        }
+      }
 
-        // 2. Extract only text, ignore numbers
+      function speakChapter() {
+        let verses = document.querySelectorAll(".verse");
+        let text = "";
         verses.forEach((v) => {
           let clone = v.cloneNode(true);
           if (clone.querySelector(".v-num"))
             clone.querySelector(".v-num").remove();
-          cleanText += clone.innerText.trim() + ". ";
+          text += clone.innerText.trim() + ". ";
         });
 
-        // 3. Speak
-        let u = new SpeechSynthesisUtterance(cleanText);
-        u.lang = sources[state.lang] ? sources[state.lang].code : "en-US";
-        window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(u);
+        if (!text) return;
 
+        window.speechSynthesis.cancel();
+        let u = new SpeechSynthesisUtterance(text);
+        let code = sources[state.lang].code;
+        u.lang = code;
+
+        // Set UI to Playing state
+        let btn = document.getElementById("btn-audio");
+        btn.innerText = "⏹"; // Stop icon
+        btn.classList.add("active");
+
+        u.onend = function () {
+          resetAudioBtn();
+        };
+
+        window.speechSynthesis.speak(u);
+        showToast(`Playing Audio (${code})...`);
+      }
+
+      function resetAudioBtn() {
+        let btn = document.getElementById("btn-audio");
+        btn.innerText = "🔊";
+        btn.classList.remove("active");
+      }
+
+      function showToast(msg) {
         let t = document.getElementById("toast");
-        t.innerText = "Playing Audio...";
+        t.innerText = msg;
         t.classList.add("show");
         setTimeout(() => t.classList.remove("show"), 3000);
       }
 
+      // --- SETTINGS ---
       function toggleSettings() {
         document.getElementById("settings-drawer").classList.toggle("active");
       }
@@ -692,17 +824,22 @@
         state.theme = thm;
         save();
         applyState();
-        document
-          .querySelectorAll(".theme-opt")
-          .forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
       }
       function setLang(l) {
         state.lang = l;
         loadedData = null;
         save();
+        updateLangUI();
         loadChapter();
         toggleSettings();
+      }
+
+      function updateLangUI() {
+        document
+          .querySelectorAll(".theme-opt")
+          .forEach((b) => b.classList.remove("active"));
+        if (document.getElementById("btn-" + state.lang))
+          document.getElementById("btn-" + state.lang).classList.add("active");
       }
 
       function applyState() {
@@ -720,6 +857,7 @@
         btn.classList.add("active");
       }
 
+      // --- MODALS ---
       function openBookModal() {
         document.getElementById("modal-book").classList.add("active");
         let g = document.getElementById("grid-book");
@@ -742,7 +880,6 @@
           .querySelectorAll(".full-modal")
           .forEach((m) => m.classList.remove("active"));
       }
-
       function renderSongs() {
         let l = document.getElementById("song-list");
         l.innerHTML = "";
