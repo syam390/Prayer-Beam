@@ -4,52 +4,61 @@
     <meta charset="UTF-8" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
     />
     <title>Prayer Beam</title>
 
     <link rel="icon" type="image/png" href="icon.png" />
     <link rel="apple-touch-icon" href="icon.png" />
     <meta name="theme-color" content="#ffffff" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Merriweather:wght@300;400;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=Crimson+Pro:wght@400;600&display=swap"
       rel="stylesheet"
     />
 
     <style>
-      /* --- VARIABLES --- */
+      /* --- DESIGN SYSTEM --- */
       :root {
         --primary: #d32f2f;
-        --accent: #ffeb3b;
-        --text-main: #1a1a1a;
-        --text-sec: #666;
+        --accent: #ff5252;
         --bg-body: #ffffff;
-        --bg-ui: rgba(255, 255, 255, 0.9);
-        --border: #e0e0e0;
-        --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        --bg-glass: rgba(255, 255, 255, 0.92);
+        --surface: #f3f4f6;
+        --text-main: #111827;
+        --text-sec: #6b7280;
+        --border: #e5e7eb;
+        --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+
         --font-ui: "Inter", sans-serif;
-        --font-read: "Merriweather", serif;
+        --font-read: "Crimson Pro", serif;
+        --read-size: 20px;
+        --read-height: 1.8;
       }
 
-      /* THEMES (Managed via data-theme attribute) */
+      /* THEMES */
       [data-theme="sepia"] {
-        --bg-body: #f4ecd8;
-        --bg-ui: #eaddcf;
-        --text-main: #433422;
+        --bg-body: #f8f4e9;
+        --bg-glass: rgba(244, 236, 216, 0.95);
+        --surface: #eaddcf;
+        --text-main: #5f4b32;
         --border: #d7c9b1;
       }
       [data-theme="dark"] {
-        --bg-body: #121212;
-        --bg-ui: #1e1e1e;
-        --text-main: #e0e0e0;
-        --text-sec: #a0a0a0;
+        --bg-body: #0f0f0f;
+        --bg-glass: rgba(20, 20, 20, 0.95);
+        --surface: #272727;
+        --text-main: #e5e5e5;
+        --text-sec: #a3a3a3;
         --border: #333;
       }
 
       * {
         box-sizing: border-box;
         -webkit-tap-highlight-color: transparent;
+        outline: none;
       }
 
       body {
@@ -58,306 +67,335 @@
         background: var(--bg-body);
         color: var(--text-main);
         padding-top: 60px;
-        padding-bottom: 100px; /* Space for floating nav */
-        transition: background 0.3s, color 0.3s;
+        padding-bottom: 100px;
+        transition: background 0.3s ease, color 0.3s ease;
         overflow-x: hidden;
+        user-select: none; /* App-like feel */
       }
 
-      /* === 1. HEADER (Sajeeva Vahini Advanced) === */
+      /* === 1. NAVIGATION BAR (Top) === */
       header {
         position: fixed;
         top: 0;
         left: 0;
         right: 0;
         height: 60px;
-        background: var(--bg-ui);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        background: var(--bg-glass);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
         border-bottom: 1px solid var(--border);
         display: flex;
         align-items: center;
-        padding: 0 12px;
-        gap: 8px;
+        justify-content: space-between;
+        padding: 0 16px;
         z-index: 1000;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
       }
 
-      .control-pill {
-        background: var(--bg-body);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        height: 36px;
+      .header-left {
         display: flex;
         align-items: center;
-        justify-content: center;
-        padding: 0 12px;
-        font-size: 13px;
-        font-weight: 600;
+        gap: 8px;
+        flex: 1;
+      }
+
+      .book-trigger {
+        background: var(--surface);
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 15px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
         cursor: pointer;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
         transition: transform 0.1s;
       }
-      .control-pill:active {
+      .book-trigger:active {
         transform: scale(0.96);
       }
-
-      .book-pill {
-        flex-grow: 1;
-        justify-content: space-between;
-        max-width: 50%;
-      }
-      .icon-small {
+      .book-trigger span {
+        opacity: 0.5;
         font-size: 10px;
-        margin-left: 5px;
-        opacity: 0.6;
       }
 
-      .nav-btn {
-        width: 36px;
-        height: 36px;
+      .header-actions {
+        display: flex;
+        gap: 4px;
+      }
+
+      .icon-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
         border: none;
         background: transparent;
-        font-size: 18px;
         color: var(--text-main);
-        cursor: pointer;
+        font-size: 20px;
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 50%;
+        cursor: pointer;
       }
-      .nav-btn:active {
+      .icon-btn:active {
         background: rgba(0, 0, 0, 0.05);
       }
 
-      /* Settings Toggle (Aa) */
-      .settings-toggle {
-        font-family: serif;
-        font-weight: 700;
-        font-size: 16px;
-        width: 36px;
-        height: 36px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: 1px solid var(--border);
-        border-radius: 50%;
-        margin-left: auto;
-        cursor: pointer;
-      }
-
-      /* === 2. READER AREA === */
+      /* === 2. READER CANVAS === */
       #verses-container {
-        padding: 20px;
-        max-width: 800px;
+        padding: 24px 20px;
+        max-width: 700px;
         margin: 0 auto;
       }
 
-      /* The Actual Text Styling */
       .verse {
         font-family: var(--font-read);
-        margin-bottom: 15px;
-        line-height: 1.8; /* Good reading height */
-        font-size: 18px; /* Default size */
+        font-size: var(--read-size);
+        line-height: var(--read-height);
+        margin-bottom: 16px;
+        position: relative;
+        padding-left: 4px;
+        transition: background 0.2s;
+        border-radius: 8px;
       }
+      .verse.highlight {
+        background: rgba(211, 47, 47, 0.1);
+      }
+      [data-theme="dark"] .verse.highlight {
+        background: rgba(211, 47, 47, 0.3);
+      }
+
       .v-num {
-        color: var(--primary);
         font-family: var(--font-ui);
-        font-size: 0.7em;
+        color: var(--primary);
+        font-size: 0.6em;
         font-weight: 800;
         vertical-align: super;
-        margin-right: 4px;
-        opacity: 0.8;
+        margin-right: 6px;
+        opacity: 0.7;
       }
 
-      /* === 3. SETTINGS SHEET (The 'Aa' Menu) === */
-      #settings-sheet {
+      /* Chapter Navigation (Bottom of text) */
+      .chapter-actions {
+        display: flex;
+        gap: 15px;
+        margin-top: 40px;
+        justify-content: center;
+      }
+      .nav-btn-lg {
+        flex: 1;
+        background: var(--surface);
+        color: var(--text-main);
+        border: none;
+        padding: 15px;
+        border-radius: 16px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .nav-btn-lg.primary {
+        background: var(--primary);
+        color: white;
+      }
+
+      /* === 3. SETTINGS DRAWER (The 'Aa' Menu) === */
+      #settings-drawer {
         position: fixed;
-        bottom: -300px;
+        bottom: 0;
         left: 0;
         right: 0;
-        background: var(--bg-ui);
-        border-top: 1px solid var(--border);
-        border-radius: 20px 20px 0 0;
-        padding: 20px;
+        background: var(--bg-body);
+        border-radius: 24px 24px 0 0;
+        padding: 24px;
+        box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.15);
+        transform: translateY(110%);
+        transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
         z-index: 2000;
-        box-shadow: 0 -5px 30px rgba(0, 0, 0, 0.1);
-        transition: bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
+        border-top: 1px solid var(--border);
       }
-      #settings-sheet.active {
-        bottom: 0;
+      #settings-drawer.active {
+        transform: translateY(0);
       }
 
-      .setting-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 20px;
+      .drawer-handle {
+        width: 40px;
+        height: 5px;
+        background: var(--border);
+        border-radius: 10px;
+        margin: 0 auto 20px auto;
       }
-      .setting-label {
-        font-size: 13px;
-        font-weight: 600;
+
+      .setting-group {
+        margin-bottom: 25px;
+      }
+      .setting-title {
+        font-size: 12px;
+        font-weight: 700;
         color: var(--text-sec);
         text-transform: uppercase;
         letter-spacing: 1px;
+        margin-bottom: 12px;
       }
 
-      .theme-btn {
-        width: 45px;
-        height: 45px;
-        border-radius: 50%;
+      .theme-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 10px;
+      }
+      .theme-opt {
+        padding: 12px;
+        border-radius: 12px;
         border: 2px solid var(--border);
+        text-align: center;
+        font-weight: 600;
+        font-size: 14px;
         cursor: pointer;
       }
-      .theme-btn.active {
+      .theme-opt.active {
         border-color: var(--primary);
-        transform: scale(1.1);
+        color: var(--primary);
+        background: rgba(211, 47, 47, 0.05);
       }
 
-      .size-btn {
-        background: var(--bg-body);
-        border: 1px solid var(--border);
-        padding: 8px 20px;
-        border-radius: 8px;
-        font-weight: bold;
+      .stepper {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: var(--surface);
+        border-radius: 12px;
+        padding: 5px;
+      }
+      .step-btn {
+        width: 50px;
+        height: 40px;
+        border: none;
+        background: transparent;
+        font-size: 20px;
         cursor: pointer;
+        color: var(--text-main);
       }
 
-      /* === 4. FLOATING NAVIGATION === */
-      .floating-nav {
+      /* === 4. BOTTOM DOCK (Floating) === */
+      .dock {
         position: fixed;
-        bottom: 20px;
+        bottom: 25px;
         left: 50%;
         transform: translateX(-50%);
-        width: 90%;
-        max-width: 400px;
-        height: 65px;
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        border-radius: 24px;
+        background: var(--bg-glass);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 8px 12px;
+        border-radius: 30px;
         display: flex;
-        justify-content: space-around;
-        align-items: center;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        z-index: 1000;
+        gap: 8px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        z-index: 1500;
       }
-      /* Dark mode adjustment for nav */
-      [data-theme="dark"] .floating-nav {
-        background: rgba(30, 30, 30, 0.85);
+      [data-theme="dark"] .dock {
         border-color: #333;
       }
 
-      .nav-item {
-        border: none;
-        background: none;
-        color: #999;
-        font-size: 10px;
-        font-weight: 600;
+      .dock-item {
         display: flex;
         flex-direction: column;
         align-items: center;
-        transition: color 0.2s, transform 0.2s;
+        justify-content: center;
+        width: 60px;
+        height: 50px;
+        border-radius: 20px;
+        color: var(--text-sec);
         cursor: pointer;
+        transition: all 0.2s;
       }
-      .nav-item.active {
-        color: var(--primary);
-        transform: translateY(-2px);
+      .dock-item.active {
+        background: var(--primary);
+        color: white;
+        box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
       }
-      .nav-icon {
-        font-size: 24px;
+      .dock-icon {
+        font-size: 20px;
         margin-bottom: 2px;
       }
+      .dock-label {
+        font-size: 9px;
+        font-weight: 700;
+      }
 
-      /* === 5. OTHER VIEWS (Songs/TV) === */
+      /* === 5. SONGS & TV (Views) === */
       .view-section {
         display: none;
-        padding-top: 10px;
+        animation: fadeUp 0.3s ease;
       }
       .view-section.active {
         display: block;
-        animation: fadeIn 0.3s;
       }
-      @keyframes fadeIn {
+      @keyframes fadeUp {
         from {
           opacity: 0;
+          transform: translateY(10px);
         }
         to {
           opacity: 1;
+          transform: translateY(0);
         }
       }
 
-      /* Song Card Style */
       .song-card {
-        background: var(--bg-body);
-        border: 1px solid var(--border);
-        margin: 10px 20px;
+        background: var(--surface);
+        border-radius: 16px;
         padding: 16px;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        cursor: pointer;
+      }
+      .song-art {
+        width: 48px;
+        height: 48px;
+        background: var(--primary);
+        color: white;
         border-radius: 12px;
         display: flex;
         align-items: center;
-        gap: 15px;
-        cursor: pointer;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
-      }
-      .song-icon {
-        background: var(--primary);
-        color: white;
-        width: 40px;
-        height: 40px;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
         justify-content: center;
+        font-size: 20px;
         font-weight: bold;
       }
 
-      /* Video Card */
-      .video-wrapper {
-        margin: 20px;
-        background: var(--bg-body);
-        border-radius: 20px;
-        padding: 20px;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-        text-align: center;
-        border: 1px solid var(--border);
-      }
-
-      /* Modals */
-      .fullscreen-modal {
-        display: none;
+      /* === 6. MODALS === */
+      .full-modal {
         position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        inset: 0;
         background: var(--bg-body);
         z-index: 3000;
         overflow-y: auto;
         padding: 20px;
+        display: none;
       }
-      .fullscreen-modal.active {
+      .full-modal.active {
         display: block;
       }
+
       .grid-chip {
         display: inline-block;
-        padding: 10px 15px;
-        margin: 5px;
-        background: var(--bg-ui);
-        border: 1px solid var(--border);
-        border-radius: 20px;
+        padding: 10px 18px;
+        margin: 4px;
+        background: var(--surface);
+        border-radius: 12px;
         font-size: 14px;
         font-weight: 600;
         cursor: pointer;
+      }
+      .grid-chip:active {
+        background: var(--primary);
+        color: white;
       }
 
       /* Splash */
       #splash {
         position: fixed;
         inset: 0;
-        background: white;
+        background: #fff;
         z-index: 5000;
         display: flex;
         flex-direction: column;
@@ -366,23 +404,27 @@
         transition: opacity 0.5s;
       }
 
-      /* Utils */
-      .loader {
-        border: 3px solid #f3f3f3;
-        border-top: 3px solid var(--primary);
-        border-radius: 50%;
-        width: 30px;
-        height: 30px;
-        animation: spin 1s linear infinite;
-        margin: 50px auto;
+      /* Toast Notification */
+      #toast {
+        position: fixed;
+        top: 80px;
+        left: 50%;
+        transform: translateX(-50%) translateY(-20px);
+        background: #111;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 50px;
+        font-size: 13px;
+        font-weight: 600;
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.3s;
+        z-index: 4000;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
       }
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
+      #toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
       }
     </style>
   </head>
@@ -391,238 +433,222 @@
       <img
         src="icon.png"
         style="
-          width: 80px;
-          border-radius: 15px;
-          box-shadow: 0 10px 20px rgba(211, 47, 47, 0.2);
+          width: 90px;
+          border-radius: 22px;
+          box-shadow: 0 15px 35px rgba(211, 47, 47, 0.25);
         "
         onerror="this.style.display='none'"
       />
-      <h1 style="color: #d32f2f; margin-top: 15px; font-weight: 900">
+      <h1
+        style="
+          color: #d32f2f;
+          margin-top: 20px;
+          font-weight: 800;
+          font-family: 'Inter';
+        "
+      >
         Prayer Beam
       </h1>
-      <p
-        style="
-          color: #888;
-          font-size: 12px;
-          font-weight: 600;
-          letter-spacing: 1px;
-        "
-      >
-        DAILY BREAD
-      </p>
     </div>
+
+    <div id="toast">Copied to clipboard</div>
 
     <header id="app-header">
-      <div class="control-pill book-pill" onclick="openBookModal()">
-        <span id="label-book">Genesis</span> <span class="icon-small">▼</span>
+      <div class="header-left">
+        <div class="book-trigger" onclick="openBookModal()">
+          <span id="label-book">Genesis</span>
+          <span id="label-chap" style="color: var(--primary)">1</span>
+          <span>▼</span>
+        </div>
       </div>
-      <div
-        class="control-pill"
-        onclick="openChapModal()"
-        style="min-width: 40px"
-      >
-        <span id="label-chap">1</span>
+      <div class="header-actions">
+        <button class="icon-btn" onclick="speakChapter()">🔊</button>
+        <button class="icon-btn" onclick="toggleSettings()">Aa</button>
       </div>
-
-      <button class="nav-btn" onclick="navChap(-1)">‹</button>
-      <button class="nav-btn" onclick="navChap(1)">›</button>
-
-      <div class="settings-toggle" onclick="toggleSettings()">Aa</div>
     </header>
 
-    <div id="settings-sheet">
-      <div style="text-align: center; margin-bottom: 15px; color: #ccc">
-        ___
-      </div>
-
-      <div class="setting-row">
-        <span class="setting-label">Theme</span>
-        <div style="display: flex; gap: 15px">
-          <div
-            class="theme-btn active"
-            style="background: #fff"
-            onclick="setTheme('light', this)"
-          ></div>
-          <div
-            class="theme-btn"
-            style="background: #f4ecd8"
-            onclick="setTheme('sepia', this)"
-          ></div>
-          <div
-            class="theme-btn"
-            style="background: #222"
-            onclick="setTheme('dark', this)"
-          ></div>
+    <main>
+      <div id="view-read" class="view-section active">
+        <div id="verses-container"></div>
+        <div class="chapter-actions">
+          <button class="nav-btn-lg" onclick="navChap(-1)">Previous</button>
+          <button class="nav-btn-lg primary" onclick="navChap(1)">
+            Next Chapter
+          </button>
         </div>
       </div>
 
-      <div class="setting-row">
-        <span class="setting-label">Text Size</span>
-        <div style="display: flex; gap: 10px">
-          <button class="size-btn" onclick="resizeText(-2)">A-</button>
-          <button class="size-btn" onclick="resizeText(2)">A+</button>
-        </div>
+      <div id="view-songs" class="view-section" style="padding: 20px">
+        <h2 style="margin: 0 0 20px 0">Worship Songs</h2>
+        <div id="song-list"></div>
       </div>
 
-      <div class="setting-row">
-        <span class="setting-label">Language</span>
-        <button class="size-btn" id="lang-btn" onclick="cycleLang()">
-          TELUGU
-        </button>
-      </div>
-    </div>
-
-    <div id="tab-read" class="view-section active">
-      <div id="loader" class="loader" style="display: none"></div>
-      <div id="verses-container"></div>
-      <div style="height: 50px"></div>
-    </div>
-
-    <div id="tab-songs" class="view-section">
-      <input
-        type="text"
-        placeholder="Search Songs..."
-        onkeyup="filterSongs(this.value)"
-        style="
-          width: 90%;
-          margin: 20px 5%;
-          padding: 15px;
-          border-radius: 12px;
-          border: 1px solid var(--border);
-          background: var(--bg-body);
-          font-size: 16px;
-        "
-      />
-      <div id="song-list"></div>
-
-      <div
-        id="lyrics-overlay"
-        style="
-          display: none;
-          position: fixed;
-          inset: 0;
-          background: var(--bg-body);
-          z-index: 3000;
-          overflow-y: auto;
-          padding: 20px;
-        "
-      >
-        <button
-          onclick="document.getElementById('lyrics-overlay').style.display='none'"
-          class="size-btn"
-          style="margin-bottom: 20px"
-        >
-          Close
-        </button>
-        <h2 id="lyrics-title" style="color: var(--primary)"></h2>
-        <div
-          id="lyrics-text"
-          style="white-space: pre-wrap; line-height: 2; font-size: 18px"
-        ></div>
-      </div>
-    </div>
-
-    <div id="tab-tv" class="view-section">
-      <div class="video-wrapper">
-        <h2>Prayer Beam TV</h2>
+      <div id="view-tv" class="view-section" style="padding: 20px">
         <div
           style="
-            position: relative;
-            padding-bottom: 56.25%;
-            height: 0;
-            overflow: hidden;
-            border-radius: 12px;
-            background: #000;
-            margin-top: 15px;
+            background: var(--surface);
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
           "
         >
-          <iframe
+          <h2 style="margin-top: 0">Prayer Beam TV</h2>
+          <div
             style="
-              position: absolute;
-              top: 0;
-              left: 0;
-              width: 100%;
-              height: 100%;
+              position: relative;
+              padding-bottom: 56.25%;
+              height: 0;
+              overflow: hidden;
+              border-radius: 12px;
+              background: #000;
             "
-            src="https://www.youtube.com/embed/videoseries?list=PLpcEZmijMVLBVJlP4oPCukvrRo-5wB-0i"
-            frameborder="0"
-            allowfullscreen
-          ></iframe>
+          >
+            <iframe
+              style="
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+              "
+              src="https://www.youtube.com/embed/videoseries?list=PLpcEZmijMVLBVJlP4oPCukvrRo-5wB-0i"
+              frameborder="0"
+              allowfullscreen
+            ></iframe>
+          </div>
+          <br />
+          <a
+            href="https://www.youtube.com/@Prayer_Beam"
+            target="_blank"
+            class="nav-btn-lg primary"
+            style="display: inline-block; text-decoration: none"
+            >Open Channel</a
+          >
         </div>
-        <a
-          href="https://www.youtube.com/@Prayer_Beam"
-          target="_blank"
-          style="
-            display: inline-block;
-            margin-top: 20px;
-            color: var(--primary);
-            font-weight: bold;
-            text-decoration: none;
-          "
-          >Open Channel ↗</a
-        >
+      </div>
+    </main>
+
+    <div id="settings-drawer">
+      <div class="drawer-handle" onclick="toggleSettings()"></div>
+
+      <div class="setting-group">
+        <div class="setting-title">Theme</div>
+        <div class="theme-grid">
+          <div
+            class="theme-opt active"
+            onclick="setTheme('light', this)"
+            style="background: #fff; color: #333"
+          >
+            Day
+          </div>
+          <div
+            class="theme-opt"
+            onclick="setTheme('sepia', this)"
+            style="background: #f8f4e9; color: #5f4b32"
+          >
+            Sepia
+          </div>
+          <div
+            class="theme-opt"
+            onclick="setTheme('dark', this)"
+            style="background: #222; color: #fff"
+          >
+            Night
+          </div>
+        </div>
+      </div>
+
+      <div class="setting-group">
+        <div class="setting-title">Font Size</div>
+        <div class="stepper">
+          <button class="step-btn" onclick="resizeText(-2)">A-</button>
+          <span id="font-display" style="font-weight: bold; font-size: 12px"
+            >20px</span
+          >
+          <button class="step-btn" onclick="resizeText(2)">A+</button>
+        </div>
+      </div>
+
+      <div class="setting-group">
+        <div class="setting-title">Language</div>
+        <div class="theme-grid">
+          <div class="theme-opt" onclick="setLang('te')">TEL</div>
+          <div class="theme-opt" onclick="setLang('en')">ENG</div>
+          <div class="theme-opt" onclick="setLang('hi')">HIN</div>
+        </div>
       </div>
     </div>
 
-    <div id="modal-book" class="fullscreen-modal">
-      <button class="size-btn" onclick="closeModals()">Close</button>
-      <h2>Select Book</h2>
-      <div id="grid-book"></div>
-    </div>
-    <div id="modal-chap" class="fullscreen-modal">
-      <button class="size-btn" onclick="closeModals()">Close</button>
-      <h2>Select Chapter</h2>
-      <div id="grid-chap"></div>
-    </div>
-
-    <nav class="floating-nav">
-      <button class="nav-item active" onclick="switchView('read', this)">
-        <span class="nav-icon">📖</span> Bible
-      </button>
-      <button class="nav-item" onclick="switchView('songs', this)">
-        <span class="nav-icon">🎵</span> Songs
-      </button>
-      <button class="nav-item" onclick="switchView('tv', this)">
-        <span class="nav-icon">▶️</span> TV
-      </button>
+    <nav class="dock">
+      <div class="dock-item active" onclick="switchView('read', this)">
+        <span class="dock-icon">📖</span>
+        <span class="dock-label">Read</span>
+      </div>
+      <div class="dock-item" onclick="switchView('songs', this)">
+        <span class="dock-icon">🎵</span>
+        <span class="dock-label">Songs</span>
+      </div>
+      <div class="dock-item" onclick="switchView('tv', this)">
+        <span class="dock-icon">▶️</span>
+        <span class="dock-label">Watch</span>
+      </div>
     </nav>
 
+    <div id="modal-book" class="full-modal">
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 20px;
+        "
+      >
+        <h2>Select Book</h2>
+        <button class="icon-btn" onclick="closeModals()">✕</button>
+      </div>
+      <div id="grid-book"></div>
+    </div>
+
+    <div id="modal-lyrics" class="full-modal">
+      <button
+        class="icon-btn"
+        onclick="document.getElementById('modal-lyrics').classList.remove('active')"
+        style="position: fixed; top: 20px; right: 20px; background: #eee"
+      >
+        ✕
+      </button>
+      <h2
+        id="lyrics-title"
+        style="color: var(--primary); margin-top: 40px"
+      ></h2>
+      <div
+        id="lyrics-text"
+        style="white-space: pre-wrap; line-height: 2.2; font-size: 18px"
+      ></div>
+    </div>
+
     <script>
-      // --- 1. CONFIG & STATE ---
-      const langs = ["te", "en", "hi", "ta", "ka", "ml"];
-      // Load state from local storage or default
-      let state = JSON.parse(localStorage.getItem("pb_state")) || {
+      // --- CONFIG & STATE ---
+      let state = JSON.parse(localStorage.getItem("pb_v2")) || {
         lang: "te",
         bIdx: 0,
         cNum: 1,
-        fontSize: 18,
+        size: 20,
         theme: "light",
       };
 
       const sources = {
         te: {
-          type: "split",
           url: "https://cdn.jsdelivr.net/gh/aruljohn/Bible-telugu@master",
+          type: "split",
         },
         en: {
-          type: "split",
           url: "https://cdn.jsdelivr.net/gh/aruljohn/Bible-kjv@master",
+          type: "split",
         },
         hi: {
-          type: "single",
           url: "https://raw.githubusercontent.com/godlytalias/Bible-Database/master/Hindi/Hindi_Bible.json",
-        },
-        ta: {
           type: "single",
-          url: "https://raw.githubusercontent.com/godlytalias/Bible-Database/master/Tamil/Tamil_Bible.json",
-        },
-        ka: {
-          type: "single",
-          url: "https://raw.githubusercontent.com/godlytalias/Bible-Database/master/Kannada/Kannada_Bible.json",
-        },
-        ml: {
-          type: "single",
-          url: "https://raw.githubusercontent.com/godlytalias/Bible-Database/master/Malayalam/Malayalam_Bible.json",
         },
       };
       const bookNames = [
@@ -693,220 +719,207 @@
         ["Jude", "యూదా"],
         ["Revelation", "ప్రకటన గ్రంథము"],
       ];
-      const songsDB = [
-        {
-          title: "Yesayya Naa Pranama (2025)",
-          lyrics: "యేసయ్యా నా ప్రాణమా - ఘనమైన స్తుతిగానమా...",
-        },
-        { title: "Neeve Hrudaya Saradhi", lyrics: "నీవే హృదయ సారధి..." },
-        { title: "Hosanna", lyrics: "హోసన్నా.. హోసన్నా.." },
-      ]; // (Add more here)
+      const songs = [
+        { t: "Yesayya Naa Pranama (2025)", l: "యేసయ్యా నా ప్రాణమా..." },
+        { t: "Neeve Hrudaya Saradhi", l: "నీవే హృదయ సారధి..." },
+      ]; // Add more songs here
+
       let loadedData = null;
 
-      // --- 2. STARTUP ---
+      // --- INIT ---
       window.onload = () => {
-        setTimeout(() => {
-          document.getElementById("splash").style.opacity = 0;
-          setTimeout(() => document.getElementById("splash").remove(), 500);
-        }, 1500);
-        applySettings();
-        loadContent();
+        setTimeout(
+          () => (document.getElementById("splash").style.opacity = 0),
+          1500
+        );
+        setTimeout(() => document.getElementById("splash").remove(), 2000);
+        applyState();
+        loadChapter();
         renderSongs();
       };
 
-      function saveState() {
-        localStorage.setItem("pb_state", JSON.stringify(state));
+      function save() {
+        localStorage.setItem("pb_v2", JSON.stringify(state));
       }
 
-      // --- 3. BIBLE ENGINE ---
+      // --- BIBLE LOGIC ---
       async function fetchBook(idx) {
-        const src = sources[state.lang];
-        const engName = bookNames[idx][0];
+        const src = sources[state.lang] || sources["en"];
+        const name = bookNames[idx][0];
         if (src.type === "split") {
-          let res = await fetch(`${src.url}/${engName}.json`);
-          return await res.json();
+          let r = await fetch(`${src.url}/${name}.json`);
+          return await r.json();
         } else {
           if (!loadedData) {
-            let res = await fetch(src.url);
-            loadedData = await res.json();
+            let r = await fetch(src.url);
+            loadedData = await r.json();
           }
           return loadedData;
         }
       }
 
-      function loadContent() {
+      function loadChapter() {
         document.getElementById("label-book").innerText =
           state.lang === "te"
             ? bookNames[state.bIdx][1]
             : bookNames[state.bIdx][0];
         document.getElementById("label-chap").innerText = state.cNum;
-        document.getElementById("lang-btn").innerText =
-          state.lang.toUpperCase();
-
-        document.getElementById("verses-container").innerHTML = "";
-        document.getElementById("loader").style.display = "block";
+        document.getElementById(
+          "verses-container"
+        ).innerHTML = `<div style="text-align:center; padding:50px;">Loading...</div>`;
 
         fetchBook(state.bIdx).then((data) => {
-          document.getElementById("loader").style.display = "none";
           let chapters =
             data.chapters || data.books?.[state.bIdx]?.chapters || data;
           if (!Array.isArray(chapters)) chapters = [chapters];
-          let chapter = chapters[state.cNum - 1];
-          let verses = chapter.verses || chapter.verse;
-          if (!Array.isArray(verses)) verses = [verses];
+          let vs =
+            chapters[state.cNum - 1].verses || chapters[state.cNum - 1].verse;
+          if (!Array.isArray(vs)) vs = [vs];
 
-          let html = verses
+          document.getElementById("verses-container").innerHTML = vs
             .map(
               (v, i) =>
-                `<div class="verse"><span class="v-num">${
+                `<div class="verse" onclick="copyVerse(this, '${
                   v.verse || i + 1
-                }</span> ${v.text || v.verse || v}</div>`
+                }')">
+                        <span class="v-num">${v.verse || i + 1}</span>${
+                  v.text || v.verse || v
+                }
+                    </div>`
             )
             .join("");
-          document.getElementById("verses-container").innerHTML = html;
           window.scrollTo(0, 0);
         });
-        saveState();
+        save();
       }
 
       function navChap(d) {
         let n = state.cNum + d;
         if (n < 1) return;
         state.cNum = n;
-        loadContent();
+        loadChapter();
       }
 
-      // --- 4. SETTINGS & THEMING ---
+      // --- FEATURES ---
+      function copyVerse(el, num) {
+        let text = el.innerText.replace(num, "").trim();
+        navigator.clipboard.writeText(`${text} (Chapter ${state.cNum}:${num})`);
+        showToast();
+        el.classList.add("highlight");
+        setTimeout(() => el.classList.remove("highlight"), 1000);
+      }
+
+      function speakChapter() {
+        let text = document.getElementById("verses-container").innerText;
+        let u = new SpeechSynthesisUtterance(text);
+        u.lang = state.lang === "te" ? "te-IN" : "en-US";
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(u);
+        showToast("Playing Audio...");
+      }
+
+      function showToast(msg = "Copied to clipboard") {
+        let t = document.getElementById("toast");
+        t.innerText = msg;
+        t.classList.add("show");
+        setTimeout(() => t.classList.remove("show"), 2000);
+      }
+
+      // --- SETTINGS ---
       function toggleSettings() {
-        let sheet = document.getElementById("settings-sheet");
-        sheet.classList.toggle("active");
+        document.getElementById("settings-drawer").classList.toggle("active");
       }
-
-      function setTheme(themeName, btn) {
-        state.theme = themeName;
-        document.body.setAttribute("data-theme", themeName);
+      function setTheme(thm, btn) {
+        state.theme = thm;
+        save();
+        applyState();
         document
-          .querySelectorAll(".theme-btn")
+          .querySelectorAll(".theme-opt")
           .forEach((b) => b.classList.remove("active"));
         btn.classList.add("active");
-        saveState();
+      }
+      function resizeText(d) {
+        state.size += d;
+        save();
+        applyState();
+      }
+      function setLang(l) {
+        state.lang = l;
+        loadedData = null;
+        save();
+        loadChapter();
+        toggleSettings();
       }
 
-      function resizeText(delta) {
-        state.fontSize += delta;
-        document.getElementById("verses-container").style.fontSize =
-          state.fontSize + "px";
-        saveState();
-      }
-
-      function cycleLang() {
-        let idx = langs.indexOf(state.lang);
-        state.lang = langs[(idx + 1) % langs.length];
-        loadedData = null; // Clear cache
-        loadContent();
-      }
-
-      function applySettings() {
+      function applyState() {
         document.body.setAttribute("data-theme", state.theme);
-        document.getElementById("verses-container").style.fontSize =
-          state.fontSize + "px";
+        document.documentElement.style.setProperty(
+          "--read-size",
+          state.size + "px"
+        );
+        document.getElementById("font-display").innerText = state.size + "px";
       }
 
-      // --- 5. MODALS ---
-      function openBookModal() {
-        document.getElementById("modal-book").classList.add("active");
-        let grid = document.getElementById("grid-book");
-        grid.innerHTML = "";
-        bookNames.forEach((b, i) => {
-          let chip = document.createElement("span");
-          chip.className = "grid-chip";
-          chip.innerText = state.lang === "te" ? b[1] : b[0];
-          chip.onclick = () => {
-            state.bIdx = i;
-            closeModals();
-            openChapModal();
-          };
-          grid.appendChild(chip);
-        });
-      }
-      function openChapModal() {
-        document.getElementById("modal-chap").classList.add("active");
-        let grid = document.getElementById("grid-chap");
-        grid.innerHTML = "Loading...";
-        fetchBook(state.bIdx).then((data) => {
-          grid.innerHTML = "";
-          let chapters =
-            data.chapters || data.books?.[state.bIdx]?.chapters || data;
-          if (!Array.isArray(chapters)) chapters = [chapters];
-          chapters.forEach((c, i) => {
-            let chip = document.createElement("span");
-            chip.className = "grid-chip";
-            chip.innerText = i + 1;
-            chip.onclick = () => {
-              state.cNum = i + 1;
-              closeModals();
-              loadContent();
-            };
-            grid.appendChild(chip);
-          });
-        });
-      }
-      function closeModals() {
-        document
-          .querySelectorAll(".fullscreen-modal")
-          .forEach((m) => m.classList.remove("active"));
-      }
-
-      // --- 6. SONGS & NAV ---
-      function renderSongs() {
-        let list = document.getElementById("song-list");
-        list.innerHTML = "";
-        songsDB.forEach((s) => {
-          let div = document.createElement("div");
-          div.className = "song-card";
-          div.innerHTML = `<div class="song-icon">♫</div> <b>${s.title}</b>`;
-          div.onclick = () => {
-            document.getElementById("lyrics-overlay").style.display = "block";
-            document.getElementById("lyrics-title").innerText = s.title;
-            document.getElementById("lyrics-text").innerText = s.lyrics;
-          };
-          list.appendChild(div);
-        });
-      }
-      function filterSongs(q) {
-        document
-          .querySelectorAll(".song-card")
-          .forEach(
-            (c) =>
-              (c.style.display = c.innerText
-                .toLowerCase()
-                .includes(q.toLowerCase())
-                ? "flex"
-                : "none")
-          );
-      }
-
+      // --- NAVIGATION ---
       function switchView(view, btn) {
         document
           .querySelectorAll(".view-section")
           .forEach((el) => el.classList.remove("active"));
-        document.getElementById("tab-" + view).classList.add("active");
+        document.getElementById("view-" + view).classList.add("active");
         document
-          .querySelectorAll(".nav-item")
+          .querySelectorAll(".dock-item")
           .forEach((el) => el.classList.remove("active"));
         btn.classList.add("active");
-        // Hide Bible header if not reading
         document.getElementById("app-header").style.display =
           view === "read" ? "flex" : "none";
       }
 
-      // Close settings on click outside
+      function openBookModal() {
+        document.getElementById("modal-book").classList.add("active");
+        let g = document.getElementById("grid-book");
+        g.innerHTML = "";
+        bookNames.forEach((b, i) => {
+          let c = document.createElement("span");
+          c.className = "grid-chip";
+          c.innerText = state.lang === "te" ? b[1] : b[0];
+          c.onclick = () => {
+            state.bIdx = i;
+            state.cNum = 1;
+            closeModals();
+            loadChapter();
+          };
+          g.appendChild(c);
+        });
+      }
+      function closeModals() {
+        document
+          .querySelectorAll(".full-modal")
+          .forEach((m) => m.classList.remove("active"));
+      }
+
+      function renderSongs() {
+        let l = document.getElementById("song-list");
+        l.innerHTML = "";
+        songs.forEach((s) => {
+          let d = document.createElement("div");
+          d.className = "song-card";
+          d.innerHTML = `<div class="song-art">♫</div><b>${s.t}</b>`;
+          d.onclick = () => {
+            document.getElementById("modal-lyrics").classList.add("active");
+            document.getElementById("lyrics-title").innerText = s.t;
+            document.getElementById("lyrics-text").innerText = s.l;
+          };
+          l.appendChild(d);
+        });
+      }
+
+      // Close drawer on click outside
       document.addEventListener("click", (e) => {
         if (
-          !e.target.closest("#settings-sheet") &&
-          !e.target.closest(".settings-toggle")
+          !e.target.closest("#settings-drawer") &&
+          !e.target.closest(".icon-btn")
         ) {
-          document.getElementById("settings-sheet").classList.remove("active");
+          document.getElementById("settings-drawer").classList.remove("active");
         }
       });
     </script>
