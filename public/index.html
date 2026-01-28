@@ -6,13 +6,12 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
     />
-    <title>Prayer Beam OS</title>
+    <title>Prayer Beam</title>
 
     <link rel="icon" type="image/png" href="icon.png" />
     <link rel="apple-touch-icon" href="icon.png" />
     <meta name="theme-color" content="#ffffff" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap"
@@ -20,38 +19,38 @@
     />
 
     <style>
-      /* --- 1. DESIGN SYSTEM (CSS VARIABLES) --- */
+      /* --- 1. PREMIUM DESIGN SYSTEM --- */
       :root {
-        --primary: #d32f2f;
-        --primary-rgb: 211, 47, 47;
-        --bg-body: #ffffff;
-        --bg-surface: #f4f6f8;
-        --bg-glass: rgba(255, 255, 255, 0.9);
-        --text-main: #1a1a1a;
-        --text-sec: #666666;
-        --border: #e5e5e5;
-        --nav-height: 60px;
-        --safe-top: env(safe-area-inset-top, 20px);
+        --primary-grad: linear-gradient(135deg, #ff512f 0%, #dd2476 100%);
+        --primary-color: #dd2476;
+
+        /* Light Theme (Glass) */
+        --bg-body: #fdfdfd;
+        --bg-mesh: radial-gradient(
+            at 0% 0%,
+            hsla(253, 16%, 7%, 1) 0,
+            transparent 50%
+          ),
+          radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
+          radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%);
+        --glass-surface: rgba(255, 255, 255, 0.85);
+        --glass-border: rgba(255, 255, 255, 0.5);
+        --text-main: #1d1d1f;
+        --text-sec: #86868b;
+        --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.05);
+        --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.1);
+
+        --nav-height: 65px;
         --safe-bottom: env(safe-area-inset-bottom, 20px);
-        --anim-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
       }
 
       [data-theme="dark"] {
         --bg-body: #000000;
-        --bg-surface: #1c1c1e;
-        --bg-glass: rgba(20, 20, 20, 0.9);
-        --text-main: #f5f5f5;
-        --text-sec: #a0a0a0;
-        --border: #333333;
-      }
-
-      [data-theme="sepia"] {
-        --bg-body: #f8f4e9;
-        --bg-surface: #efe6d5;
-        --bg-glass: rgba(248, 244, 233, 0.95);
-        --text-main: #5b4636;
-        --text-sec: #8c7b6e;
-        --border: #dcd3c5;
+        --glass-surface: rgba(28, 28, 30, 0.85);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --text-main: #f5f5f7;
+        --text-sec: #86868b;
+        --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.3);
       }
 
       * {
@@ -60,6 +59,7 @@
         outline: none;
         user-select: none;
       }
+
       body {
         margin: 0;
         font-family: "Inter", sans-serif;
@@ -70,395 +70,432 @@
         width: 100vw;
       }
 
-      /* --- 2. LAYOUT ENGINE --- */
+      /* Background Mesh Gradient (Subtle) */
+      .mesh-bg {
+        position: fixed;
+        top: -50%;
+        left: -50%;
+        right: -50%;
+        bottom: -50%;
+        background: radial-gradient(
+            circle at 50% 10%,
+            rgba(221, 36, 118, 0.08),
+            transparent 40%
+          ),
+          radial-gradient(
+            circle at 80% 80%,
+            rgba(255, 81, 47, 0.08),
+            transparent 40%
+          );
+        z-index: -1;
+        pointer-events: none;
+        animation: pulse 10s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      /* --- 2. APP SHELL --- */
       #app {
         display: flex;
         flex-direction: column;
         height: 100%;
-        width: 100%;
       }
 
       .screen {
         flex: 1;
         overflow-y: auto;
         overflow-x: hidden;
-        padding-bottom: calc(
-          var(--nav-height) + var(--safe-bottom) + 80px
-        ); /* +80px for MiniPlayer */
+        padding-bottom: calc(var(--nav-height) + var(--safe-bottom) + 90px);
         display: none;
         opacity: 0;
-        transform: translateY(10px);
-        transition: 0.3s ease;
+        transform: scale(0.98);
+        transition: 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
       }
       .screen.active {
         display: block;
         opacity: 1;
-        transform: translateY(0);
+        transform: scale(1);
       }
 
-      /* Headers */
-      .header {
-        padding: calc(var(--safe-top) + 15px) 20px 15px 20px;
-        background: var(--bg-glass);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border-bottom: 1px solid var(--border);
+      /* Glass Header */
+      .glass-header {
         position: sticky;
         top: 0;
         z-index: 50;
+        padding: 15px 20px;
+        background: var(--glass-surface);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--glass-border);
         display: flex;
         align-items: center;
         justify-content: space-between;
       }
-      .header-title {
+      .app-title {
         font-size: 22px;
         font-weight: 800;
-        letter-spacing: -0.5px;
+        background: var(--primary-grad);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
       }
 
-      /* --- 3. COMPONENT: TAB BAR --- */
+      /* --- 3. COMPONENTS --- */
+
+      /* Buttons */
+      .btn-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: none;
+        background: transparent;
+        color: var(--text-main);
+        font-size: 20px;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .btn-icon:active {
+        transform: scale(0.9);
+        background: rgba(0, 0, 0, 0.05);
+      }
+
+      .btn-pill {
+        background: var(--glass-surface);
+        border: 1px solid var(--glass-border);
+        padding: 10px 20px;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 14px;
+        box-shadow: var(--shadow-sm);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--text-main);
+      }
+      .btn-pill:active {
+        transform: scale(0.96);
+      }
+
+      /* Cards */
+      .glass-card {
+        background: var(--glass-surface);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        padding: 20px;
+        margin-bottom: 15px;
+        box-shadow: var(--shadow-sm);
+      }
+
+      /* --- 4. NAVIGATION BAR --- */
       .tab-bar {
         position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: calc(var(--nav-height) + var(--safe-bottom));
-        background: var(--bg-glass);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border-top: 1px solid var(--border);
+        bottom: 20px;
+        left: 20px;
+        right: 20px;
+        height: 70px;
+        background: var(--glass-surface);
+        backdrop-filter: blur(25px);
+        -webkit-backdrop-filter: blur(25px);
+        border: 1px solid var(--glass-border);
+        border-radius: 35px;
         display: flex;
-        align-items: flex-start;
         justify-content: space-around;
-        padding-top: 8px;
+        align-items: center;
+        box-shadow: var(--shadow-lg);
         z-index: 1000;
       }
-      .tab-btn {
+      .tab-item {
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
-        width: 60px;
+        color: var(--text-sec);
         background: none;
         border: none;
-        color: var(--text-sec);
-        transition: 0.2s;
-        cursor: pointer;
-      }
-      .tab-btn svg {
-        width: 24px;
-        height: 24px;
-        fill: currentColor;
-        margin-bottom: 4px;
-      }
-      .tab-btn span {
         font-size: 10px;
         font-weight: 600;
+        cursor: pointer;
+        transition: 0.3s;
+        width: 60px;
       }
-      .tab-btn.active {
-        color: var(--primary);
-        transform: translateY(-2px);
+      .tab-icon {
+        font-size: 24px;
+        margin-bottom: 2px;
+        transition: 0.3s;
+      }
+      .tab-item.active {
+        color: var(--primary-color);
+      }
+      .tab-item.active .tab-icon {
+        transform: translateY(-3px);
       }
 
-      /* --- 4. COMPONENT: MINI PLAYER (Pro Feature) --- */
+      /* --- 5. BIBLE READER --- */
+      #bible-text-area {
+        padding: 20px;
+        max-width: 700px;
+        margin: 0 auto;
+      }
+      .verse {
+        font-family: "Crimson Pro", serif;
+        font-size: 20px;
+        line-height: 1.7;
+        margin-bottom: 15px;
+      }
+      .v-num {
+        font-family: "Inter";
+        font-size: 11px;
+        font-weight: 800;
+        color: var(--primary-color);
+        vertical-align: super;
+        margin-right: 4px;
+        opacity: 0.7;
+      }
+
+      .nav-controls {
+        display: flex;
+        gap: 15px;
+        margin-top: 40px;
+        padding-bottom: 20px;
+      }
+      .nav-btn-big {
+        flex: 1;
+        padding: 15px;
+        border-radius: 15px;
+        border: none;
+        font-weight: 700;
+        background: var(--glass-surface);
+        color: var(--text-main);
+        box-shadow: var(--shadow-sm);
+        cursor: pointer;
+        font-size: 16px;
+        border: 1px solid var(--glass-border);
+      }
+      .nav-btn-big:active {
+        transform: scale(0.98);
+      }
+      .nav-btn-big.primary {
+        background: var(--primary-grad);
+        color: white;
+        border: none;
+      }
+
+      /* --- 6. MINI PLAYER --- */
       #mini-player {
         position: fixed;
-        bottom: calc(var(--nav-height) + var(--safe-bottom) + 10px);
-        left: 15px;
-        right: 15px;
-        height: 60px;
-        background: var(--bg-surface);
-        border: 1px solid var(--border);
-        border-radius: 16px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        bottom: 100px;
+        left: 20px;
+        right: 20px;
+        background: rgba(20, 20, 20, 0.85);
+        backdrop-filter: blur(20px);
+        color: white;
+        border-radius: 18px;
+        padding: 12px;
         display: flex;
         align-items: center;
-        padding: 0 15px;
-        gap: 12px;
+        gap: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        transform: translateY(150px);
+        transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         z-index: 900;
-        transform: translateY(150%);
-        transition: transform 0.4s var(--anim-spring);
       }
-      #mini-player.visible {
+      #mini-player.show {
         transform: translateY(0);
       }
-
-      .mp-art {
-        width: 40px;
-        height: 40px;
-        border-radius: 8px;
-        background: var(--primary);
-        color: white;
+      .mp-img {
+        width: 44px;
+        height: 44px;
+        background: var(--primary-grad);
+        border-radius: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-weight: bold;
-        font-size: 18px;
-      }
-      .mp-info {
-        flex: 1;
-        overflow: hidden;
-      }
-      .mp-title {
-        font-size: 14px;
-        font-weight: 700;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      .mp-sub {
-        font-size: 11px;
-        color: var(--text-sec);
-      }
-      .mp-controls button {
-        background: none;
-        border: none;
-        font-size: 24px;
-        color: var(--text-main);
-        cursor: pointer;
-        padding: 0 5px;
+        font-size: 20px;
       }
 
-      /* --- 5. COMPONENT: BOTTOM SHEET (Settings) --- */
-      .sheet-overlay {
+      /* --- 7. BOTTOM SHEETS --- */
+      .sheet-backdrop {
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.4);
+        background: rgba(0, 0, 0, 0.3);
         z-index: 2000;
         opacity: 0;
         pointer-events: none;
         transition: 0.3s;
       }
-      .sheet-overlay.active {
+      .sheet-backdrop.active {
         opacity: 1;
         pointer-events: auto;
       }
-
       .sheet {
         position: absolute;
         bottom: 0;
         left: 0;
         right: 0;
         background: var(--bg-body);
-        border-radius: 24px 24px 0 0;
+        border-radius: 30px 30px 0 0;
         padding: 25px;
         transform: translateY(100%);
         transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        max-height: 70vh;
+        display: flex;
+        flex-direction: column;
       }
-      .sheet-overlay.active .sheet {
+      .sheet-backdrop.active .sheet {
         transform: translateY(0);
       }
-      .sheet-handle {
+      .sheet-bar {
         width: 40px;
         height: 5px;
-        background: var(--border);
+        background: var(--text-sec);
+        opacity: 0.2;
         border-radius: 10px;
         margin: 0 auto 20px auto;
       }
 
-      /* --- 6. UTILITIES & SKELETONS --- */
-      .skeleton {
-        background: linear-gradient(
-          90deg,
-          var(--bg-surface) 25%,
-          var(--border) 50%,
-          var(--bg-surface) 75%
-        );
-        background-size: 200% 100%;
-        animation: shimmer 1.5s infinite;
-        border-radius: 6px;
-      }
-      @keyframes shimmer {
-        0% {
-          background-position: 200% 0;
-        }
-        100% {
-          background-position: -200% 0;
-        }
-      }
-
-      .grid-3 {
+      .grid-books {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
         gap: 10px;
+        overflow-y: auto;
       }
-      .option-box {
+      .book-item {
         padding: 12px;
+        background: var(--glass-surface);
+        border: 1px solid var(--glass-border);
         border-radius: 12px;
-        border: 2px solid var(--border);
         text-align: center;
         font-weight: 600;
         font-size: 13px;
         cursor: pointer;
       }
-      .option-box.active {
-        border-color: var(--primary);
-        background: rgba(var(--primary-rgb), 0.05);
-        color: var(--primary);
-      }
-
-      /* --- 7. BIBLE READER STYLES --- */
-      .verse {
-        font-family: "Crimson Pro", serif;
-        font-size: 20px;
-        line-height: 1.8;
-        margin-bottom: 15px;
-        padding: 4px;
-        border-radius: 4px;
-        transition: 0.2s;
-      }
-      .verse.active {
-        background: rgba(var(--primary-rgb), 0.1);
-      }
-      .v-num {
-        font-family: "Inter", sans-serif;
-        font-size: 11px;
-        font-weight: 700;
-        color: var(--primary);
-        vertical-align: super;
-        margin-right: 4px;
-      }
     </style>
   </head>
   <body data-theme="light">
+    <div class="mesh-bg"></div>
+
     <div id="app">
       <div id="screen-home" class="screen active">
-        <div class="header">
-          <div class="header-title">Prayer Beam</div>
-          <div
-            style="font-size: 12px; font-weight: 600; color: var(--text-sec)"
-          >
-            WED, JAN 28
-          </div>
+        <div class="glass-header">
+          <div class="app-title">Prayer Beam</div>
+          <button class="btn-icon">🔔</button>
         </div>
+
         <div style="padding: 20px">
           <div
+            class="glass-card"
             style="
               background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
-              padding: 25px;
-              border-radius: 20px;
-              color: #111;
-              box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-              margin-bottom: 25px;
+              border: none;
+              color: #333;
             "
           >
             <div
               style="
-                font-family: 'Crimson Pro';
-                font-size: 22px;
-                font-weight: 600;
+                font-size: 12px;
+                font-weight: 700;
+                opacity: 0.6;
                 margin-bottom: 10px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
               "
             >
-              "The Lord is my shepherd; I shall not want."
+              Verse of the Day
             </div>
-            <div style="font-size: 13px; font-weight: 700; opacity: 0.7">
-              PSALM 23:1
+            <div
+              style="
+                font-family: 'Crimson Pro';
+                font-size: 24px;
+                font-weight: 600;
+                line-height: 1.4;
+                margin-bottom: 15px;
+              "
+            >
+              "Your word is a lamp for my feet, a light on my path."
             </div>
+            <div style="font-weight: 700; font-size: 14px">Psalm 119:105</div>
           </div>
 
+          <h3 style="margin: 25px 0 15px 0">Quick Access</h3>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px">
             <div
-              onclick="Router.go('songs')"
-              style="
-                background: var(--bg-surface);
-                padding: 20px;
-                border-radius: 16px;
-                text-align: center;
-              "
+              class="glass-card"
+              onclick="Nav.to('songs')"
+              style="text-align: center; cursor: pointer"
             >
-              <div style="font-size: 28px">🎵</div>
-              <div style="font-weight: 700; margin-top: 10px">Lyrics</div>
+              <div style="font-size: 32px; margin-bottom: 10px">🎵</div>
+              <div style="font-weight: 700">Lyrics</div>
             </div>
             <div
-              onclick="Router.go('tv')"
-              style="
-                background: var(--bg-surface);
-                padding: 20px;
-                border-radius: 16px;
-                text-align: center;
-              "
+              class="glass-card"
+              onclick="Nav.to('tv')"
+              style="text-align: center; cursor: pointer"
             >
-              <div style="font-size: 28px">📺</div>
-              <div style="font-weight: 700; margin-top: 10px">TV</div>
+              <div style="font-size: 32px; margin-bottom: 10px">📺</div>
+              <div style="font-weight: 700">TV</div>
             </div>
           </div>
         </div>
       </div>
 
       <div id="screen-bible" class="screen">
-        <div class="header">
-          <div
-            id="book-trigger"
-            onclick="Sheet.open('book')"
-            style="
-              background: var(--bg-surface);
-              padding: 8px 16px;
-              border-radius: 20px;
-              font-weight: 700;
-              font-size: 15px;
-              cursor: pointer;
-            "
-          >
-            Genesis 1 ▼
-          </div>
-          <div style="display: flex; gap: 10px">
-            <button
-              onclick="Player.playChapter()"
-              style="
-                background: none;
-                border: none;
-                font-size: 20px;
-                cursor: pointer;
-              "
-            >
+        <div class="glass-header">
+          <button class="btn-pill" onclick="Sheet.open('books')">
+            <span id="label-book">Genesis</span>
+            <span id="label-chap" style="color: var(--primary-color)">1</span>
+            <span>▼</span>
+          </button>
+          <div style="display: flex; gap: 5px">
+            <button class="btn-icon" onclick="AudioPlayer.playChapter()">
               🔊
             </button>
-            <button
-              onclick="Sheet.open('settings')"
-              style="
-                background: none;
-                border: none;
-                font-size: 20px;
-                cursor: pointer;
-              "
-            >
+            <button class="btn-icon" onclick="Sheet.open('settings')">
               Aa
             </button>
           </div>
         </div>
-        <div
-          id="bible-content"
-          style="padding: 20px; max-width: 700px; margin: 0 auto"
-        >
+
+        <div id="bible-text-area">
           <div
-            class="skeleton"
-            style="height: 20px; width: 90%; margin-bottom: 15px"
-          ></div>
-          <div
-            class="skeleton"
-            style="height: 20px; width: 95%; margin-bottom: 15px"
-          ></div>
-          <div
-            class="skeleton"
-            style="height: 20px; width: 80%; margin-bottom: 15px"
-          ></div>
+            style="text-align: center; margin-top: 50px; color: var(--text-sec)"
+          >
+            Loading Scripture...
+          </div>
+        </div>
+
+        <div style="padding: 0 20px">
+          <div class="nav-controls">
+            <button class="nav-btn-big" onclick="Bible.nav(-1)">Prev</button>
+            <button class="nav-btn-big primary" onclick="Bible.nav(1)">
+              Next Chapter
+            </button>
+          </div>
         </div>
       </div>
 
       <div id="screen-songs" class="screen">
-        <div class="header"><div class="header-title">Worship</div></div>
+        <div class="glass-header">
+          <div class="app-title">Worship Songs</div>
+        </div>
         <div style="padding: 20px">
           <input
             type="text"
-            placeholder="Search songs..."
-            onkeyup="Songs.filter(this.value)"
+            placeholder="Search lyrics..."
+            onkeyup="Songs.render(this.value)"
             style="
               width: 100%;
               padding: 15px;
-              background: var(--bg-surface);
-              border: 1px solid var(--border);
-              border-radius: 12px;
+              border-radius: 15px;
+              border: 1px solid var(--glass-border);
+              background: var(--glass-surface);
               font-size: 16px;
               margin-bottom: 20px;
             "
@@ -468,107 +505,90 @@
       </div>
 
       <div id="screen-tv" class="screen">
-        <div class="header"><div class="header-title">Prayer Beam TV</div></div>
+        <div class="glass-header">
+          <div class="app-title">Prayer Beam TV</div>
+        </div>
         <div style="padding: 20px">
-          <div
-            style="
-              position: relative;
-              padding-bottom: 56.25%;
-              height: 0;
-              border-radius: 16px;
-              overflow: hidden;
-              background: #000;
-            "
-          >
-            <iframe
+          <div class="glass-card" style="padding: 0; overflow: hidden">
+            <div
               style="
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
+                position: relative;
+                padding-bottom: 56.25%;
+                height: 0;
+                background: #000;
               "
-              src="https://www.youtube.com/embed/videoseries?list=PLpcEZmijMVLBVJlP4oPCukvrRo-5wB-0i"
-              frameborder="0"
-              allowfullscreen
-            ></iframe>
+            >
+              <iframe
+                style="
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  width: 100%;
+                  height: 100%;
+                "
+                src="https://www.youtube.com/embed/videoseries?list=PLpcEZmijMVLBVJlP4oPCukvrRo-5wB-0i"
+                frameborder="0"
+                allowfullscreen
+              ></iframe>
+            </div>
           </div>
-          <h3 style="margin-top: 20px">Latest Messages</h3>
-          <p style="color: var(--text-sec)">
-            Watch our latest sermons and worship sessions directly from YouTube.
-          </p>
+          <div class="glass-card" style="text-align: center">
+            <h3>Subscribe Channel</h3>
+            <p style="color: var(--text-sec); margin-bottom: 20px">
+              Watch latest sermons and live events.
+            </p>
+            <a
+              href="https://www.youtube.com/@Prayer_Beam"
+              target="_blank"
+              class="nav-btn-big primary"
+              style="display: inline-block; text-decoration: none"
+              >Open YouTube</a
+            >
+          </div>
         </div>
       </div>
     </div>
 
     <div id="mini-player">
-      <div class="mp-art">🎵</div>
-      <div class="mp-info">
-        <div class="mp-title" id="mp-title">Not Playing</div>
-        <div class="mp-sub" id="mp-sub">Tap a song or chapter</div>
+      <div class="mp-img">🔊</div>
+      <div style="flex: 1">
+        <div style="font-size: 14px; font-weight: 700">Audio Bible</div>
+        <div style="font-size: 11px; opacity: 0.7" id="mp-text">Genesis 1</div>
       </div>
-      <div class="mp-controls">
-        <button id="mp-btn" onclick="Player.toggle()">▶</button>
-      </div>
+      <button
+        class="btn-icon"
+        style="color: white"
+        onclick="AudioPlayer.stop()"
+      >
+        ⏹
+      </button>
     </div>
 
-    <div id="sheet-overlay" class="sheet-overlay" onclick="Sheet.close()">
+    <nav class="tab-bar">
+      <button class="tab-item active" onclick="Nav.to('home')">
+        <span class="tab-icon">🏠</span> Home
+      </button>
+      <button class="tab-item" onclick="Nav.to('bible')">
+        <span class="tab-icon">📖</span> Bible
+      </button>
+      <button class="tab-item" onclick="Nav.to('songs')">
+        <span class="tab-icon">🎵</span> Songs
+      </button>
+      <button class="tab-item" onclick="Nav.to('tv')">
+        <span class="tab-icon">▶️</span> TV
+      </button>
+    </nav>
+
+    <div id="sheet-overlay" class="sheet-backdrop" onclick="Sheet.close()">
       <div class="sheet" onclick="event.stopPropagation()">
-        <div class="sheet-handle"></div>
+        <div class="sheet-bar"></div>
         <div id="sheet-content"></div>
       </div>
     </div>
 
-    <nav class="tab-bar">
-      <button class="tab-btn active" onclick="Router.go('home')">
-        <svg viewBox="0 0 24 24">
-          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" /></svg
-        ><span>Home</span>
-      </button>
-      <button class="tab-btn" onclick="Router.go('bible')">
-        <svg viewBox="0 0 24 24">
-          <path
-            d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"
-          /></svg
-        ><span>Bible</span>
-      </button>
-      <button class="tab-btn" onclick="Router.go('songs')">
-        <svg viewBox="0 0 24 24">
-          <path
-            d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"
-          /></svg
-        ><span>Songs</span>
-      </button>
-      <button class="tab-btn" onclick="Router.go('tv')">
-        <svg viewBox="0 0 24 24">
-          <path
-            d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 14H3V5h18v12zM8 15l8-5-8-5v10z"
-          /></svg
-        ><span>TV</span>
-      </button>
-    </nav>
-
     <script>
-      // --- 1. STATE STORE (The Brain) ---
-      const Store = {
-        data: JSON.parse(localStorage.getItem("pb_os_v1")) || {
-          theme: "light",
-          lang: "te",
-          bIdx: 0,
-          cNum: 1,
-          fontSize: 20,
-        },
-        save() {
-          localStorage.setItem("pb_os_v1", JSON.stringify(this.data));
-        },
-        update(key, val) {
-          this.data[key] = val;
-          this.save();
-        },
-      };
-
-      // --- 2. DATA CONSTANTS ---
-      const BOOKS = [
+      // --- 1. DATA (FULL 66 BOOKS) ---
+      const BOOKS_EN = [
         "Genesis",
         "Exodus",
         "Leviticus",
@@ -577,6 +597,64 @@
         "Joshua",
         "Judges",
         "Ruth",
+        "1 Samuel",
+        "2 Samuel",
+        "1 Kings",
+        "2 Kings",
+        "1 Chronicles",
+        "2 Chronicles",
+        "Ezra",
+        "Nehemiah",
+        "Esther",
+        "Job",
+        "Psalms",
+        "Proverbs",
+        "Ecclesiastes",
+        "Song of Solomon",
+        "Isaiah",
+        "Jeremiah",
+        "Lamentations",
+        "Ezekiel",
+        "Daniel",
+        "Hosea",
+        "Joel",
+        "Amos",
+        "Obadiah",
+        "Jonah",
+        "Micah",
+        "Nahum",
+        "Habakkuk",
+        "Zephaniah",
+        "Haggai",
+        "Zechariah",
+        "Malachi",
+        "Matthew",
+        "Mark",
+        "Luke",
+        "John",
+        "Acts",
+        "Romans",
+        "1 Corinthians",
+        "2 Corinthians",
+        "Galatians",
+        "Ephesians",
+        "Philippians",
+        "Colossians",
+        "1 Thessalonians",
+        "2 Thessalonians",
+        "1 Timothy",
+        "2 Timothy",
+        "Titus",
+        "Philemon",
+        "Hebrews",
+        "James",
+        "1 Peter",
+        "2 Peter",
+        "1 John",
+        "2 John",
+        "3 John",
+        "Jude",
+        "Revelation",
       ];
       const BOOKS_TE = [
         "ఆదికాండము",
@@ -587,139 +665,198 @@
         "యెహోషువ",
         "న్యాయాధిపతులు",
         "రూతు",
+        "1 సమూయేలు",
+        "2 సమూయేలు",
+        "1 రాజులు",
+        "2 రాజులు",
+        "1 దినవృత్తాంతములు",
+        "2 దినవృత్తాంతములు",
+        "ఎజ్రా",
+        "నెహెమ్యా",
+        "ఎస్తేరు",
+        "యోబు",
+        "కీర్తనలు",
+        "సామెతలు",
+        "ప్రసంగి",
+        "పరమగీతము",
+        "యెషయా",
+        "యిర్మియా",
+        "విలాపవాక్యములు",
+        "యెహెజ్కేలు",
+        "దానియేలు",
+        "హోషేయ",
+        "యోవేలు",
+        "ఆమోసు",
+        "ఓబద్యా",
+        "యోనా",
+        "మీకా",
+        "నహూము",
+        "హబక్కూకు",
+        "జెఫన్యా",
+        "హగ్గయి",
+        "జెకర్యా",
+        "మలాకీ",
+        "మత్తయి",
+        "మార్కు",
+        "లూకా",
+        "యోహాను",
+        "అపొస్తలుల కార్యములు",
+        "రోమీయులకు",
+        "1 కోరింథీయులకు",
+        "2 కోరింథీయులకు",
+        "గలతీయులకు",
+        "ఎఫెసీయులకు",
+        "ఫిలిప్పీయులకు",
+        "కొలొస్సయులకు",
+        "1 థెస్సలొనీకయులకు",
+        "2 థెస్సలొనీకయులకు",
+        "1 తిమోతికి",
+        "2 తిమోతికి",
+        "తీతుకు",
+        "ఫిలేమోనుకు",
+        "హెబ్రీయులకు",
+        "యాకోబు",
+        "1 పేతురు",
+        "2 పేతురు",
+        "1 యోహాను",
+        "2 యోహాను",
+        "3 యోహాను",
+        "యూదా",
+        "ప్రకటన గ్రంథము",
       ];
-      const SONGS = [
-        { t: "Yesayya Naa Pranama", l: "యేసయ్యా నా ప్రాణమా..." },
+
+      const SONGS_DB = [
+        {
+          t: "Yesayya Naa Pranama",
+          l: "యేసయ్యా నా ప్రాణమా - ఘనమైన స్తుతిగానమా...",
+        },
         { t: "Neeve Hrudaya Saradhi", l: "నీవే హృదయ సారధి..." },
         { t: "Hosanna", l: "హోసన్నా.. హోసన్నా.." },
-        { t: "Aaradhana", l: "ఆరాధన.. ఆరాధన.." },
       ];
 
-      // --- 3. ROUTER (Navigation) ---
-      const Router = {
-        current: "home",
-        go(screen) {
+      // --- 2. STATE ---
+      let state = JSON.parse(localStorage.getItem("pb_v9")) || {
+        lang: "te",
+        bIdx: 0,
+        cNum: 1,
+        theme: "light",
+      };
+
+      window.onload = () => {
+        document.body.setAttribute("data-theme", state.theme);
+        Bible.load();
+        Songs.render();
+      };
+
+      function save() {
+        localStorage.setItem("pb_v9", JSON.stringify(state));
+      }
+
+      // --- 3. NAVIGATION ---
+      const Nav = {
+        to(screen) {
           document
             .querySelectorAll(".screen")
-            .forEach((el) => el.classList.remove("active"));
+            .forEach((s) => s.classList.remove("active"));
           document.getElementById("screen-" + screen).classList.add("active");
 
-          // Update Tab Bar
-          document.querySelectorAll(".tab-btn").forEach((btn, i) => {
-            btn.classList.toggle(
-              "active",
-              ["home", "bible", "songs", "tv"][i] === screen
-            );
-          });
-
-          this.current = screen;
-          if (screen === "bible") Bible.load();
-          if (screen === "songs") Songs.render();
+          document
+            .querySelectorAll(".tab-item")
+            .forEach((b) => b.classList.remove("active"));
+          // Simple index matching for active tab
+          const ids = ["home", "bible", "songs", "tv"];
+          document
+            .querySelectorAll(".tab-item")
+            [ids.indexOf(screen)].classList.add("active");
         },
       };
 
       // --- 4. BIBLE ENGINE ---
       const Bible = {
         async load() {
-          const el = document.getElementById("bible-content");
-          // Simulate Loading (Skeleton stays for 500ms)
-          if (el.innerHTML.includes("skeleton"))
-            await new Promise((r) => setTimeout(r, 400));
+          const el = document.getElementById("bible-text-area");
+          el.innerHTML =
+            '<div style="text-align:center; padding:50px; opacity:0.5;">Loading...</div>';
 
-          // Update Button
+          // Update Labels
           const bName =
-            Store.data.lang === "te"
-              ? BOOKS_TE[Store.data.bIdx]
-              : BOOKS[Store.data.bIdx];
-          document.getElementById(
-            "book-trigger"
-          ).innerText = `${bName} ${Store.data.cNum} ▼`;
+            state.lang === "te" ? BOOKS_TE[state.bIdx] : BOOKS_EN[state.bIdx];
+          document.getElementById("label-book").innerText = bName;
+          document.getElementById("label-chap").innerText = state.cNum;
 
-          // Fetch Data (Git API)
+          // Fetch
           try {
-            const engName = BOOKS[Store.data.bIdx];
+            const engName = BOOKS_EN[state.bIdx];
             const res = await fetch(
               `https://cdn.jsdelivr.net/gh/aruljohn/Bible-telugu@master/${engName}.json`
             );
             const json = await res.json();
-            const verses = json.chapters[Store.data.cNum - 1].verses;
+
+            // Handle Chapter Logic
+            let chapters = json.chapters || json;
+            if (!Array.isArray(chapters)) chapters = [chapters];
+
+            if (state.cNum > chapters.length) state.cNum = 1; // Reset if out of bounds
+
+            const verses =
+              chapters[state.cNum - 1].verses || chapters[state.cNum - 1].verse;
 
             el.innerHTML = verses
               .map(
-                (v, i) =>
-                  `<div class="verse" onclick="Bible.handleVerseClick(this)">
-                            <span class="v-num">${v.verse}</span>${v.text}
-                        </div>`
+                (v) =>
+                  `<div class="verse"><span class="v-num">${v.verse}</span>${v.text}</div>`
               )
               .join("");
           } catch (e) {
-            el.innerHTML = `<div style="text-align:center; padding:40px; color:#888;">Offline or Error loading book.</div>`;
+            el.innerHTML = "Error loading chapter. Check internet.";
           }
+          save();
         },
-        handleVerseClick(el) {
-          el.classList.toggle("active");
-          // Could trigger bottom sheet actions here
+        nav(dir) {
+          let n = state.cNum + dir;
+          if (n < 1) return;
+          state.cNum = n;
+          Bible.load();
+          window.scrollTo(0, 0);
         },
       };
 
-      // --- 5. AUDIO PLAYER (Floating) ---
-      const Player = {
-        speaking: false,
-        currentText: "",
-        toggle() {
-          if (this.speaking) {
-            window.speechSynthesis.cancel();
-            this.speaking = false;
-            document.getElementById("mp-btn").innerText = "▶";
-          } else {
-            this.playText(this.currentText, "Resuming...");
-          }
-        },
+      // --- 5. AUDIO PLAYER ---
+      const AudioPlayer = {
         playChapter() {
-          // Scrape text from Bible view
           const text = document
-            .getElementById("bible-content")
-            .innerText.replace(/\d+/g, ""); // Remove numbers
-          this.playText(text, `Chapter ${Store.data.cNum}`);
-        },
-        playText(text, title) {
+            .getElementById("bible-text-area")
+            .innerText.replace(/\d+/g, "");
           window.speechSynthesis.cancel();
           const u = new SpeechSynthesisUtterance(text);
           u.lang = "te-IN";
-          u.onend = () => {
-            this.speaking = false;
-            document.getElementById("mp-btn").innerText = "▶";
-          };
-
           window.speechSynthesis.speak(u);
-          this.speaking = true;
-          this.currentText = text;
 
-          // Show Mini Player
-          document.getElementById("mini-player").classList.add("visible");
-          document.getElementById("mp-title").innerText = "Playing Audio";
-          document.getElementById("mp-sub").innerText = title;
-          document.getElementById("mp-btn").innerText = "⏸";
+          document.getElementById("mini-player").classList.add("show");
+          const bName =
+            state.lang === "te" ? BOOKS_TE[state.bIdx] : BOOKS_EN[state.bIdx];
+          document.getElementById(
+            "mp-text"
+          ).innerText = `${bName} ${state.cNum}`;
+        },
+        stop() {
+          window.speechSynthesis.cancel();
+          document.getElementById("mini-player").classList.remove("show");
         },
       };
 
-      // --- 6. SONGS MODULE ---
+      // --- 6. SONGS ---
       const Songs = {
-        render() {
-          const list = document.getElementById("songs-list");
-          if (list.innerHTML !== "") return; // Don't re-render if loaded
-          this.filter("");
-        },
-        filter(q) {
+        render(q = "") {
           const list = document.getElementById("songs-list");
           const query = q.toLowerCase();
-          list.innerHTML = SONGS.filter((s) =>
+          list.innerHTML = SONGS_DB.filter((s) =>
             s.t.toLowerCase().includes(query)
           )
             .map(
               (s) => `
-                    <div onclick="Sheet.openLyrics('${s.t}', '${s.l}')" style="background:var(--bg-surface); padding:15px; border-radius:12px; margin-bottom:10px; display:flex; align-items:center; gap:15px; cursor:pointer;">
-                        <div style="width:40px; height:40px; background:var(--primary); color:white; border-radius:50%; display:flex; align-items:center; justify-content:center;">🎵</div>
+                    <div class="glass-card" onclick="Sheet.openLyrics('${s.t}', '${s.l}')" style="display:flex; align-items:center; gap:15px; cursor:pointer;">
+                        <div style="width:40px; height:40px; background:var(--primary-grad); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white;">🎵</div>
                         <div style="font-weight:600;">${s.t}</div>
                     </div>
                 `
@@ -728,57 +865,37 @@
         },
       };
 
-      // --- 7. BOTTOM SHEET MANAGER ---
+      // --- 7. BOTTOM SHEETS ---
       const Sheet = {
         open(type) {
-          const content = document.getElementById("sheet-content");
+          const el = document.getElementById("sheet-content");
           document.getElementById("sheet-overlay").classList.add("active");
 
-          if (type === "settings") {
-            content.innerHTML = `
-                        <h3 style="margin-top:0;">Appearance</h3>
-                        <div style="font-size:12px; font-weight:700; color:var(--text-sec); margin-bottom:10px;">THEME</div>
-                        <div class="grid-3">
-                            <div class="option-box ${
-                              Store.data.theme === "light" ? "active" : ""
-                            }" onclick="Sheet.setTheme('light')">Day</div>
-                            <div class="option-box ${
-                              Store.data.theme === "sepia" ? "active" : ""
-                            }" onclick="Sheet.setTheme('sepia')">Sepia</div>
-                            <div class="option-box ${
-                              Store.data.theme === "dark" ? "active" : ""
-                            }" onclick="Sheet.setTheme('dark')">Night</div>
-                        </div>
-                    `;
-          } else if (type === "book") {
-            content.innerHTML = `<h3>Select Book</h3><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; max-height:40vh; overflow-y:auto;">
+          if (type === "books") {
+            el.innerHTML = `<h3>Select Book</h3><div class="grid-books">
                         ${BOOKS_TE.map(
                           (b, i) =>
-                            `<div class="option-box" onclick="Store.update('bIdx',${i}); Store.update('cNum',1); Sheet.close(); Bible.load();">${b}</div>`
+                            `<div class="book-item" onclick="state.bIdx=${i}; state.cNum=1; Bible.load(); Sheet.close()">${b}</div>`
                         ).join("")}
+                    </div>`;
+          } else if (type === "settings") {
+            el.innerHTML = `<h3>Appearance</h3>
+                    <div class="grid-books">
+                        <div class="book-item" onclick="state.theme='light'; document.body.setAttribute('data-theme','light'); save()">☀️ Light</div>
+                        <div class="book-item" onclick="state.theme='dark'; document.body.setAttribute('data-theme','dark'); save()">🌙 Dark</div>
                     </div>`;
           }
         },
-        openLyrics(title, lyrics) {
+        openLyrics(t, l) {
           document.getElementById("sheet-content").innerHTML = `
-                    <h3 style="color:var(--primary);">${title}</h3>
-                    <div style="white-space:pre-wrap; line-height:2; font-size:18px; max-height:50vh; overflow-y:auto;">${lyrics}</div>
+                    <h3 style="color:var(--primary-color);">${t}</h3>
+                    <div style="white-space:pre-wrap; line-height:2; font-size:18px; max-height:60vh; overflow-y:auto;">${l}</div>
                 `;
           document.getElementById("sheet-overlay").classList.add("active");
         },
         close() {
           document.getElementById("sheet-overlay").classList.remove("active");
         },
-        setTheme(t) {
-          Store.update("theme", t);
-          document.body.setAttribute("data-theme", t);
-          this.open("settings"); // Re-render to show active state
-        },
-      };
-
-      // --- INIT ---
-      window.onload = () => {
-        document.body.setAttribute("data-theme", Store.data.theme);
       };
     </script>
   </body>
