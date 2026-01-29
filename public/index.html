@@ -98,41 +98,108 @@
         background: rgba(37, 99, 235, 0.1);
       }
 
-      /* --- 3. VIEWS --- */
-      .view {
-        display: none;
-        padding-top: 60px;
-      }
-      .view.active {
-        display: block;
-        animation: fadeIn 0.3s;
-      }
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-        }
-        to {
-          opacity: 1;
-        }
-      }
-
-      /* Home */
-      .hero-card {
+      /* --- 3. HOME SCREEN GRAPHICS --- */
+      /* Verse Graphic Card */
+      .graphic-card {
         margin: 20px;
-        background: linear-gradient(135deg, #2563eb, #4f46e5);
-        color: white;
+        height: 300px;
         border-radius: 24px;
-        padding: 24px;
         position: relative;
         overflow: hidden;
-        box-shadow: 0 10px 30px rgba(37, 99, 235, 0.25);
+        display: flex;
+        align-items: flex-end;
+        padding: 25px;
+        color: white;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        /* Fallback Gradient */
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+      /* Dynamic Background Image overlay */
+      .graphic-bg {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        opacity: 0.6;
+        mix-blend-mode: overlay;
+      }
+      .graphic-content {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      }
+      .graphic-ref {
+        font-size: 13px;
+        font-weight: 700;
+        opacity: 0.9;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .graphic-text {
+        font-family: "Crimson Pro";
+        font-size: 26px;
+        line-height: 1.3;
+        font-weight: 600;
+        margin-bottom: 20px;
       }
 
-      /* Reader */
+      .action-btn {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 13px;
+        cursor: pointer;
+      }
+
+      /* Categories / Themes */
+      .section-title {
+        padding: 0 20px;
+        font-size: 18px;
+        font-weight: 700;
+        margin-top: 30px;
+        margin-bottom: 15px;
+      }
+      .theme-scroll {
+        display: flex;
+        gap: 12px;
+        padding: 0 20px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        padding-bottom: 20px;
+      }
+      .theme-card {
+        min-width: 140px;
+        height: 80px;
+        border-radius: 16px;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 700;
+        font-size: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+      }
+      .theme-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.3);
+      }
+
+      /* --- 4. READER --- */
       #verses-container {
         padding: 20px;
         max-width: 700px;
         margin: 0 auto;
+        padding-top: 80px;
       }
       .verse-card {
         display: flex;
@@ -172,7 +239,7 @@
         display: block;
       }
 
-      /* Songs */
+      /* --- 5. SONGS & UTILS --- */
       .song-card {
         background: var(--surface);
         border: 1px solid var(--border);
@@ -201,7 +268,7 @@
         z-index: 100;
       }
 
-      /* --- 4. DOCK --- */
+      /* DOCK */
       .dock {
         position: fixed;
         bottom: 20px;
@@ -238,7 +305,7 @@
         font-weight: 700;
       }
 
-      /* --- 5. MODALS --- */
+      /* MODALS */
       .full-modal {
         position: fixed;
         inset: 0;
@@ -260,6 +327,18 @@
         border-bottom: 1px solid var(--border);
       }
 
+      .grid-chip {
+        display: inline-block;
+        padding: 12px 20px;
+        margin: 4px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 14px;
+        text-align: center;
+      }
       .chap-grid {
         display: grid;
         grid-template-columns: repeat(5, 1fr);
@@ -276,17 +355,21 @@
         font-weight: 700;
         cursor: pointer;
       }
-      .grid-chip {
-        display: inline-block;
-        padding: 12px 20px;
-        margin: 4px;
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        font-weight: 600;
-        cursor: pointer;
-        font-size: 14px;
-        text-align: center;
+
+      .view {
+        display: none;
+      }
+      .view.active {
+        display: block;
+        animation: fadeIn 0.3s;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
       }
 
       .input-group {
@@ -311,72 +394,131 @@
         font-weight: 700;
         cursor: pointer;
       }
-      .nav-btn-lg {
-        width: 100%;
-        padding: 15px;
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        font-weight: 600;
-        margin-top: 20px;
-        cursor: pointer;
-        text-align: center;
-      }
     </style>
   </head>
   <body data-theme="light">
     <div id="view-home" class="view active">
-      <div style="padding: 20px">
-        <div style="font-size: 13px; font-weight: 700; color: var(--text-sec)">
-          TODAY
-        </div>
-        <div style="font-size: 24px; font-weight: 800">Prayer Beam</div>
-      </div>
-
-      <div class="hero-card">
-        <span
-          style="
-            font-size: 12px;
-            font-weight: 700;
-            opacity: 0.8;
-            display: block;
-            margin-bottom: 10px;
-          "
-          >VERSE OF THE DAY</span
-        >
-        <div
-          id="daily-verse-text"
-          style="
-            font-family: 'Crimson Pro';
-            font-size: 22px;
-            line-height: 1.4;
-            font-weight: 600;
-          "
-        >
-          Loading...
-        </div>
-        <div
-          id="daily-verse-ref"
-          style="
-            font-size: 14px;
-            font-weight: 700;
-            margin-top: 10px;
-            opacity: 0.9;
-          "
-        ></div>
-      </div>
-
-      <button
-        class="nav-btn-lg"
-        onclick="switchTab('read', document.querySelectorAll('.dock-btn')[1])"
+      <div
         style="
-          margin: 20px;
-          width: calc(100% - 40px);
-          background: var(--surface);
+          padding: 20px 20px 0 20px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
         "
       >
-        Continue Reading ➔
-      </button>
+        <div>
+          <div
+            style="font-size: 13px; font-weight: 700; color: var(--text-sec)"
+          >
+            TODAY
+          </div>
+          <div style="font-size: 24px; font-weight: 800">Prayer Beam</div>
+        </div>
+        <div
+          style="
+            background: var(--surface);
+            padding: 8px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+          "
+        >
+          <i class="ph-bold ph-user" style="font-size: 20px"></i>
+        </div>
+      </div>
+
+      <div class="graphic-card">
+        <div
+          class="graphic-bg"
+          style="
+            background-image: url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');
+          "
+        ></div>
+        <div class="graphic-content">
+          <div class="graphic-ref" id="daily-verse-ref">Loading...</div>
+          <div class="graphic-text" id="daily-verse-text">
+            "Wait for the Lord; be strong and take heart."
+          </div>
+          <div style="display: flex; gap: 10px">
+            <button class="action-btn" onclick="shareVerse()">
+              <i class="ph-bold ph-share-network"></i> Share
+            </button>
+            <button
+              class="action-btn"
+              onclick="switchTab('read', document.querySelectorAll('.dock-btn')[1])"
+            >
+              Read Chapter
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">How are you feeling?</div>
+      <div class="theme-scroll">
+        <div
+          class="theme-card"
+          style="background: linear-gradient(45deg, #ff9a9e, #fad0c4)"
+        >
+          <div class="theme-overlay"></div>
+          <span style="z-index: 2">Anxious</span>
+        </div>
+        <div
+          class="theme-card"
+          style="background: linear-gradient(45deg, #a18cd1, #fbc2eb)"
+        >
+          <div class="theme-overlay"></div>
+          <span style="z-index: 2">Lonely</span>
+        </div>
+        <div
+          class="theme-card"
+          style="background: linear-gradient(45deg, #84fab0, #8fd3f4)"
+        >
+          <div class="theme-overlay"></div>
+          <span style="z-index: 2">Hopeful</span>
+        </div>
+        <div
+          class="theme-card"
+          style="background: linear-gradient(45deg, #fccb90, #d57eeb)"
+        >
+          <div class="theme-overlay"></div>
+          <span style="z-index: 2">Grateful</span>
+        </div>
+      </div>
+
+      <div class="section-title">Daily Mix</div>
+      <div style="padding: 0 20px">
+        <div
+          style="
+            background: var(--surface);
+            padding: 15px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+          "
+        >
+          <div
+            style="
+              width: 50px;
+              height: 50px;
+              background: #e0f2fe;
+              border-radius: 12px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              color: #0284c7;
+            "
+          >
+            <i class="ph-bold ph-play-circle" style="font-size: 24px"></i>
+          </div>
+          <div>
+            <div style="font-weight: 700">Morning Prayer</div>
+            <div style="font-size: 13px; color: var(--text-sec)">
+              3 min audio
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div id="view-read" class="view">
@@ -390,7 +532,11 @@
             <span id="lbl-chap">1</span> <i class="ph-bold ph-caret-down"></i>
           </div>
         </div>
+
         <div style="display: flex; gap: 5px">
+          <button class="icon-btn" onclick="openLangModal()">
+            <i class="ph-bold ph-globe"></i>
+          </button>
           <button id="btn-parallel" class="icon-btn" onclick="toggleParallel()">
             <i class="ph ph-arrows-left-right"></i>
           </button>
@@ -413,7 +559,7 @@
       </div>
     </div>
 
-    <div id="view-songs" class="view" style="padding: 20px">
+    <div id="view-songs" class="view" style="padding: 20px; padding-top: 80px">
       <h2 style="margin-top: 0">Worship Songs</h2>
       <div id="song-list"></div>
       <div class="fab" onclick="openAddSongModal()">
@@ -435,6 +581,19 @@
         ><span class="dock-lbl">Songs</span>
       </button>
     </nav>
+
+    <div id="modal-lang" class="full-modal">
+      <div class="modal-header">
+        <h2>Select Language</h2>
+        <button class="icon-btn" onclick="closeModals()">✕</button>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px">
+        <div class="grid-chip" onclick="setLang('te')">Telugu (తెలుగు)</div>
+        <div class="grid-chip" onclick="setLang('en')">English (KJV)</div>
+        <div class="grid-chip" onclick="setLang('hi')">Hindi (हिंदी)</div>
+        <div class="grid-chip" onclick="setLang('ta')">Tamil (தமிழ்)</div>
+      </div>
+    </div>
 
     <div id="modal-book" class="full-modal">
       <div class="modal-header">
@@ -501,7 +660,7 @@
     </div>
 
     <script>
-      let state = JSON.parse(localStorage.getItem("pb_v13")) || {
+      let state = JSON.parse(localStorage.getItem("pb_v14")) || {
         lang: "te",
         bIdx: 0,
         cNum: 1,
@@ -511,15 +670,94 @@
       const sources = {
         te: {
           url: "https://cdn.jsdelivr.net/gh/aruljohn/Bible-telugu@master",
+          type: "git",
           code: "te-IN",
         },
         en: {
           url: "https://cdn.jsdelivr.net/gh/aruljohn/Bible-kjv@master",
+          type: "git",
           code: "en-US",
         },
+        hi: {
+          url: "https://bolls.life/get-text/HINCL",
+          type: "api",
+          code: "hi-IN",
+        },
+        ta: {
+          url: "https://bolls.life/get-text/TAMOV",
+          type: "api",
+          code: "ta-IN",
+        },
       };
+      const bollsCodes = [
+        "GEN",
+        "EXO",
+        "LEV",
+        "NUM",
+        "DEU",
+        "JOS",
+        "JDG",
+        "RUT",
+        "1SA",
+        "2SA",
+        "1KI",
+        "2KI",
+        "1CH",
+        "2CH",
+        "EZR",
+        "NEH",
+        "EST",
+        "JOB",
+        "PSA",
+        "PRO",
+        "ECC",
+        "SNG",
+        "ISA",
+        "JER",
+        "LAM",
+        "EZE",
+        "DAN",
+        "HOS",
+        "JOE",
+        "AMO",
+        "OBA",
+        "JON",
+        "MIC",
+        "NAH",
+        "HAB",
+        "ZEP",
+        "HAG",
+        "ZEC",
+        "MAL",
+        "MAT",
+        "MAR",
+        "LUK",
+        "JOH",
+        "ACT",
+        "ROM",
+        "1CO",
+        "2CO",
+        "GAL",
+        "EPH",
+        "PHI",
+        "COL",
+        "1TH",
+        "2TH",
+        "1TI",
+        "2TI",
+        "TIT",
+        "PHM",
+        "HEB",
+        "JAS",
+        "1PE",
+        "2PE",
+        "1JO",
+        "2JO",
+        "3JO",
+        "JUD",
+        "REV",
+      ];
 
-      // --- COMPLETE 66 BOOKS ---
       const bookNames = [
         ["Genesis", "ఆదికాండము"],
         ["Exodus", "నిర్గమకాండము"],
@@ -607,7 +845,6 @@
         { t: "Trust in the Lord with all your heart...", r: "Proverbs 3:5" },
       ];
 
-      // Initial Songs + LocalStorage
       let defaultSongs = [
         { t: "Yesayya Naa Pranama", l: "Lyrics..." },
         { t: "Neeve Hrudaya Saradhi", l: "Lyrics..." },
@@ -619,12 +856,11 @@
         renderSongs();
       };
       function save() {
-        localStorage.setItem("pb_v13", JSON.stringify(state));
+        localStorage.setItem("pb_v14", JSON.stringify(state));
       }
 
       // --- FEATURES ---
       function loadDailyVerse() {
-        // Pick based on day of year
         const day = Math.floor(
           (new Date() - new Date(new Date().getFullYear(), 0, 0)) /
             1000 /
@@ -645,7 +881,13 @@
         document
           .querySelectorAll(".dock-btn")
           .forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
+        if (btn) btn.classList.add("active");
+      }
+      function shareVerse() {
+        navigator.clipboard.writeText(
+          document.getElementById("daily-verse-text").innerText
+        );
+        alert("Verse copied!");
       }
 
       // --- BIBLE ENGINE ---
@@ -687,12 +929,17 @@
       async function fetchText(lang, bIdx, cNum) {
         const src = sources[lang];
         const engName = bookNames[bIdx][0];
-        // Git source logic only for stability
-        let r = await fetch(`${src.url}/${engName}.json`);
-        let data = await r.json();
-        let chapters = data.chapters || data;
-        let vs = chapters[cNum - 1].verses || chapters[cNum - 1].verse;
-        return vs.map((v) => ({ text: v.text || v.verse || v }));
+        if (src.type === "git") {
+          let r = await fetch(`${src.url}/${engName}.json`);
+          let data = await r.json();
+          let chapters = data.chapters || data;
+          let vs = chapters[cNum - 1].verses || chapters[cNum - 1].verse;
+          return vs.map((v) => ({ text: v.text || v.verse || v }));
+        } else {
+          let r = await fetch(`${src.url}/${bollsCodes[bIdx]}/${cNum}/`);
+          let json = await r.json();
+          return json;
+        }
       }
 
       function navChap(d) {
@@ -721,14 +968,9 @@
           d.className = "song-card";
           d.innerHTML = `<div><div style="font-weight:700;">${s.t}</div></div>`;
           let btn = document.createElement("button");
-          btn.className = "btn-lyrics"; // Use CSS class
-          btn.style.background = "var(--primary)"; // Ensure visibility
-          btn.style.color = "white";
-          btn.style.border = "none";
-          btn.style.padding = "8px 16px";
-          btn.style.borderRadius = "20px";
-          btn.style.fontWeight = "bold";
-          btn.innerText = "View";
+          btn.className = "icon-btn";
+          btn.innerHTML = '<i class="ph-bold ph-eye"></i>';
+          btn.style.background = "var(--bg-body)";
           btn.onclick = () => {
             document.getElementById("modal-lyrics").classList.add("active");
             document.getElementById("lyrics-title").innerText = s.t;
@@ -746,20 +988,26 @@
         let t = document.getElementById("inp-title").value;
         let l = document.getElementById("inp-lyrics").value;
         if (!t || !l) return;
-
         let custom = JSON.parse(localStorage.getItem("pb_custom_songs")) || [];
-        custom.unshift({ t, l }); // Add to top
+        custom.unshift({ t, l });
         localStorage.setItem("pb_custom_songs", JSON.stringify(custom));
-
         closeModals();
         renderSongs();
-
-        // Clear inputs
         document.getElementById("inp-title").value = "";
         document.getElementById("inp-lyrics").value = "";
       }
 
       // --- MODALS ---
+      function openLangModal() {
+        document.getElementById("modal-lang").classList.add("active");
+      }
+      function setLang(l) {
+        state.lang = l;
+        save();
+        closeModals();
+        loadChapter();
+      }
+
       function openBookModal() {
         document.getElementById("modal-book").classList.add("active");
         let g = document.getElementById("grid-book");
