@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
     />
-    <title>Prayer Beam AI</title>
+    <title>Prayer Beam</title>
 
     <link rel="icon" type="image/png" href="icon.png" />
     <link rel="apple-touch-icon" href="icon.png" />
@@ -65,73 +65,7 @@
         background-attachment: fixed;
       }
 
-      /* --- 2. HOME FEED --- */
-      .home-header {
-        padding: 20px;
-        padding-top: max(20px, var(--safe-top));
-      }
-      .greet {
-        font-size: 26px;
-        font-weight: 800;
-        letter-spacing: -0.5px;
-        margin-bottom: 5px;
-      }
-      .date {
-        font-size: 13px;
-        color: var(--text-sec);
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-      }
-
-      .mood-grid {
-        display: flex;
-        gap: 10px;
-        overflow-x: auto;
-        padding-bottom: 15px;
-        margin-top: 20px;
-        scrollbar-width: none;
-      }
-      .mood-pill {
-        background: var(--surface);
-        padding: 8px 16px;
-        border-radius: 20px;
-        border: 1px solid var(--border);
-        white-space: nowrap;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-      }
-      .mood-pill:active {
-        background: var(--primary);
-        color: white;
-        border-color: var(--primary);
-      }
-
-      .hero-card {
-        margin: 20px;
-        background: linear-gradient(135deg, #2563eb, #4f46e5);
-        color: white;
-        border-radius: 24px;
-        padding: 24px;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 10px 30px rgba(37, 99, 235, 0.25);
-      }
-      .hero-text {
-        font-family: "Crimson Pro", serif;
-        font-size: 22px;
-        line-height: 1.4;
-        font-weight: 600;
-      }
-
-      /* --- 3. BIBLE READER (Real Engine) --- */
-      #view-read {
-        padding-top: 60px;
-      }
+      /* --- 2. HEADER (SEPARATE BUTTONS) --- */
       .reader-header {
         position: fixed;
         top: 0;
@@ -147,18 +81,35 @@
         padding: 0 16px;
         z-index: 50;
       }
-      .book-pill {
+
+      .nav-group {
+        display: flex;
+        gap: 8px;
+      }
+
+      .nav-pill {
         background: var(--surface);
         border: 1px solid var(--border);
         padding: 8px 16px;
-        border-radius: 30px;
+        border-radius: 20px;
         font-weight: 700;
         font-size: 15px;
         display: flex;
         align-items: center;
         gap: 6px;
         cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+        transition: transform 0.1s;
       }
+      .nav-pill:active {
+        transform: scale(0.95);
+        background: var(--border);
+      }
+      .nav-pill i {
+        font-size: 12px;
+        opacity: 0.5;
+      }
+
       .icon-btn {
         width: 40px;
         height: 40px;
@@ -177,6 +128,10 @@
         background: rgba(37, 99, 235, 0.1);
       }
 
+      /* --- 3. BIBLE READER --- */
+      #view-read {
+        padding-top: 60px;
+      }
       #verses-container {
         padding: 20px;
         max-width: 700px;
@@ -235,60 +190,7 @@
         cursor: pointer;
       }
 
-      /* --- 4. AI CHAT --- */
-      #view-ai {
-        padding: 20px;
-        padding-top: max(20px, var(--safe-top));
-        height: 100vh;
-        display: none;
-        flex-direction: column;
-      }
-      .ai-messages {
-        flex: 1;
-        overflow-y: auto;
-        padding-bottom: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-      }
-      .msg {
-        padding: 12px 16px;
-        border-radius: 18px;
-        max-width: 85%;
-        line-height: 1.5;
-        font-size: 15px;
-      }
-      .msg.user {
-        background: var(--primary);
-        color: white;
-        align-self: flex-end;
-        border-bottom-right-radius: 4px;
-      }
-      .msg.ai {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        align-self: flex-start;
-        border-bottom-left-radius: 4px;
-      }
-      .input-area {
-        background: var(--surface);
-        padding: 10px;
-        border-radius: 30px;
-        border: 1px solid var(--border);
-        display: flex;
-        gap: 10px;
-        margin-bottom: 90px;
-      }
-      .ai-input {
-        flex: 1;
-        border: none;
-        background: transparent;
-        padding: 10px;
-        font-size: 16px;
-        outline: none;
-      }
-
-      /* --- 5. DOCK & UTILS --- */
+      /* --- 4. MODALS & UTILS --- */
       .dock {
         position: fixed;
         bottom: 20px;
@@ -341,7 +243,6 @@
         }
       }
 
-      /* Modals */
       .action-sheet {
         position: fixed;
         bottom: 0;
@@ -378,6 +279,7 @@
         cursor: pointer;
       }
 
+      /* Full Screen Modals */
       .full-modal {
         position: fixed;
         inset: 0;
@@ -390,16 +292,52 @@
       .full-modal.active {
         display: block;
       }
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--border);
+      }
+
       .grid-chip {
         display: inline-block;
-        padding: 10px 18px;
+        padding: 12px 20px;
         margin: 4px;
         background: var(--surface);
         border: 1px solid var(--border);
         border-radius: 12px;
         font-weight: 600;
         cursor: pointer;
-        font-size: 13px;
+        font-size: 14px;
+        text-align: center;
+      }
+      .grid-chip:active {
+        background: var(--primary);
+        color: white;
+      }
+
+      /* Chapter Grid Specifics */
+      .chap-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 10px;
+      }
+      .chap-cell {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .chap-cell:active {
+        background: var(--primary);
+        color: white;
       }
 
       .nav-btn-lg {
@@ -418,51 +356,18 @@
   <body data-theme="light">
     <div class="sheet-overlay" onclick="closeSheet()"></div>
 
-    <div id="view-home" class="view active">
-      <div class="home-header">
-        <div class="date" id="date-display">TODAY</div>
-        <div class="greet">Good Morning</div>
-      </div>
-      <div class="mood-grid" style="padding: 0 20px">
-        <div class="mood-pill" onclick="aiMood('anxious')">😰 Anxious</div>
-        <div class="mood-pill" onclick="aiMood('happy')">😄 Happy</div>
-        <div class="mood-pill" onclick="aiMood('lonely')">😔 Lonely</div>
-        <div class="mood-pill" onclick="aiMood('grateful')">🙏 Grateful</div>
-      </div>
-      <div class="hero-card">
-        <span
-          style="
-            font-size: 12px;
-            font-weight: 700;
-            opacity: 0.8;
-            display: block;
-            margin-bottom: 10px;
-          "
-          >VERSE OF THE DAY</span
-        >
-        <div class="hero-text">"The Lord is my shepherd, I lack nothing."</div>
-      </div>
-      <button
-        class="nav-btn-lg"
-        onclick="switchTab('read', document.querySelectorAll('.dock-btn')[1])"
-        style="
-          margin: 20px;
-          width: calc(100% - 40px);
-          background: var(--primary);
-          color: white;
-        "
-      >
-        Continue Reading ➔
-      </button>
-    </div>
-
-    <div id="view-read" class="view">
+    <div id="view-read" class="view active">
       <div class="reader-header">
-        <div class="book-pill" onclick="openBookModal()">
-          <span id="lbl-book">Genesis</span>
-          <span id="lbl-chap" style="color: var(--primary)">1</span>
-          <i class="ph-bold ph-caret-down"></i>
+        <div class="nav-group">
+          <div class="nav-pill" onclick="openBookModal()">
+            <span id="lbl-book">Genesis</span>
+            <i class="ph-bold ph-caret-down"></i>
+          </div>
+          <div class="nav-pill" onclick="openChapModal()">
+            <span id="lbl-chap">1</span> <i class="ph-bold ph-caret-down"></i>
+          </div>
         </div>
+
         <div style="display: flex; gap: 5px">
           <button id="btn-parallel" class="icon-btn" onclick="toggleParallel()">
             <i class="ph ph-arrows-left-right"></i>
@@ -490,50 +395,12 @@
       </div>
     </div>
 
-    <div id="view-ai" class="view">
-      <div style="text-align: center; margin-bottom: 20px">
-        <i
-          class="ph-fill ph-sparkle"
-          style="font-size: 40px; color: var(--primary)"
-        ></i>
-        <h2 style="margin: 5px 0">Bible Assistant</h2>
-      </div>
-      <div class="ai-messages" id="chat-box">
-        <div class="msg ai">Hello! How can I help you today?</div>
-      </div>
-      <div class="input-area">
-        <input
-          type="text"
-          class="ai-input"
-          id="user-input"
-          placeholder="Ask anything..."
-        />
-        <button
-          onclick="sendAI()"
-          style="
-            background: var(--primary);
-            color: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-          "
-        >
-          <i class="ph-bold ph-paper-plane-right"></i>
-        </button>
-      </div>
-    </div>
-
     <nav class="dock">
-      <button class="dock-btn active" onclick="switchTab('home', this)">
-        <i class="ph-fill ph-house dock-icon"></i
-        ><span class="dock-lbl">Home</span>
-      </button>
-      <button class="dock-btn" onclick="switchTab('read', this)">
+      <button class="dock-btn active">
         <i class="ph-fill ph-book-open-text dock-icon"></i
         ><span class="dock-lbl">Bible</span>
       </button>
-      <button class="dock-btn" onclick="switchTab('ai', this)">
+      <button class="dock-btn">
         <i class="ph-fill ph-sparkle dock-icon"></i
         ><span class="dock-lbl">Ask AI</span>
       </button>
@@ -591,19 +458,23 @@
     </div>
 
     <div id="modal-book" class="full-modal">
-      <button
-        class="icon-btn"
-        onclick="closeModals()"
-        style="position: fixed; top: 20px; right: 20px"
-      >
-        ✕
-      </button>
-      <h2>Select Book</h2>
+      <div class="modal-header">
+        <h2>Select Book</h2>
+        <button class="icon-btn" onclick="closeModals()">✕</button>
+      </div>
       <div id="grid-book"></div>
     </div>
 
+    <div id="modal-chap" class="full-modal">
+      <div class="modal-header">
+        <h2>Select Chapter</h2>
+        <button class="icon-btn" onclick="closeModals()">✕</button>
+      </div>
+      <div id="grid-chap" class="chap-grid"></div>
+    </div>
+
     <script>
-      let state = JSON.parse(localStorage.getItem("pb_v9")) || {
+      let state = JSON.parse(localStorage.getItem("pb_v10")) || {
         lang: "te",
         bIdx: 0,
         cNum: 1,
@@ -702,6 +573,12 @@
         ["Jude", "యూదా"],
         ["Revelation", "ప్రకటన గ్రంథము"],
       ];
+      const chapterCounts = [
+        50, 40, 27, 36, 34, 24, 21, 4, 31, 24, 22, 25, 29, 36, 10, 13, 10, 42,
+        150, 31, 12, 8, 66, 52, 5, 48, 12, 14, 3, 9, 1, 4, 7, 3, 3, 3, 2, 14, 4,
+        28, 16, 24, 21, 28, 16, 16, 13, 6, 6, 4, 4, 5, 3, 6, 4, 3, 1, 13, 5, 5,
+        3, 5, 1, 1, 1, 22,
+      ];
       const bollsCodes = [
         "GEN",
         "EXO",
@@ -776,10 +653,10 @@
         loadChapter();
       };
       function save() {
-        localStorage.setItem("pb_v9", JSON.stringify(state));
+        localStorage.setItem("pb_v10", JSON.stringify(state));
       }
 
-      // --- REAL BIBLE ENGINE ---
+      // --- ENGINE ---
       async function loadChapter() {
         let bName =
           state.lang === "te"
@@ -846,18 +723,52 @@
         window.scrollTo(0, 0);
       }
 
-      // --- UI & FEATURES ---
-      function switchTab(view, btn) {
+      // --- MODALS ---
+      function openBookModal() {
+        document.getElementById("modal-book").classList.add("active");
+        let g = document.getElementById("grid-book");
+        g.innerHTML = "";
+        bookNames.forEach((b, i) => {
+          let c = document.createElement("span");
+          c.className = "grid-chip";
+          c.innerText = state.lang === "te" ? b[1] : b[0];
+          c.onclick = () => {
+            state.bIdx = i;
+            state.cNum = 1;
+            closeModals();
+            loadChapter();
+          };
+          g.appendChild(c);
+        });
+      }
+      function openChapModal() {
+        document.getElementById("modal-chap").classList.add("active");
+        let g = document.getElementById("grid-chap");
+        g.innerHTML = "";
+        let count = chapterCounts[state.bIdx];
+        for (let i = 1; i <= count; i++) {
+          let c = document.createElement("div");
+          c.className = "chap-cell";
+          c.innerText = i;
+          if (i === state.cNum) {
+            c.style.background = "var(--primary)";
+            c.style.color = "white";
+          }
+          c.onclick = () => {
+            state.cNum = i;
+            closeModals();
+            loadChapter();
+          };
+          g.appendChild(c);
+        }
+      }
+      function closeModals() {
         document
-          .querySelectorAll(".view")
-          .forEach((el) => el.classList.remove("active"));
-        document.getElementById("view-" + view).classList.add("active");
-        document
-          .querySelectorAll(".dock-btn")
-          .forEach((b) => b.classList.remove("active"));
-        if (btn) btn.classList.add("active");
+          .querySelectorAll(".full-modal")
+          .forEach((m) => m.classList.remove("active"));
       }
 
+      // --- FEATURES ---
       function toggleParallel() {
         state.parallel = !state.parallel;
         save();
@@ -930,52 +841,6 @@
       }
       function applyState() {
         document.body.setAttribute("data-theme", state.theme);
-      }
-
-      function openBookModal() {
-        document.getElementById("modal-book").classList.add("active");
-        let g = document.getElementById("grid-book");
-        g.innerHTML = "";
-        bookNames.forEach((b, i) => {
-          let c = document.createElement("span");
-          c.className = "grid-chip";
-          c.innerText = state.lang === "te" ? b[1] : b[0];
-          c.onclick = () => {
-            state.bIdx = i;
-            state.cNum = 1;
-            closeModals();
-            loadChapter();
-          };
-          g.appendChild(c);
-        });
-      }
-      function closeModals() {
-        document
-          .querySelectorAll(".full-modal")
-          .forEach((m) => m.classList.remove("active"));
-      }
-
-      // --- AI (SIMULATED) ---
-      function aiMood(mood) {
-        switchTab("ai", document.querySelectorAll(".dock-btn")[2]);
-        addMsg(`I'm feeling ${mood}`, "user");
-        setTimeout(
-          () => addMsg("Here is a comforting verse for you...", "ai"),
-          1000
-        );
-      }
-      function sendAI() {
-        let t = document.getElementById("user-input").value;
-        if (!t) return;
-        addMsg(t, "user");
-        document.getElementById("user-input").value = "";
-        setTimeout(() => addMsg("I am thinking...", "ai"), 1000);
-      }
-      function addMsg(txt, type) {
-        let d = document.createElement("div");
-        d.className = `msg ${type}`;
-        d.innerText = txt;
-        document.getElementById("chat-box").appendChild(d);
       }
     </script>
   </body>
