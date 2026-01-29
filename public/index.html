@@ -28,9 +28,7 @@
         --text-sec: #64748b;
         --border: #e2e8f0;
         --read-size: 20px;
-        --safe-top: env(safe-area-inset-top);
       }
-
       [data-theme="dark"] {
         --bg-body: #0f172a;
         --surface: #1e293b;
@@ -38,7 +36,6 @@
         --text-sec: #94a3b8;
         --border: #334155;
       }
-
       * {
         box-sizing: border-box;
         -webkit-tap-highlight-color: transparent;
@@ -52,17 +49,6 @@
         color: var(--text-main);
         padding-bottom: 90px;
         overflow-x: hidden;
-        background-image: radial-gradient(
-            at 0% 0%,
-            rgba(37, 99, 235, 0.05) 0px,
-            transparent 50%
-          ),
-          radial-gradient(
-            at 100% 0%,
-            rgba(244, 63, 94, 0.05) 0px,
-            transparent 50%
-          );
-        background-attachment: fixed;
       }
 
       /* --- 2. HEADER --- */
@@ -72,7 +58,7 @@
         left: 0;
         right: 0;
         height: 60px;
-        background: rgba(255, 255, 255, 0.9);
+        background: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(20px);
         border-bottom: 1px solid var(--border);
         display: flex;
@@ -80,11 +66,6 @@
         justify-content: space-between;
         padding: 0 16px;
         z-index: 50;
-      }
-
-      .nav-group {
-        display: flex;
-        gap: 8px;
       }
       .nav-pill {
         background: var(--surface);
@@ -135,6 +116,18 @@
         }
       }
 
+      /* Home */
+      .hero-card {
+        margin: 20px;
+        background: linear-gradient(135deg, #2563eb, #4f46e5);
+        color: white;
+        border-radius: 24px;
+        padding: 24px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(37, 99, 235, 0.25);
+      }
+
       /* Reader */
       #verses-container {
         padding: 20px;
@@ -178,16 +171,6 @@
       .v-parallel.show {
         display: block;
       }
-      .v-action {
-        width: 30px;
-        height: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--text-sec);
-        opacity: 0.4;
-        cursor: pointer;
-      }
 
       /* Songs */
       .song-card {
@@ -200,71 +183,22 @@
         align-items: center;
         justify-content: space-between;
       }
-      .btn-lyrics {
+      .fab {
+        position: fixed;
+        bottom: 100px;
+        right: 20px;
+        width: 56px;
+        height: 56px;
         background: var(--primary);
         color: white;
-        border: none;
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 700;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        box-shadow: 0 5px 20px rgba(37, 99, 235, 0.4);
         cursor: pointer;
-      }
-
-      /* AI Chat */
-      #view-ai {
-        height: 100vh;
-        display: none;
-        flex-direction: column;
-        padding: 20px;
-        padding-top: 80px;
-      }
-      #view-ai.active {
-        display: flex;
-      }
-      .ai-messages {
-        flex: 1;
-        overflow-y: auto;
-        padding-bottom: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-      }
-      .msg {
-        padding: 12px 16px;
-        border-radius: 18px;
-        max-width: 85%;
-        line-height: 1.5;
-        font-size: 15px;
-      }
-      .msg.user {
-        background: var(--primary);
-        color: white;
-        align-self: flex-end;
-        border-bottom-right-radius: 4px;
-      }
-      .msg.ai {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        align-self: flex-start;
-        border-bottom-left-radius: 4px;
-      }
-      .input-area {
-        background: var(--surface);
-        padding: 10px;
-        border-radius: 30px;
-        border: 1px solid var(--border);
-        display: flex;
-        gap: 10px;
-        margin-bottom: 90px;
-      }
-      .ai-input {
-        flex: 1;
-        border: none;
-        background: transparent;
-        padding: 10px;
-        font-size: 16px;
-        outline: none;
+        z-index: 100;
       }
 
       /* --- 4. DOCK --- */
@@ -342,7 +276,6 @@
         font-weight: 700;
         cursor: pointer;
       }
-
       .grid-chip {
         display: inline-block;
         padding: 12px 20px;
@@ -354,6 +287,29 @@
         cursor: pointer;
         font-size: 14px;
         text-align: center;
+      }
+
+      .input-group {
+        margin-bottom: 15px;
+      }
+      .input-box {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 16px;
+        background: var(--surface);
+        color: var(--text-main);
+      }
+      .btn-primary {
+        width: 100%;
+        padding: 15px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-weight: 700;
+        cursor: pointer;
       }
       .nav-btn-lg {
         width: 100%;
@@ -369,9 +325,63 @@
     </style>
   </head>
   <body data-theme="light">
-    <div id="view-read" class="view active">
+    <div id="view-home" class="view active">
+      <div style="padding: 20px">
+        <div style="font-size: 13px; font-weight: 700; color: var(--text-sec)">
+          TODAY
+        </div>
+        <div style="font-size: 24px; font-weight: 800">Prayer Beam</div>
+      </div>
+
+      <div class="hero-card">
+        <span
+          style="
+            font-size: 12px;
+            font-weight: 700;
+            opacity: 0.8;
+            display: block;
+            margin-bottom: 10px;
+          "
+          >VERSE OF THE DAY</span
+        >
+        <div
+          id="daily-verse-text"
+          style="
+            font-family: 'Crimson Pro';
+            font-size: 22px;
+            line-height: 1.4;
+            font-weight: 600;
+          "
+        >
+          Loading...
+        </div>
+        <div
+          id="daily-verse-ref"
+          style="
+            font-size: 14px;
+            font-weight: 700;
+            margin-top: 10px;
+            opacity: 0.9;
+          "
+        ></div>
+      </div>
+
+      <button
+        class="nav-btn-lg"
+        onclick="switchTab('read', document.querySelectorAll('.dock-btn')[1])"
+        style="
+          margin: 20px;
+          width: calc(100% - 40px);
+          background: var(--surface);
+        "
+      >
+        Continue Reading ➔
+      </button>
+    </div>
+
+    <div id="view-read" class="view">
       <div class="reader-header">
-        <div class="nav-group">
+        <div style="display: flex; gap: 8px">
           <div class="nav-pill" onclick="openBookModal()">
             <span id="lbl-book">Genesis</span>
             <i class="ph-bold ph-caret-down"></i>
@@ -406,48 +416,23 @@
     <div id="view-songs" class="view" style="padding: 20px">
       <h2 style="margin-top: 0">Worship Songs</h2>
       <div id="song-list"></div>
-    </div>
-
-    <div id="view-ai" class="view">
-      <div class="ai-messages" id="chat-box">
-        <div class="msg ai">Hello! Ask me about any verse or topic.</div>
-      </div>
-      <div class="input-area">
-        <input
-          type="text"
-          class="ai-input"
-          id="user-input"
-          placeholder="Ask anything..."
-        />
-        <button
-          onclick="sendAI()"
-          style="
-            background: var(--primary);
-            color: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-          "
-        >
-          <i class="ph-bold ph-paper-plane-right"></i>
-        </button>
+      <div class="fab" onclick="openAddSongModal()">
+        <i class="ph-bold ph-plus"></i>
       </div>
     </div>
 
     <nav class="dock">
-      <button class="dock-btn active" onclick="switchTab('read', this)">
+      <button class="dock-btn active" onclick="switchTab('home', this)">
+        <i class="ph-fill ph-house dock-icon"></i
+        ><span class="dock-lbl">Home</span>
+      </button>
+      <button class="dock-btn" onclick="switchTab('read', this)">
         <i class="ph-fill ph-book-open-text dock-icon"></i
         ><span class="dock-lbl">Bible</span>
       </button>
       <button class="dock-btn" onclick="switchTab('songs', this)">
         <i class="ph-fill ph-music-note dock-icon"></i
         ><span class="dock-lbl">Songs</span>
-      </button>
-      <button class="dock-btn" onclick="switchTab('ai', this)">
-        <i class="ph-fill ph-sparkle dock-icon"></i
-        ><span class="dock-lbl">Ask AI</span>
       </button>
     </nav>
 
@@ -465,6 +450,36 @@
         <button class="icon-btn" onclick="closeModals()">✕</button>
       </div>
       <div id="grid-chap" class="chap-grid"></div>
+    </div>
+
+    <div id="modal-add-song" class="full-modal">
+      <div class="modal-header">
+        <h2>Add New Song</h2>
+        <button class="icon-btn" onclick="closeModals()">✕</button>
+      </div>
+      <div class="input-group">
+        <label style="display: block; margin-bottom: 5px; font-weight: 700"
+          >Song Title</label
+        >
+        <input
+          type="text"
+          id="inp-title"
+          class="input-box"
+          placeholder="e.g. Hosanna"
+        />
+      </div>
+      <div class="input-group">
+        <label style="display: block; margin-bottom: 5px; font-weight: 700"
+          >Lyrics</label
+        >
+        <textarea
+          id="inp-lyrics"
+          class="input-box"
+          rows="10"
+          placeholder="Paste lyrics here..."
+        ></textarea>
+      </div>
+      <button class="btn-primary" onclick="saveNewSong()">Save Song</button>
     </div>
 
     <div id="modal-lyrics" class="full-modal">
@@ -486,26 +501,25 @@
     </div>
 
     <script>
-      let state = JSON.parse(localStorage.getItem("pb_v11")) || {
+      let state = JSON.parse(localStorage.getItem("pb_v13")) || {
         lang: "te",
         bIdx: 0,
         cNum: 1,
-        theme: "light",
         parallel: false,
       };
 
       const sources = {
         te: {
           url: "https://cdn.jsdelivr.net/gh/aruljohn/Bible-telugu@master",
-          type: "git",
           code: "te-IN",
         },
         en: {
           url: "https://cdn.jsdelivr.net/gh/aruljohn/Bible-kjv@master",
-          type: "git",
           code: "en-US",
         },
       };
+
+      // --- COMPLETE 66 BOOKS ---
       const bookNames = [
         ["Genesis", "ఆదికాండము"],
         ["Exodus", "నిర్గమకాండము"],
@@ -516,29 +530,113 @@
         ["Judges", "న్యాయాధిపతులు"],
         ["Ruth", "రూతు"],
         ["1Samuel", "1 సమూయేలు"],
-      ]; // Shortened for demo
-      const chapterCounts = [50, 40, 27, 36, 34, 24, 21, 4, 31];
+        ["2Samuel", "2 సమూయేలు"],
+        ["1Kings", "1 రాజులు"],
+        ["2Kings", "2 రాజులు"],
+        ["1Chronicles", "1 దినవృత్తాంతములు"],
+        ["2Chronicles", "2 దినవృత్తాంతములు"],
+        ["Ezra", "ఎజ్రా"],
+        ["Nehemiah", "నెహెమ్యా"],
+        ["Esther", "ఎస్తేరు"],
+        ["Job", "యోబు"],
+        ["Psalms", "కీర్తనలు"],
+        ["Proverbs", "సామెతలు"],
+        ["Ecclesiastes", "ప్రసంగి"],
+        ["SongofSolomon", "పరమగీతము"],
+        ["Isaiah", "యెషయా"],
+        ["Jeremiah", "యిర్మియా"],
+        ["Lamentations", "విలాపవాక్యములు"],
+        ["Ezekiel", "యెహెజ్కేలు"],
+        ["Daniel", "దానియేలు"],
+        ["Hosea", "హోషేయ"],
+        ["Joel", "యోవేలు"],
+        ["Amos", "ఆమోసు"],
+        ["Obadiah", "ఓబద్యా"],
+        ["Jonah", "యోనా"],
+        ["Micah", "మీకా"],
+        ["Nahum", "నహూము"],
+        ["Habakkuk", "హబక్కూకు"],
+        ["Zephaniah", "జెఫన్యా"],
+        ["Haggai", "హగ్గయి"],
+        ["Zechariah", "జెకర్యా"],
+        ["Malachi", "మలాకీ"],
+        ["Matthew", "మత్తయి"],
+        ["Mark", "మార్కు"],
+        ["Luke", "లూకా"],
+        ["John", "యోహాను"],
+        ["Acts", "అపొస్తలుల కార్యములు"],
+        ["Romans", "రోమీయులకు"],
+        ["1Corinthians", "1 కోరింథీయులకు"],
+        ["2Corinthians", "2 కోరింథీయులకు"],
+        ["Galatians", "గలతీయులకు"],
+        ["Ephesians", "ఎఫెసీయులకు"],
+        ["Philippians", "ఫిలిప్పీయులకు"],
+        ["Colossians", "కొలొస్సయులకు"],
+        ["1Thessalonians", "1 థెస్సలొనీకయులకు"],
+        ["2Thessalonians", "2 థెస్సలొనీకయులకు"],
+        ["1Timothy", "1 తిమోతికి"],
+        ["2Timothy", "2 తిమోతికి"],
+        ["Titus", "తీతుకు"],
+        ["Philemon", "ఫిలేమోనుకు"],
+        ["Hebrews", "హెబ్రీయులకు"],
+        ["James", "యాకోబు"],
+        ["1Peter", "1 పేతురు"],
+        ["2Peter", "2 పేతురు"],
+        ["1John", "1 యోహాను"],
+        ["2John", "2 యోహాను"],
+        ["3John", "3 యోహాను"],
+        ["Jude", "యూదా"],
+        ["Revelation", "ప్రకటన గ్రంథము"],
+      ];
 
-      const songs = [
+      const chapterCounts = [
+        50, 40, 27, 36, 34, 24, 21, 4, 31, 24, 22, 25, 29, 36, 10, 13, 10, 42,
+        150, 31, 12, 8, 66, 52, 5, 48, 12, 14, 3, 9, 1, 4, 7, 3, 3, 3, 2, 14, 4,
+        28, 16, 24, 21, 28, 16, 16, 13, 6, 6, 4, 4, 5, 3, 6, 4, 3, 1, 13, 5, 5,
+        3, 5, 1, 1, 1, 22,
+      ];
+
+      const dailyVerses = [
+        { t: "The Lord is my shepherd, I lack nothing.", r: "Psalm 23:1" },
+        { t: "For I know the plans I have for you...", r: "Jeremiah 29:11" },
+        { t: "I can do all things through Christ...", r: "Philippians 4:13" },
         {
-          t: "Yesayya Naa Pranama",
-          l: "యేసయ్యా నా ప్రాణమా - ఘనమైన స్తుతిగానమా\nఅద్భుతమైన నీ ఆదరణే - ఆశ్రయమైన నీ సంరక్షణయే",
+          t: "In the beginning God created the heaven and the earth.",
+          r: "Genesis 1:1",
         },
-        {
-          t: "Neeve Hrudaya Saradhi",
-          l: "నీవే హృదయ సారధి - ప్రగతికి వారధి\nనీ స్నేహమే సౌభాగ్యము - సంక్షేమ సంతకం",
-        },
+        { t: "Trust in the Lord with all your heart...", r: "Proverbs 3:5" },
+      ];
+
+      // Initial Songs + LocalStorage
+      let defaultSongs = [
+        { t: "Yesayya Naa Pranama", l: "Lyrics..." },
+        { t: "Neeve Hrudaya Saradhi", l: "Lyrics..." },
       ];
 
       window.onload = () => {
+        loadDailyVerse();
         loadChapter();
         renderSongs();
       };
       function save() {
-        localStorage.setItem("pb_v11", JSON.stringify(state));
+        localStorage.setItem("pb_v13", JSON.stringify(state));
       }
 
-      // --- NAVIGATION ---
+      // --- FEATURES ---
+      function loadDailyVerse() {
+        // Pick based on day of year
+        const day = Math.floor(
+          (new Date() - new Date(new Date().getFullYear(), 0, 0)) /
+            1000 /
+            60 /
+            60 /
+            24
+        );
+        const v = dailyVerses[day % dailyVerses.length];
+        document.getElementById("daily-verse-text").innerText = `"${v.t}"`;
+        document.getElementById("daily-verse-ref").innerText = v.r;
+      }
+
       function switchTab(viewId, btn) {
         document
           .querySelectorAll(".view")
@@ -550,7 +648,7 @@
         btn.classList.add("active");
       }
 
-      // --- ENGINE ---
+      // --- BIBLE ENGINE ---
       async function loadChapter() {
         let bName =
           state.lang === "te"
@@ -589,6 +687,7 @@
       async function fetchText(lang, bIdx, cNum) {
         const src = sources[lang];
         const engName = bookNames[bIdx][0];
+        // Git source logic only for stability
         let r = await fetch(`${src.url}/${engName}.json`);
         let data = await r.json();
         let chapters = data.chapters || data;
@@ -609,18 +708,27 @@
         loadChapter();
       }
 
-      // --- SONGS ---
+      // --- SONGS & LYRICS ---
       function renderSongs() {
+        let customSongs =
+          JSON.parse(localStorage.getItem("pb_custom_songs")) || [];
+        let allSongs = [...customSongs, ...defaultSongs];
+
         let l = document.getElementById("song-list");
         l.innerHTML = "";
-        songs.forEach((s) => {
+        allSongs.forEach((s) => {
           let d = document.createElement("div");
           d.className = "song-card";
           d.innerHTML = `<div><div style="font-weight:700;">${s.t}</div></div>`;
-
           let btn = document.createElement("button");
-          btn.className = "btn-lyrics";
-          btn.innerText = "View Lyrics";
+          btn.className = "btn-lyrics"; // Use CSS class
+          btn.style.background = "var(--primary)"; // Ensure visibility
+          btn.style.color = "white";
+          btn.style.border = "none";
+          btn.style.padding = "8px 16px";
+          btn.style.borderRadius = "20px";
+          btn.style.fontWeight = "bold";
+          btn.innerText = "View";
           btn.onclick = () => {
             document.getElementById("modal-lyrics").classList.add("active");
             document.getElementById("lyrics-title").innerText = s.t;
@@ -631,26 +739,24 @@
         });
       }
 
-      // --- AI CHAT (Simulated Fix) ---
-      function sendAI() {
-        let t = document.getElementById("user-input").value;
-        if (!t) return;
-        addMsg(t, "user");
-        document.getElementById("user-input").value = "";
-
-        // Simulating a reply so it works for you
-        setTimeout(() => {
-          addMsg(
-            "I am Prayer Beam AI. That is a great question about faith! I recommend reading Psalm 23 for comfort.",
-            "ai"
-          );
-        }, 800);
+      function openAddSongModal() {
+        document.getElementById("modal-add-song").classList.add("active");
       }
-      function addMsg(txt, type) {
-        let d = document.createElement("div");
-        d.className = `msg ${type}`;
-        d.innerText = txt;
-        document.getElementById("chat-box").appendChild(d);
+      function saveNewSong() {
+        let t = document.getElementById("inp-title").value;
+        let l = document.getElementById("inp-lyrics").value;
+        if (!t || !l) return;
+
+        let custom = JSON.parse(localStorage.getItem("pb_custom_songs")) || [];
+        custom.unshift({ t, l }); // Add to top
+        localStorage.setItem("pb_custom_songs", JSON.stringify(custom));
+
+        closeModals();
+        renderSongs();
+
+        // Clear inputs
+        document.getElementById("inp-title").value = "";
+        document.getElementById("inp-lyrics").value = "";
       }
 
       // --- MODALS ---
