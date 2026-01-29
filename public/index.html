@@ -19,16 +19,15 @@
     />
 
     <style>
-      /* --- 1. NEXT-GEN VARIABLES --- */
+      /* --- 1. VARIABLES --- */
       :root {
-        --primary: #2563eb; /* Modern Blue */
-        --accent: #f43f5e; /* Rose */
+        --primary: #2563eb;
         --bg-body: #f8fafc;
         --surface: #ffffff;
         --text-main: #0f172a;
         --text-sec: #64748b;
         --border: #e2e8f0;
-        --nav-height: 70px;
+        --read-size: 20px;
         --safe-top: env(safe-area-inset-top);
       }
 
@@ -44,6 +43,7 @@
         box-sizing: border-box;
         -webkit-tap-highlight-color: transparent;
         user-select: none;
+        outline: none;
       }
       body {
         margin: 0;
@@ -65,7 +65,7 @@
         background-attachment: fixed;
       }
 
-      /* --- 2. HOME FEED (YouVersion Style) --- */
+      /* --- 2. HOME FEED --- */
       .home-header {
         padding: 20px;
         padding-top: max(20px, var(--safe-top));
@@ -84,7 +84,6 @@
         letter-spacing: 1px;
       }
 
-      /* Mood Pills */
       .mood-grid {
         display: flex;
         gap: 10px;
@@ -105,17 +104,13 @@
         display: flex;
         align-items: center;
         gap: 6px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
-        transition: transform 0.1s;
       }
       .mood-pill:active {
-        transform: scale(0.95);
         background: var(--primary);
         color: white;
         border-color: var(--primary);
       }
 
-      /* Daily Card */
       .hero-card {
         margin: 20px;
         background: linear-gradient(135deg, #2563eb, #4f46e5);
@@ -126,27 +121,6 @@
         overflow: hidden;
         box-shadow: 0 10px 30px rgba(37, 99, 235, 0.25);
       }
-      .hero-card::after {
-        content: "";
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(
-          circle,
-          rgba(255, 255, 255, 0.1) 0%,
-          transparent 60%
-        );
-        pointer-events: none;
-      }
-      .hero-ref {
-        font-size: 13px;
-        font-weight: 700;
-        opacity: 0.9;
-        margin-bottom: 10px;
-        display: block;
-      }
       .hero-text {
         font-family: "Crimson Pro", serif;
         font-size: 22px;
@@ -154,7 +128,114 @@
         font-weight: 600;
       }
 
-      /* --- 3. AI CHAT INTERFACE --- */
+      /* --- 3. BIBLE READER (Real Engine) --- */
+      #view-read {
+        padding-top: 60px;
+      }
+      .reader-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        z-index: 50;
+      }
+      .book-pill {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        padding: 8px 16px;
+        border-radius: 30px;
+        font-weight: 700;
+        font-size: 15px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+      }
+      .icon-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: none;
+        background: transparent;
+        color: var(--text-main);
+        font-size: 22px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .icon-btn.active {
+        color: var(--primary);
+        background: rgba(37, 99, 235, 0.1);
+      }
+
+      #verses-container {
+        padding: 20px;
+        max-width: 700px;
+        margin: 0 auto;
+      }
+
+      .verse-card {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 18px;
+        padding: 4px;
+        border-radius: 8px;
+        transition: background 0.2s;
+      }
+      .verse-card.highlight {
+        background: rgba(255, 235, 59, 0.2);
+      }
+      .v-num-box {
+        min-width: 25px;
+        text-align: right;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--primary);
+        padding-top: 6px;
+        opacity: 0.7;
+      }
+      .v-content {
+        flex: 1;
+      }
+      .v-text {
+        font-family: "Crimson Pro", serif;
+        font-size: var(--read-size);
+        line-height: 1.7;
+        color: var(--text-main);
+      }
+      .v-parallel {
+        margin-top: 8px;
+        font-size: calc(var(--read-size) * 0.85);
+        color: var(--text-sec);
+        font-style: italic;
+        display: none;
+        padding-top: 8px;
+        border-top: 1px dashed var(--border);
+      }
+      .v-parallel.show {
+        display: block;
+      }
+      .v-action {
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-sec);
+        opacity: 0.4;
+        cursor: pointer;
+      }
+
+      /* --- 4. AI CHAT --- */
       #view-ai {
         padding: 20px;
         padding-top: max(20px, var(--safe-top));
@@ -170,7 +251,6 @@
         flex-direction: column;
         gap: 15px;
       }
-
       .msg {
         padding: 12px 16px;
         border-radius: 18px;
@@ -190,7 +270,6 @@
         align-self: flex-start;
         border-bottom-left-radius: 4px;
       }
-
       .input-area {
         background: var(--surface);
         padding: 10px;
@@ -198,9 +277,7 @@
         border: 1px solid var(--border);
         display: flex;
         gap: 10px;
-        align-items: center;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-        margin-bottom: 90px; /* Space for dock */
+        margin-bottom: 90px;
       }
       .ai-input {
         flex: 1;
@@ -208,46 +285,17 @@
         background: transparent;
         padding: 10px;
         font-size: 16px;
-        color: var(--text-main);
         outline: none;
       }
 
-      /* --- 4. PROFILE TAB --- */
-      .stat-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 15px;
-        margin: 20px;
-      }
-      .stat-card {
-        background: var(--surface);
-        padding: 20px;
-        border-radius: 20px;
-        border: 1px solid var(--border);
-        text-align: center;
-      }
-      .stat-val {
-        font-size: 28px;
-        font-weight: 800;
-        color: var(--primary);
-      }
-      .stat-label {
-        font-size: 12px;
-        font-weight: 600;
-        color: var(--text-sec);
-        text-transform: uppercase;
-        margin-top: 5px;
-      }
-
-      /* --- 5. NAVIGATION DOCK --- */
+      /* --- 5. DOCK & UTILS --- */
       .dock {
         position: fixed;
         bottom: 20px;
         left: 50%;
         transform: translateX(-50%);
-        background: rgba(255, 255, 255, 0.9);
+        background: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
         border: 1px solid rgba(0, 0, 0, 0.05);
         padding: 10px 20px;
         border-radius: 35px;
@@ -256,21 +304,14 @@
         box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
         z-index: 1000;
       }
-      .dark .dock {
-        background: rgba(30, 41, 59, 0.9);
-        border-color: rgba(255, 255, 255, 0.1);
-      }
-
       .dock-btn {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 4px;
         color: var(--text-sec);
         border: none;
         background: none;
         cursor: pointer;
-        transition: 0.2s;
       }
       .dock-btn.active {
         color: var(--primary);
@@ -284,117 +325,182 @@
         font-weight: 700;
       }
 
-      /* --- UTILS --- */
       .view {
         display: none;
-        animation: fadeIn 0.3s;
       }
       .view.active {
         display: block;
+        animation: fadeIn 0.3s;
       }
       @keyframes fadeIn {
         from {
           opacity: 0;
-          transform: translateY(10px);
         }
         to {
           opacity: 1;
-          transform: translateY(0);
         }
       }
 
-      /* Reader Overrides for v8 */
-      #view-read {
-        padding-top: 60px;
-      }
-      .book-selector {
+      /* Modals */
+      .action-sheet {
         position: fixed;
-        top: 0;
+        bottom: 0;
         left: 0;
         right: 0;
-        height: 60px;
         background: var(--bg-body);
-        z-index: 50;
+        border-radius: 20px 20px 0 0;
+        padding: 24px;
+        z-index: 2500;
+        transform: translateY(110%);
+        transition: 0.3s;
+        box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
+      }
+      .action-sheet.active {
+        transform: translateY(0);
+      }
+      .sheet-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 2400;
+        display: none;
+      }
+      .sheet-overlay.active {
+        display: block;
+      }
+      .sheet-opt {
         display: flex;
         align-items: center;
-        padding: 0 20px;
-        border-bottom: 1px solid var(--border);
+        gap: 15px;
+        padding: 16px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
       }
-      .verse-item {
-        padding: 15px 0;
-        border-bottom: 1px solid var(--border);
-        font-family: "Crimson Pro";
-        font-size: 20px;
-        line-height: 1.6;
+
+      .full-modal {
+        position: fixed;
+        inset: 0;
+        background: var(--bg-body);
+        z-index: 3000;
+        overflow-y: auto;
+        padding: 20px;
+        display: none;
       }
-      .v-ref {
-        font-family: "Inter";
-        font-size: 11px;
-        font-weight: 700;
-        color: var(--primary);
-        margin-right: 5px;
+      .full-modal.active {
+        display: block;
+      }
+      .grid-chip {
+        display: inline-block;
+        padding: 10px 18px;
+        margin: 4px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 13px;
+      }
+
+      .nav-btn-lg {
+        width: 100%;
+        padding: 15px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        font-weight: 600;
+        margin-top: 20px;
+        cursor: pointer;
+        text-align: center;
       }
     </style>
   </head>
   <body data-theme="light">
+    <div class="sheet-overlay" onclick="closeSheet()"></div>
+
     <div id="view-home" class="view active">
       <div class="home-header">
         <div class="date" id="date-display">TODAY</div>
-        <div class="greet">Good Morning, Friend</div>
+        <div class="greet">Good Morning</div>
       </div>
-
       <div class="mood-grid" style="padding: 0 20px">
         <div class="mood-pill" onclick="aiMood('anxious')">😰 Anxious</div>
         <div class="mood-pill" onclick="aiMood('happy')">😄 Happy</div>
         <div class="mood-pill" onclick="aiMood('lonely')">😔 Lonely</div>
         <div class="mood-pill" onclick="aiMood('grateful')">🙏 Grateful</div>
       </div>
-
       <div class="hero-card">
-        <span class="hero-ref">VERSE OF THE DAY</span>
-        <div class="hero-text">
-          "The Lord is my shepherd, I lack nothing. He makes me lie down in
-          green pastures."
-        </div>
+        <span
+          style="
+            font-size: 12px;
+            font-weight: 700;
+            opacity: 0.8;
+            display: block;
+            margin-bottom: 10px;
+          "
+          >VERSE OF THE DAY</span
+        >
+        <div class="hero-text">"The Lord is my shepherd, I lack nothing."</div>
       </div>
-
-      <div class="stat-grid">
-        <div class="stat-card">
-          <div class="stat-val">3</div>
-          <div class="stat-label">Day Streak</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-val">12</div>
-          <div class="stat-label">Chapters Read</div>
-        </div>
-      </div>
+      <button
+        class="nav-btn-lg"
+        onclick="switchTab('read', document.querySelectorAll('.dock-btn')[1])"
+        style="
+          margin: 20px;
+          width: calc(100% - 40px);
+          background: var(--primary);
+          color: white;
+        "
+      >
+        Continue Reading ➔
+      </button>
     </div>
 
     <div id="view-read" class="view">
-      <div class="book-selector">
-        <h2 style="font-size: 18px; font-weight: 700">Genesis 1</h2>
+      <div class="reader-header">
+        <div class="book-pill" onclick="openBookModal()">
+          <span id="lbl-book">Genesis</span>
+          <span id="lbl-chap" style="color: var(--primary)">1</span>
+          <i class="ph-bold ph-caret-down"></i>
+        </div>
+        <div style="display: flex; gap: 5px">
+          <button id="btn-parallel" class="icon-btn" onclick="toggleParallel()">
+            <i class="ph ph-arrows-left-right"></i>
+          </button>
+          <button id="btn-audio" class="icon-btn" onclick="toggleAudio()">
+            <i class="ph-bold ph-speaker-high"></i>
+          </button>
+          <button class="icon-btn" onclick="toggleSettings()">
+            <i class="ph-bold ph-text-aa"></i>
+          </button>
+        </div>
       </div>
-      <div id="reader-content" style="padding: 20px">Loading Bible...</div>
+
+      <div id="verses-container">Loading...</div>
+
+      <div style="padding: 20px; display: flex; gap: 10px">
+        <button class="nav-btn-lg" onclick="navChap(-1)">Previous</button>
+        <button
+          class="nav-btn-lg"
+          onclick="navChap(1)"
+          style="background: var(--text-main); color: var(--bg-body)"
+        >
+          Next
+        </button>
+      </div>
     </div>
 
-    <div id="view-ai" class="view" style="display: none">
+    <div id="view-ai" class="view">
       <div style="text-align: center; margin-bottom: 20px">
         <i
           class="ph-fill ph-sparkle"
           style="font-size: 40px; color: var(--primary)"
         ></i>
-        <h2 style="margin: 10px 0 0 0">Bible Assistant</h2>
-        <p style="font-size: 13px; color: var(--text-sec)">
-          Ask about verses, history, or prayer.
-        </p>
+        <h2 style="margin: 5px 0">Bible Assistant</h2>
       </div>
-
       <div class="ai-messages" id="chat-box">
-        <div class="msg ai">
-          Hello! How can I help you with your spiritual journey today?
-        </div>
+        <div class="msg ai">Hello! How can I help you today?</div>
       </div>
-
       <div class="input-area">
         <input
           type="text"
@@ -411,7 +517,6 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            cursor: pointer;
           "
         >
           <i class="ph-bold ph-paper-plane-right"></i>
@@ -434,102 +539,443 @@
       </button>
     </nav>
 
+    <div id="verse-sheet" class="action-sheet">
+      <div class="sheet-opt" onclick="actionCopy()">
+        <i class="ph-bold ph-copy"></i> Copy Verse
+      </div>
+      <div class="sheet-opt" onclick="actionHighlight()">
+        <i class="ph-bold ph-highlighter"></i> Highlight
+      </div>
+      <div class="sheet-opt" onclick="actionCompare()">
+        <i class="ph-bold ph-translate"></i> Compare (English)
+      </div>
+      <div
+        class="sheet-opt"
+        onclick="closeSheet()"
+        style="color: var(--primary)"
+      >
+        Cancel
+      </div>
+    </div>
+
+    <div id="settings-drawer" class="action-sheet">
+      <div style="display: flex; gap: 10px; margin-bottom: 20px">
+        <button
+          class="nav-btn-lg"
+          onclick="setTheme('light')"
+          style="margin: 0"
+        >
+          Day
+        </button>
+        <button
+          class="nav-btn-lg"
+          onclick="setTheme('sepia')"
+          style="margin: 0; background: #f8f4e9; color: #5f4b32"
+        >
+          Sepia
+        </button>
+        <button
+          class="nav-btn-lg"
+          onclick="setTheme('dark')"
+          style="margin: 0; background: #222; color: #fff"
+        >
+          Night
+        </button>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px">
+        <div class="grid-chip" onclick="setLang('te')">Telugu</div>
+        <div class="grid-chip" onclick="setLang('en')">English</div>
+        <div class="grid-chip" onclick="setLang('hi')">Hindi</div>
+        <div class="grid-chip" onclick="setLang('ta')">Tamil</div>
+      </div>
+    </div>
+
+    <div id="modal-book" class="full-modal">
+      <button
+        class="icon-btn"
+        onclick="closeModals()"
+        style="position: fixed; top: 20px; right: 20px"
+      >
+        ✕
+      </button>
+      <h2>Select Book</h2>
+      <div id="grid-book"></div>
+    </div>
+
     <script>
-      // CONFIG
-      const GEMINI_KEY = ""; // ⚠️ USER MUST ENTER KEY HERE OR IN UI
-      let state = { theme: "light", lang: "te" };
+      let state = JSON.parse(localStorage.getItem("pb_v9")) || {
+        lang: "te",
+        bIdx: 0,
+        cNum: 1,
+        theme: "light",
+        parallel: false,
+      };
+      let selectedVerse = null;
 
-      // --- NAVIGATION ---
-      function switchTab(viewId, btn) {
-        document.querySelectorAll(".view").forEach((el) => {
-          el.style.display = "none";
-          el.classList.remove("active");
-        });
-        const target = document.getElementById("view-" + viewId);
-        target.style.display = viewId === "ai" ? "flex" : "block"; // Flex for chat layout
-        target.classList.add("active");
+      const sources = {
+        te: {
+          url: "https://cdn.jsdelivr.net/gh/aruljohn/Bible-telugu@master",
+          type: "git",
+          code: "te-IN",
+        },
+        en: {
+          url: "https://cdn.jsdelivr.net/gh/aruljohn/Bible-kjv@master",
+          type: "git",
+          code: "en-US",
+        },
+        hi: {
+          url: "https://bolls.life/get-text/HINCL",
+          type: "api",
+          code: "hi-IN",
+        },
+        ta: {
+          url: "https://bolls.life/get-text/TAMOV",
+          type: "api",
+          code: "ta-IN",
+        },
+      };
+      const bookNames = [
+        ["Genesis", "ఆదికాండము"],
+        ["Exodus", "నిర్గమకాండము"],
+        ["Leviticus", "లేవీయకాండము"],
+        ["Numbers", "సంఖ్యాకాండము"],
+        ["Deuteronomy", "ద్వితీయోపదేశకాండము"],
+        ["Joshua", "యెహోషువ"],
+        ["Judges", "న్యాయాధిపతులు"],
+        ["Ruth", "రూతు"],
+        ["1Samuel", "1 సమూయేలు"],
+        ["2Samuel", "2 సమూయేలు"],
+        ["1Kings", "1 రాజులు"],
+        ["2Kings", "2 రాజులు"],
+        ["1Chronicles", "1 దినవృత్తాంతములు"],
+        ["2Chronicles", "2 దినవృత్తాంతములు"],
+        ["Ezra", "ఎజ్రా"],
+        ["Nehemiah", "నెహెమ్యా"],
+        ["Esther", "ఎస్తేరు"],
+        ["Job", "యోబు"],
+        ["Psalms", "కీర్తనలు"],
+        ["Proverbs", "సామెతలు"],
+        ["Ecclesiastes", "ప్రసంగి"],
+        ["SongofSolomon", "పరమగీతము"],
+        ["Isaiah", "యెషయా"],
+        ["Jeremiah", "యిర్మియా"],
+        ["Lamentations", "విలాపవాక్యములు"],
+        ["Ezekiel", "యెహెజ్కేలు"],
+        ["Daniel", "దానియేలు"],
+        ["Hosea", "హోషేయ"],
+        ["Joel", "యోవేలు"],
+        ["Amos", "ఆమోసు"],
+        ["Obadiah", "ఓబద్యా"],
+        ["Jonah", "యోనా"],
+        ["Micah", "మీకా"],
+        ["Nahum", "నహూము"],
+        ["Habakkuk", "హబక్కూకు"],
+        ["Zephaniah", "జెఫన్యా"],
+        ["Haggai", "హగ్గయి"],
+        ["Zechariah", "జెకర్యా"],
+        ["Malachi", "మలాకీ"],
+        ["Matthew", "మత్తయి"],
+        ["Mark", "మార్కు"],
+        ["Luke", "లూకా"],
+        ["John", "యోహాను"],
+        ["Acts", "అపొస్తలుల కార్యములు"],
+        ["Romans", "రోమీయులకు"],
+        ["1Corinthians", "1 కోరింథీయులకు"],
+        ["2Corinthians", "2 కోరింథీయులకు"],
+        ["Galatians", "గలతీయులకు"],
+        ["Ephesians", "ఎఫెసీయులకు"],
+        ["Philippians", "ఫిలిప్పీయులకు"],
+        ["Colossians", "కొలొస్సయులకు"],
+        ["1Thessalonians", "1 థెస్సలొనీకయులకు"],
+        ["2Thessalonians", "2 థెస్సలొనీకయులకు"],
+        ["1Timothy", "1 తిమోతికి"],
+        ["2Timothy", "2 తిమోతికి"],
+        ["Titus", "తీతుకు"],
+        ["Philemon", "ఫిలేమోనుకు"],
+        ["Hebrews", "హెబ్రీయులకు"],
+        ["James", "యాకోబు"],
+        ["1Peter", "1 పేతురు"],
+        ["2Peter", "2 పేతురు"],
+        ["1John", "1 యోహాను"],
+        ["2John", "2 యోహాను"],
+        ["3John", "3 యోహాను"],
+        ["Jude", "యూదా"],
+        ["Revelation", "ప్రకటన గ్రంథము"],
+      ];
+      const bollsCodes = [
+        "GEN",
+        "EXO",
+        "LEV",
+        "NUM",
+        "DEU",
+        "JOS",
+        "JDG",
+        "RUT",
+        "1SA",
+        "2SA",
+        "1KI",
+        "2KI",
+        "1CH",
+        "2CH",
+        "EZR",
+        "NEH",
+        "EST",
+        "JOB",
+        "PSA",
+        "PRO",
+        "ECC",
+        "SNG",
+        "ISA",
+        "JER",
+        "LAM",
+        "EZE",
+        "DAN",
+        "HOS",
+        "JOE",
+        "AMO",
+        "OBA",
+        "JON",
+        "MIC",
+        "NAH",
+        "HAB",
+        "ZEP",
+        "HAG",
+        "ZEC",
+        "MAL",
+        "MAT",
+        "MAR",
+        "LUK",
+        "JOH",
+        "ACT",
+        "ROM",
+        "1CO",
+        "2CO",
+        "GAL",
+        "EPH",
+        "PHI",
+        "COL",
+        "1TH",
+        "2TH",
+        "1TI",
+        "2TI",
+        "TIT",
+        "PHM",
+        "HEB",
+        "JAS",
+        "1PE",
+        "2PE",
+        "1JO",
+        "2JO",
+        "3JO",
+        "JUD",
+        "REV",
+      ];
 
+      window.onload = () => {
+        applyState();
+        loadChapter();
+      };
+      function save() {
+        localStorage.setItem("pb_v9", JSON.stringify(state));
+      }
+
+      // --- REAL BIBLE ENGINE ---
+      async function loadChapter() {
+        let bName =
+          state.lang === "te"
+            ? bookNames[state.bIdx][1]
+            : bookNames[state.bIdx][0];
+        document.getElementById("lbl-book").innerText = bName;
+        document.getElementById("lbl-chap").innerText = state.cNum;
+        document.getElementById(
+          "verses-container"
+        ).innerHTML = `<div style="text-align:center; color:#999; margin-top:50px;">Loading...</div>`;
+
+        let mainVerses = await fetchText(state.lang, state.bIdx, state.cNum);
+        let parallelVerses = [];
+        if (state.parallel) {
+          document.getElementById("btn-parallel").classList.add("active");
+          parallelVerses = await fetchText("en", state.bIdx, state.cNum);
+        } else {
+          document.getElementById("btn-parallel").classList.remove("active");
+        }
+
+        let html = mainVerses
+          .map((v, i) => {
+            let vNum = i + 1;
+            let engText =
+              state.parallel && parallelVerses[i] ? parallelVerses[i].text : "";
+            return `<div class="verse-card" id="v-${vNum}">
+                    <div class="v-num-box">${vNum}</div>
+                    <div class="v-content">
+                        <div class="v-text">${v.text}</div>
+                        <div class="v-parallel ${
+                          state.parallel ? "show" : ""
+                        }">${engText}</div>
+                    </div>
+                    <div class="v-action" onclick="openVerseSheet('${vNum}', \`${
+              v.text
+            }\`)"><i class="ph-bold ph-caret-right"></i></div>
+                </div>`;
+          })
+          .join("");
+        document.getElementById("verses-container").innerHTML = html;
+      }
+
+      async function fetchText(lang, bIdx, cNum) {
+        const src = sources[lang] || sources["en"];
+        const engName = bookNames[bIdx][0];
+        if (src.type === "git") {
+          let r = await fetch(`${src.url}/${engName}.json`);
+          let data = await r.json();
+          let chapters = data.chapters || data;
+          let vs = chapters[cNum - 1].verses || chapters[cNum - 1].verse;
+          return vs.map((v) => ({ text: v.text || v.verse || v }));
+        } else {
+          let r = await fetch(`${src.url}/${bollsCodes[bIdx]}/${cNum}/`);
+          let json = await r.json();
+          return json;
+        }
+      }
+
+      function navChap(d) {
+        let n = state.cNum + d;
+        if (n < 1) return;
+        state.cNum = n;
+        loadChapter();
+        window.scrollTo(0, 0);
+      }
+
+      // --- UI & FEATURES ---
+      function switchTab(view, btn) {
+        document
+          .querySelectorAll(".view")
+          .forEach((el) => el.classList.remove("active"));
+        document.getElementById("view-" + view).classList.add("active");
         document
           .querySelectorAll(".dock-btn")
           .forEach((b) => b.classList.remove("active"));
         if (btn) btn.classList.add("active");
       }
 
-      // --- BIBLE LOADER (Simulated for Speed) ---
-      window.onload = () => {
-        const d = new Date();
-        document.getElementById("date-display").innerText =
-          d.toLocaleDateString("en-US", {
-            weekday: "long",
-            month: "short",
-            day: "numeric",
-          });
+      function toggleParallel() {
+        state.parallel = !state.parallel;
+        save();
+        loadChapter();
+      }
+      function openVerseSheet(num, text) {
+        selectedVerse = { num, text };
+        document.querySelector(".sheet-overlay").classList.add("active");
+        document.getElementById("verse-sheet").classList.add("active");
+      }
+      function closeSheet() {
+        document.querySelector(".sheet-overlay").classList.remove("active");
+        document
+          .querySelectorAll(".action-sheet")
+          .forEach((el) => el.classList.remove("active"));
+      }
+      function actionCopy() {
+        navigator.clipboard.writeText(
+          `${selectedVerse.text} (${bookNames[state.bIdx][0]} ${state.cNum}:${
+            selectedVerse.num
+          })`
+        );
+        closeSheet();
+      }
+      function actionHighlight() {
+        document
+          .getElementById("v-" + selectedVerse.num)
+          .classList.toggle("highlight");
+        closeSheet();
+      }
+      function actionCompare() {
+        state.parallel = true;
+        save();
+        loadChapter();
+        closeSheet();
+      }
 
-        // Load Demo Chapter
-        const demo = [
-          "In the beginning God created the heaven and the earth.",
-          "And the earth was without form, and void; and darkness was upon the face of the deep.",
-          "And the Spirit of God moved upon the face of the waters.",
-          "And God said, Let there be light: and there was light.",
-        ];
-        document.getElementById("reader-content").innerHTML = demo
-          .map(
-            (t, i) =>
-              `<div class="verse-item"><span class="v-ref">${
-                i + 1
-              }</span> ${t}</div>`
-          )
-          .join("");
-      };
+      function toggleAudio() {
+        if (window.speechSynthesis.speaking) {
+          window.speechSynthesis.cancel();
+          document.getElementById("btn-audio").classList.remove("active");
+        } else {
+          let txt = "";
+          document
+            .querySelectorAll(".v-text")
+            .forEach((t) => (txt += t.innerText + ". "));
+          let u = new SpeechSynthesisUtterance(txt);
+          u.lang = sources[state.lang].code;
+          window.speechSynthesis.speak(u);
+          document.getElementById("btn-audio").classList.add("active");
+          u.onend = () =>
+            document.getElementById("btn-audio").classList.remove("active");
+        }
+      }
 
-      // --- AI LOGIC ---
+      function toggleSettings() {
+        document.querySelector(".sheet-overlay").classList.add("active");
+        document.getElementById("settings-drawer").classList.add("active");
+      }
+      function setTheme(thm) {
+        state.theme = thm;
+        save();
+        applyState();
+      }
+      function setLang(l) {
+        state.lang = l;
+        save();
+        loadChapter();
+        closeSheet();
+      }
+      function applyState() {
+        document.body.setAttribute("data-theme", state.theme);
+      }
+
+      function openBookModal() {
+        document.getElementById("modal-book").classList.add("active");
+        let g = document.getElementById("grid-book");
+        g.innerHTML = "";
+        bookNames.forEach((b, i) => {
+          let c = document.createElement("span");
+          c.className = "grid-chip";
+          c.innerText = state.lang === "te" ? b[1] : b[0];
+          c.onclick = () => {
+            state.bIdx = i;
+            state.cNum = 1;
+            closeModals();
+            loadChapter();
+          };
+          g.appendChild(c);
+        });
+      }
+      function closeModals() {
+        document
+          .querySelectorAll(".full-modal")
+          .forEach((m) => m.classList.remove("active"));
+      }
+
+      // --- AI (SIMULATED) ---
       function aiMood(mood) {
         switchTab("ai", document.querySelectorAll(".dock-btn")[2]);
-        const prompt = `I am feeling ${mood}. Can you give me a comforting Bible verse and a short prayer?`;
-        addMsg(prompt, "user");
-        // Simulation of AI reply (Real API needs Key)
-        setTimeout(() => {
-          const replies = {
-            anxious:
-              "For anxiety, reflect on Philippians 4:6-7. Prayer: 'Lord, calm my heart...'",
-            happy:
-              "Praise God! Psalm 118:24 says 'This is the day the Lord has made.'",
-            lonely:
-              "Remember Hebrews 13:5, 'I will never leave you nor forsake you.'",
-            grateful:
-              "Give thanks! 1 Thessalonians 5:18 reminds us to be thankful in all circumstances.",
-          };
-          addMsg(replies[mood] || "How can I pray for you?", "ai");
-        }, 1000);
+        addMsg(`I'm feeling ${mood}`, "user");
+        setTimeout(
+          () => addMsg("Here is a comforting verse for you...", "ai"),
+          1000
+        );
       }
-
       function sendAI() {
-        const input = document.getElementById("user-input");
-        const txt = input.value.trim();
-        if (!txt) return;
-
-        addMsg(txt, "user");
-        input.value = "";
-
-        // Simulate Thinking
-        const loadId = addMsg("Thinking...", "ai");
-
-        // In a real app, fetch(GEMINI_URL...) goes here.
-        // For this demo version, we simulate intelligence:
-        setTimeout(() => {
-          document.getElementById(loadId).innerText =
-            "That is a deep question. The Bible suggests looking at Proverbs for wisdom on this topic. Would you like me to find a specific verse?";
-        }, 1500);
+        let t = document.getElementById("user-input").value;
+        if (!t) return;
+        addMsg(t, "user");
+        document.getElementById("user-input").value = "";
+        setTimeout(() => addMsg("I am thinking...", "ai"), 1000);
       }
-
-      function addMsg(text, type) {
-        const div = document.createElement("div");
-        div.className = `msg ${type}`;
-        div.innerText = text;
-        div.id = "msg-" + Date.now();
-        document.getElementById("chat-box").appendChild(div);
-        document.getElementById("chat-box").scrollTop = 9999; // Auto scroll
-        return div.id;
+      function addMsg(txt, type) {
+        let d = document.createElement("div");
+        d.className = `msg ${type}`;
+        d.innerText = txt;
+        document.getElementById("chat-box").appendChild(d);
       }
     </script>
   </body>
